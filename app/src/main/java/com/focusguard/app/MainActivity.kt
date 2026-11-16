@@ -702,7 +702,7 @@ fun AppsAndShortsTab(
         SectionPanel {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("Kill YouTube Shorts & IG Reels", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                    Text("Block YouTube Shorts & IG Reels", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                     Text("Keeps regular videos & DMs open", style = MaterialTheme.typography.bodySmall, color = TextMuted)
                 }
                 Switch(
