@@ -1,0 +1,5 @@
+-keep class com.focusguard.app.FocusAccessibilityService { *; }
+-keep class com.focusguard.app.DnsVpnService { *; }
+-keep class com.focusguard.app.FocusDeviceAdminReceiver { *; }
+-keep class com.focusguard.app.BootReceiver { *; }
+-dontwarn kotlinx.coroutines.**

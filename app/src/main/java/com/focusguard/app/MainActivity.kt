@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.net.VpnService
 import android.os.Bundle
 import android.provider.Settings
@@ -1263,6 +1264,27 @@ fun ShieldLockTab(
                         color = AccentCyan
                     )
                 }
+                OutlinedButton(
+                    onClick = {
+                        val title = Uri.encode("[Bug Report] v$installedVersion on ${Build.MANUFACTURER} ${Build.MODEL}")
+                        val body = Uri.encode(
+                            "### Describe the issue\n(Write what happened here)\n\n" +
+                            "---\n### Device Diagnostics\n" +
+                            "- **App Version:** v$installedVersion\n" +
+                            "- **Device:** ${Build.MANUFACTURER} ${Build.MODEL}\n" +
+                            "- **Android SDK:** ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})\n" +
+                            "- **Accessibility Service:** ${if (isServiceEnabled) "ACTIVE" else "OFF"}\n" +
+                            "- **Local DNS Shield:** ${if (vpnActive) "ACTIVE" else "OFF"}\n" +
+                            "- **Device Admin:** ${if (isDeviceAdminEnabled) "ACTIVE" else "OFF"}\n"
+                        )
+                        uriHandler.openUri("https://github.com/quasimkhan/FocusGuard/issues/new?title=$title&body=$body")
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text("Report Bug", fontSize = 11.sp)
+                }
+                Spacer(modifier = Modifier.width(6.dp))
                 OutlinedButton(
                     onClick = {
                         if (isCheckingUpdate) return@OutlinedButton
