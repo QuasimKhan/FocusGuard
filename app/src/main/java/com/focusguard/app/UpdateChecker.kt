@@ -3,7 +3,6 @@ package com.focusguard.app
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -20,10 +19,8 @@ sealed class UpdateCheckResult {
 }
 
 object UpdateChecker {
-    private const val LATEST_RELEASE_API =
-        "https://api.github.com/repos/quasimkhan/FocusGuard/releases/latest"
-    private const val RELEASES_PAGE_URL =
-        "https://github.com/quasimkhan/FocusGuard/releases/latest"
+    private const val REPO_BASE = "https://github.com/quasimkhan/FocusGuard"
+    private const val LATEST_RELEASE_URL = "$REPO_BASE/releases/latest"
     private const val PREF_NAME = "focus_guard_updates"
     private const val KEY_LAST_CHECK_MS = "last_update_check_ms"
     private const val CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000L
@@ -51,61 +48,47 @@ object UpdateChecker {
         return withContext(Dispatchers.IO) {
             var conn: HttpURLConnection? = null
             try {
-                val url = URL(LATEST_RELEASE_API)
-                conn = (url.openConnection() as HttpURLConnection).apply {
+                conn = (URL(LATEST_RELEASE_URL).openConnection() as HttpURLConnection).apply {
                     requestMethod = "GET"
-                    connectTimeout = 5000
-                    readTimeout = 5000
-                    setRequestProperty("Accept", "application/vnd.github+json")
+                    instanceFollowRedirects = true
+                    connectTimeout = 6000
+                    readTimeout = 6000
                     setRequestProperty("User-Agent", "FocusGuard-Android")
                 }
 
                 val code = conn.responseCode
                 if (code == 404) {
                     markChecked(context)
-                    return@withContext UpdateCheckResult.UpToDate(getInstalledVersion(context))
+                    return@withContext UpdateCheckResult.Error("No public release found (check repo visibility)")
                 }
                 if (code != 200) {
                     return@withContext UpdateCheckResult.Error("GitHub returned HTTP $code")
                 }
 
-                val body = conn.inputStream.bufferedReader().use { it.readText() }
-                val json = JSONObject(body)
-                val tagName = json.optString("tag_name", "").trim()
-                val notes = json.optString("body", "New improvements and fixes available.")
+                val resolvedUrl = conn.url.toString()
+                val tagName = resolvedUrl
+                    .substringAfter("/releases/tag/", "")
+                    .substringBefore("?")
+                    .substringBefore("#")
                     .trim()
-                    .take(220)
-                val htmlUrl = json.optString("html_url", RELEASES_PAGE_URL)
-
-                var apkUrl = htmlUrl
-                val assets = json.optJSONArray("assets")
-                if (assets != null) {
-                    for (i in 0 until assets.length()) {
-                        val asset = assets.optJSONObject(i) ?: continue
-                        val name = asset.optString("name", "")
-                        val dl = asset.optString("browser_download_url", "")
-                        if (name.endsWith(".apk", ignoreCase = true) && dl.isNotBlank()) {
-                            apkUrl = dl
-                            break
-                        }
-                    }
-                }
 
                 markChecked(context)
                 val installed = getInstalledVersion(context)
+
                 if (tagName.isNotBlank() && isNewerVersion(tagName, installed)) {
+                    val apkDownloadUrl = "$REPO_BASE/releases/download/$tagName/FocusGuard-$tagName-Quasim.apk"
                     UpdateCheckResult.UpdateAvailable(
                         ReleaseUpdate(
                             latestTag = tagName,
-                            releaseNotes = notes.ifBlank { "New FocusGuard release available on GitHub." },
-                            downloadUrl = apkUrl
+                            releaseNotes = "Tap Download to install FocusGuard $tagName directly from GitHub.",
+                            downloadUrl = apkDownloadUrl
                         )
                     )
                 } else {
                     UpdateCheckResult.UpToDate(installed)
                 }
             } catch (_: Exception) {
-                UpdateCheckResult.Error("Unable to reach GitHub (offline or rate-limited)")
+                UpdateCheckResult.Error("Unable to reach GitHub (check internet connection)")
             } finally {
                 conn?.disconnect()
             }
