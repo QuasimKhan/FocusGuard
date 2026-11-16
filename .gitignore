@@ -1,0 +1,15 @@
+# Private Release Keystore (NEVER commit)
+*.jks
+*.keystore
+
+# Local Machine Paths & Build Artifacts
+local.properties
+.gradle/
+build/
+app/build/
+.idea/
+*.iml
+.DS_Store
+
+# Built APKs (distribute via GitHub Releases, not Git commits)
+*.apk
