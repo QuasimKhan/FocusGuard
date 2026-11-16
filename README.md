@@ -1,49 +1,66 @@
 # FocusGuard by Quasim.™
 
-A zero-bloat, 100% on-device Android focus engine, short-form feed blocker, local DNS adult & distraction firewall, and tamper-resistant study lock built with native **Kotlin** and **Jetpack Compose**.
+[![Latest Release](https://img.shields.io/github/v/release/quasimkhan/FocusGuard?style=flat-square&color=38BDF8)](https://github.com/quasimkhan/FocusGuard/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/quasimkhan/FocusGuard/total?style=flat-square&color=10B981)](https://github.com/quasimkhan/FocusGuard/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-slate.svg?style=flat-square)](LICENSE)
+
+A zero-bloat, 100% on-device Android distraction blocker, short-form video filter, local DNS adult firewall, and tamper-resistant study lock crafted for deep focus.
 
 ---
 
-## Core Capabilities
+## Why FocusGuard?
 
-- **3-Mode App Control (`Open` · `15s Pause` · `Blocked`):** Hard-block pure distractions or add a 15-second mindful breathing pause before granting a 5-minute pass to semi-useful apps.
-- **YouTube Shorts & Instagram Reels Surgeon:** Blocks addictive short-form feeds at the UI node level while keeping long-form YouTube lectures, search, and Instagram DMs working normally.
-- **On-Device IPv4 + IPv6 DNS Sinkhole:** Blocks 130,000+ adult domains, DNS-over-HTTPS endpoints, rotating numbered mirror domains (`*xhamester*`, etc.), and custom `*wildcard*` rules across Chrome, Brave, Firefox, and Incognito tabs—with zero external VPN servers.
-- **Study OS:** Includes a Deep-Work Pomodoro timer (`25m` / `50m` / `90m`) with daily focus stats and an automatic daily study schedule window.
-- **Tamper-Resistant Armor:** Uses Android Device Admin to grey out the Uninstall button, a Settings Watchdog to block tampering with Accessibility/Private DNS/Date & Time during active locks, and monotonic uptime (`SystemClock.elapsedRealtime()`) cooldown timers that cannot be bypassed by changing the system clock.
+- **Block Shorts & Reels Only:** Automatically exits YouTube Shorts and Instagram Reels while keeping long-form lectures, search, and DMs working normally.
+- **3-Mode App Control (`Open` · `15s Pause` · `Block`):** Hard-block addictive apps or add a 15-second mindful breathing pause before unlocking a 5-minute pass.
+- **On-Device Adult & Web Shield (IPv4 + IPv6):** Blocks 130,000+ adult domains, rotating mirror domains, and custom `*wildcard*` rules across Chrome, Brave, Firefox, and Incognito tabs—with zero external VPN servers or internet slowdown.
+- **Study OS:** Built-in Deep-Work Pomodoro timer (`25m` / `50m` / `90m`) with daily progress tracking and recurring daily auto-lock schedules.
+- **Tamper-Resistant Armor:** Prevents app uninstallation via Device Admin, blocks Settings tampering during active sessions, and enforces monotonic cooldown timers that cannot be bypassed by changing the phone's clock.
+- **100% Private:** No accounts, no analytics, no cloud servers. Everything runs locally on your phone.
 
 ---
 
 ## How to Download & Install on Android
 
-1. Open the [**Releases**](https://github.com/quasimkhan/FocusGuard/releases/latest) page on your Android phone.
-2. Under **Assets**, tap **`FocusGuard-v1.0-Quasim.apk`** to download it.
-3. Open the downloaded APK and allow **Install unknown apps** for your browser/file manager if prompted.
-4. **Enable Accessibility Service (Android 13–16 Restricted Settings):**
-    - Open FocusGuard and tap **Enable** on the Accessibility banner.
-    - If Android greys out FocusGuard under _Downloaded apps_, open **Settings → Apps → FocusGuard → tap the 3-dot menu (`⋮`) in the top-right → Allow restricted settings**, then return to Accessibility and turn **FocusGuard** ON.
-5. **Prevent Background Battery Killing (Xiaomi / Samsung / OnePlus / Vivo):**
-    - Long-press the **FocusGuard** app icon → **App info** → enable **Autostart** (if available) and set **Battery** to **Unrestricted / No restrictions**.
-6. **Activate Web Shield & Uninstall Protection:**
-    - Open the **Web** tab → turn on **Local DNS Adult & Web Shield** (and turn **Off** _Use secure DNS_ in Chrome Settings).
-    - Open the **Armor** tab → tap **Activate Device Admin Uninstall Lock**.
+> **Note:** FocusGuard uses Android Accessibility and local VPN APIs for system-wide blocking, so it is distributed directly via verified GitHub Releases rather than the Google Play Store.
+
+### Step 1: Download the APK
+
+1. On your Android phone, open the [**Latest Release Page**](https://github.com/quasimkhan/FocusGuard/releases/latest).
+2. Under **Assets**, tap **`FocusGuard-v1.1.0-Quasim.apk`** (or the latest version) to download it.
+3. Open the downloaded `.apk` file and tap **Install** (allow **Install unknown apps** for your browser or file manager if prompted).
+
+### Step 2: Enable the Accessibility Engine (Android 13–16)
+
+1. Open **FocusGuard** and tap **Enable** on the _Accessibility Service Offline_ banner.
+2. Under **Downloaded apps**, tap **FocusGuard**.
+    - _If FocusGuard is greyed out ("Restricted setting"):_ Open **Phone Settings → Apps → FocusGuard → tap the 3-dot menu (`⋮`) in the top-right corner → Allow restricted settings**, then return to Accessibility and switch **FocusGuard** ON.
+
+### Step 3: Keep FocusGuard Running in the Background
+
+Android phone brands aggressively close background services unless exempted once:
+
+1. Long-press the **FocusGuard** icon on your home screen → tap **App info**.
+2. Set **Battery** to **Unrestricted / No restrictions**.
+3. On **Xiaomi / POCO / Redmi / Realme / Vivo / Oppo**, also turn **Autostart** ON.
+
+### Step 4: Activate Web Shield & Uninstall Protection
+
+1. Open the **Web** tab in FocusGuard → switch **Local DNS Adult & Web Shield** ON and tap **OK** on Android's VPN connection prompt.
+    - _Chrome Tip:_ Open **Chrome Settings → Privacy and security → Use secure DNS** and turn it **Off** so Chrome uses FocusGuard's local DNS shield.
+2. Open the **Armor** tab → tap **Activate Device Admin Uninstall Lock** to prevent impulsive uninstallation.
 
 ---
 
-## App Updates
+## Automatic Updates
 
-FocusGuard checks `github.com/quasimkhan/FocusGuard/releases/latest` automatically once every 24 hours (and manually via **Armor → Check Updates**). When a new version is published, an in-app **Update Available** banner appears with a one-tap download button. Installing the new APK updates FocusGuard in place while preserving all blocklists, schedules, and active cooldowns.
+FocusGuard checks GitHub Releases automatically every 24 hours (or manually via **Armor → Check Updates**). Whenever a new version is released, an **Update Available** banner appears at the top of the app—tap **Download** and install the APK over your existing app without losing any settings or blocklists.
 
 ---
 
-## Build From Source
+## Support & Contact
 
-Requires **JDK 17** and **Android SDK 35**:
-
-```bash
-git clone [https://github.com/quasimkhan/FocusGuard.git](https://github.com/quasimkhan/FocusGuard.git)
-cd FocusGuard
-echo "sdk.dir=$HOME/android-sdk" > local.properties
-gradle assembleDebug
-adb install -r app/build/outputs/apk/debug/app-debug.apk
-```
+- **Report a Bug or Request a Feature:** [Open a GitHub Issue](https://github.com/quasimkhan/FocusGuard/issues)
+- **Email:** [quasimdotdev@gmail.com](mailto:quasimdotdev@gmail.com)
+- **X (Twitter):** [@quasimdotdev](https://x.com/quasimdotdev)
+- **LinkedIn:** [linkedin.com/in/quasimkhan](https://linkedin.com/in/quasimkhan)
+- **License:** Released under the [MIT License](LICENSE) by **Quasim.™**
