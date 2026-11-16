@@ -17,6 +17,21 @@ class FocusAccessibilityService : AccessibilityService() {
     private var lastAppBlockTime = 0L
     private var lastWebBlockTime = 0L
     private var lastSettingsBlockTime = 0L
+    private var trackedPkg: String? = null
+    private var trackedStartElapsed = 0L
+    private var lastTrackedTickElapsed = 0L
+    private var nextSessionThresholdMs = 15 * 60_000L
+
+    private val ignoredUsagePackages = setOf(
+        "com.android.systemui",
+        "com.miui.home",
+        "com.sec.android.app.launcher",
+        "com.google.android.apps.nexuslauncher",
+        "com.android.settings",
+        "com.miui.securitycenter",
+        "com.android.dialer",
+        "com.google.android.dialer"
+    )
 
     private val settingsPackages = setOf(
         "com.android.settings",
@@ -71,6 +86,7 @@ class FocusAccessibilityService : AccessibilityService() {
         if (pkg == packageName) return
 
         val now = SystemClock.elapsedRealtime()
+        trackAppUsageAndMaybeNudge(pkg, now)
         val rootNode = rootInActiveWindow ?: return
 
         // 0. Tamper-Resistance Settings Watchdog (runs whenever Strict Lock, Study Window, or Locked Pomodoro is active)
@@ -204,6 +220,41 @@ class FocusAccessibilityService : AccessibilityService() {
             }
         }
         return false
+    }
+
+    private fun trackAppUsageAndMaybeNudge(pkg: String, nowElapsed: Long) {
+        if (!FocusPrefs.isComicNudgesEnabled(this)) return
+        if (ignoredUsagePackages.contains(pkg)) {
+            trackedPkg = null
+            return
+        }
+
+        if (trackedPkg != pkg) {
+            trackedPkg = pkg
+            trackedStartElapsed = nowElapsed
+            lastTrackedTickElapsed = nowElapsed
+            // Randomize threshold between 12 and 20 minutes so nudges feel spontaneous
+            nextSessionThresholdMs = (12..20).random() * 60_000L
+            return
+        }
+
+        val delta = nowElapsed - lastTrackedTickElapsed
+        if (delta in 1_000L..120_000L) {
+            lastTrackedTickElapsed = nowElapsed
+            val totalDailyMs = FocusPrefs.addDistractionUsageMs(this, delta)
+            val continuousMs = nowElapsed - trackedStartElapsed
+
+            if (continuousMs >= nextSessionThresholdMs && FocusPrefs.canSendComicNudgeNow(this)) {
+                FocusNotifier.sendComicSessionNudge(this, (continuousMs / 60_000L).toInt())
+                trackedStartElapsed = nowElapsed
+            } else if (totalDailyMs >= 45 * 60_000L && FocusPrefs.canSendComicNudgeNow(this, 45 * 60_000L)) {
+                FocusNotifier.sendHeavyDailyUsageNudge(this, (totalDailyMs / 60_000L).toInt())
+            }
+        } else if (delta > 120_000L) {
+            // Screen was off or user left the app
+            trackedStartElapsed = nowElapsed
+            lastTrackedTickElapsed = nowElapsed
+        }
     }
 
     override fun onInterrupt() {

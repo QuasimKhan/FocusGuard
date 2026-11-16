@@ -33,6 +33,10 @@ object FocusPrefs {
     private const val KEY_STATS_DATE = "stats_date"
     private const val KEY_TODAY_FOCUSED_MINS = "today_focused_mins"
     private const val KEY_TODAY_SESSIONS = "today_sessions"
+    private const val KEY_COMIC_NUDGES_ENABLED = "comic_nudges_enabled"
+    private const val KEY_SCREEN_USAGE_DATE = "screen_usage_date"
+    private const val KEY_TODAY_USAGE_MS = "today_usage_ms"
+    private const val KEY_LAST_NUDGE_ELAPSED_MS = "last_nudge_elapsed_ms"
 
     const val LOCK_UNLOCKED = 0
     const val LOCK_ENGAGED = 1
@@ -351,6 +355,37 @@ object FocusPrefs {
         isStrictLockActive(context) ||
             isStudyWindowCurrentlyActive(context) ||
             isPomodoroLockCurrentlyActive(context)
+
+    // --- Comic Focus Nudges & Usage Tracking ---
+
+    fun isComicNudgesEnabled(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_COMIC_NUDGES_ENABLED, true)
+
+    fun setComicNudgesEnabled(context: Context, enabled: Boolean) {
+        prefs(context).edit().putBoolean(KEY_COMIC_NUDGES_ENABLED, enabled).apply()
+    }
+
+    fun addDistractionUsageMs(context: Context, deltaMs: Long): Long {
+        val p = prefs(context)
+        val today = LocalDate.now().toString()
+        val savedDate = p.getString(KEY_SCREEN_USAGE_DATE, today)
+        val currentTotal = if (savedDate == today) p.getLong(KEY_TODAY_USAGE_MS, 0L) else 0L
+        val updated = currentTotal + deltaMs
+        p.edit()
+            .putString(KEY_SCREEN_USAGE_DATE, today)
+            .putLong(KEY_TODAY_USAGE_MS, updated)
+            .apply()
+        return updated
+    }
+
+    fun canSendComicNudgeNow(context: Context, minCooldownMs: Long = 20 * 60_000L): Boolean {
+        val p = prefs(context)
+        val last = p.getLong(KEY_LAST_NUDGE_ELAPSED_MS, 0L)
+        val now = SystemClock.elapsedRealtime()
+        if (last > 0L && now >= last && (now - last) < minCooldownMs) return false
+        p.edit().putLong(KEY_LAST_NUDGE_ELAPSED_MS, now).apply()
+        return true
+    }
 
     fun getConfiguredCooldownMinutes(context: Context): Int =
         (prefs(context).getLong(KEY_COOLDOWN_DURATION_MS, 60 * 60_000L) / 60_000L).toInt()

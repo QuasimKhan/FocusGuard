@@ -180,9 +180,16 @@ fun FocusDashboard(
         staticDomainCount = withContext(Dispatchers.IO) {
             DomainBlocklist.ensureLoaded(context)
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED &&
+            context is Activity
+        ) {
+            context.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+        }
         val res = UpdateChecker.checkForUpdate(context, force = false)
         if (res is UpdateCheckResult.UpdateAvailable) {
             availableUpdate = res.update
+            FocusNotifier.sendUpdateNotification(context, res.update)
         }
     }
 
@@ -1045,6 +1052,37 @@ fun StudyOsTab(
                     endMin = FocusPrefs.getScheduleEndMinutes(context)
                 }
             )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        var comicNudges by remember { mutableStateOf(FocusPrefs.isComicNudgesEnabled(context)) }
+        SectionPanel {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Comic Focus Nudges", fontWeight = FontWeight.Bold)
+                    Text(
+                        "Sends witty reminders if you linger 12–20m on distracting apps",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextMuted
+                    )
+                }
+                Switch(
+                    checked = comicNudges,
+                    onCheckedChange = {
+                        comicNudges = it
+                        FocusPrefs.setComicNudgesEnabled(context, it)
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = { FocusNotifier.sendComicSessionNudge(context, 15) },
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Preview Comic Notification", fontSize = 12.sp)
+            }
         }
     }
 }
