@@ -13,3 +13,4 @@ app/build/
 
 # Built APKs (distribute via GitHub Releases, not Git commits)
 *.apk
+gradle.properties
