@@ -1559,6 +1559,8 @@ fun StudyOsTab(
         }
     }
 
+}
+
 @Composable
 fun TimeAdjustRow(
     label: String,
