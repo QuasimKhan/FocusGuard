@@ -6,6 +6,6 @@ import android.content.Intent
 
 class FocusDeviceAdminReceiver : DeviceAdminReceiver() {
     override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
-        return "Warning: Disabling FocusGuard Device Admin removes uninstall protection."
+        return "FocusGuard Device Admin is active. Disabling it also removes this warning."
     }
 }

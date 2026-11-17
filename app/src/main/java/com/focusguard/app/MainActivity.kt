@@ -1,6 +1,8 @@
 package com.focusguard.app
 
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.TimePickerDialog
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -10,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.net.VpnService
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,6 +20,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,19 +31,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,35 +60,86 @@ data class AppEntry(
     val packageName: String
 )
 
-private val CanvasBg = Color(0xFF090D16)
-private val PanelBg = Color(0xFF101622)
-private val ElevatedBg = Color(0xFF161F30)
-private val HairlineBorder = Color(0xFF1E293B)
-private val AccentCyan = Color(0xFF38BDF8)
-private val AccentEmerald = Color(0xFF10B981)
-private val AccentAmber = Color(0xFFF59E0B)
-private val TextPrimary = Color(0xFFF8FAFC)
-private val TextMuted = Color(0xFF94A3B8)
+private val CanvasBg: Color
+    @Composable get() = MaterialTheme.colorScheme.background
+private val PanelBg: Color
+    @Composable get() = MaterialTheme.colorScheme.surface
+private val ElevatedBg: Color
+    @Composable get() = MaterialTheme.colorScheme.surfaceVariant
+private val HairlineBorder: Color
+    @Composable get() = MaterialTheme.colorScheme.outlineVariant
+private val AccentCyan: Color
+    @Composable get() = MaterialTheme.colorScheme.primary
+private val AccentEmerald: Color
+    @Composable get() = MaterialTheme.colorScheme.secondary
+private val AccentAmber: Color
+    @Composable get() = MaterialTheme.colorScheme.tertiary
+private val TextPrimary: Color
+    @Composable get() = MaterialTheme.colorScheme.onSurface
+private val TextMuted: Color
+    @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
 
 private val FocusGuardDarkScheme = darkColorScheme(
-    primary = AccentCyan,
-    onPrimary = Color(0xFF062033),
-    primaryContainer = Color(0xFF0C4A6E),
-    onPrimaryContainer = Color(0xFFE0F2FE),
-    secondary = AccentEmerald,
-    onSecondary = Color(0xFF042F2E),
-    secondaryContainer = Color(0xFF064E3B),
-    onSecondaryContainer = Color(0xFFD1FAE5),
-    background = CanvasBg,
-    onBackground = TextPrimary,
-    surface = CanvasBg,
-    onSurface = TextPrimary,
-    surfaceVariant = PanelBg,
-    onSurfaceVariant = TextMuted,
-    outline = HairlineBorder,
-    error = Color(0xFFF87171),
-    errorContainer = Color(0xFF450A0A),
-    onErrorContainer = Color(0xFFFECACA)
+    primary = Color(0xFF62BCEB),
+    onPrimary = Color(0xFF082433),
+    primaryContainer = Color(0xFF173F54),
+    onPrimaryContainer = Color(0xFFD8F2FF),
+    secondary = Color(0xFF79C6A5),
+    onSecondary = Color(0xFF0B2D24),
+    secondaryContainer = Color(0xFF17493B),
+    onSecondaryContainer = Color(0xFFCCF3E1),
+    tertiary = Color(0xFFFFC66D),
+    onTertiary = Color(0xFF3B2600),
+    tertiaryContainer = Color(0xFF5C410E),
+    onTertiaryContainer = Color(0xFFFFE8BC),
+    background = Color(0xFF0B1118),
+    onBackground = Color(0xFFE9EFF5),
+    surface = Color(0xFF111B25),
+    onSurface = Color(0xFFE9EFF5),
+    surfaceVariant = Color(0xFF192633),
+    onSurfaceVariant = Color(0xFFB3C0CC),
+    outline = Color(0xFF536575),
+    outlineVariant = Color(0xFF2C3B49),
+    error = Color(0xFFFFB4AB),
+    errorContainer = Color(0xFF5C2621),
+    onErrorContainer = Color(0xFFFFE1DE)
+)
+
+private val FocusGuardLightScheme = lightColorScheme(
+    primary = Color(0xFF176A82),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFD6EEF5),
+    onPrimaryContainer = Color(0xFF123B49),
+    secondary = Color(0xFF286A52),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFFD9EFE5),
+    onSecondaryContainer = Color(0xFF173D30),
+    tertiary = Color(0xFF805900),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFF4E8C9),
+    onTertiaryContainer = Color(0xFF4A3505),
+    background = Color(0xFFF5F7F9),
+    onBackground = Color(0xFF1B2630),
+    surface = Color.White,
+    onSurface = Color(0xFF1B2630),
+    surfaceVariant = Color(0xFFEDF1F4),
+    onSurfaceVariant = Color(0xFF52616E),
+    outline = Color(0xFF788692),
+    outlineVariant = Color(0xFFD4DCE2),
+    error = Color(0xFFB3261E),
+    errorContainer = Color(0xFFF9DEDC),
+    onErrorContainer = Color(0xFF410E0B)
+)
+
+private val FocusGuardTypography = Typography(
+    headlineSmall = TextStyle(fontSize = 24.sp, lineHeight = 30.sp, fontWeight = FontWeight.SemiBold),
+    titleLarge = TextStyle(fontSize = 20.sp, lineHeight = 26.sp, fontWeight = FontWeight.SemiBold),
+    titleMedium = TextStyle(fontSize = 16.sp, lineHeight = 22.sp, fontWeight = FontWeight.SemiBold),
+    bodyLarge = TextStyle(fontSize = 16.sp, lineHeight = 24.sp),
+    bodyMedium = TextStyle(fontSize = 14.sp, lineHeight = 20.sp),
+    bodySmall = TextStyle(fontSize = 12.sp, lineHeight = 18.sp),
+    labelLarge = TextStyle(fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium),
+    labelMedium = TextStyle(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Medium)
 )
 
 class MainActivity : ComponentActivity() {
@@ -90,12 +151,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleIncomingIntent(intent)
+        FocusNotifier.initializeChannels(this)
 
         setContent {
-            MaterialTheme(colorScheme = FocusGuardDarkScheme) {
+            val colorScheme = if (isSystemInDarkTheme()) FocusGuardDarkScheme else FocusGuardLightScheme
+            MaterialTheme(colorScheme = colorScheme, typography = FocusGuardTypography) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = CanvasBg
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     FocusDashboard(
                         isServiceEnabled = serviceEnabledState.value,
@@ -179,12 +242,6 @@ fun FocusDashboard(
     LaunchedEffect(Unit) {
         staticDomainCount = withContext(Dispatchers.IO) {
             DomainBlocklist.ensureLoaded(context)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED &&
-            context is Activity
-        ) {
-            context.requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
         }
         val res = UpdateChecker.checkForUpdate(context, force = false)
         if (res is UpdateCheckResult.UpdateAvailable) {
@@ -287,6 +344,8 @@ fun FocusDashboard(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                FocusGuardMark(size = 40.dp)
+                Spacer(modifier = Modifier.width(10.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
@@ -603,14 +662,86 @@ fun SectionPanel(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(16.dp),
         color = PanelBg,
-        border = BorderStroke(0.75.dp, HairlineBorder)
+        border = BorderStroke(1.dp, HairlineBorder)
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(16.dp),
             content = content
         )
+    }
+}
+
+@Composable
+private fun FocusGuardMark(size: Dp, modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(12.dp)
+    Image(
+        painter = painterResource(R.drawable.ic_launcher_foreground),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = modifier
+            .size(size)
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
+            .padding(size * 0.1f)
+    )
+}
+
+@Composable
+private fun EmptyAppResults(searchQuery: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 148.dp)
+            .padding(horizontal = 20.dp, vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        FocusGuardMark(size = 48.dp)
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = if (searchQuery.isBlank()) "No apps to show" else "No apps match your search",
+            style = MaterialTheme.typography.titleMedium,
+            color = TextMuted
+        )
+    }
+}
+
+@Composable
+private fun AppIconBadge(
+    packageName: String,
+    appLabel: String,
+    size: Dp = 40.dp
+) {
+    val context = LocalContext.current
+    val icon = remember(packageName) {
+        runCatching {
+            context.packageManager.getApplicationIcon(packageName)
+                .toBitmap(width = 96, height = 96)
+                .asImageBitmap()
+        }.getOrNull()
+    }
+    val shape = RoundedCornerShape(12.dp)
+    Box(
+        modifier = Modifier
+            .size(size)
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape),
+        contentAlignment = Alignment.Center
+    ) {
+        if (icon != null) {
+            Image(
+                bitmap = icon,
+                contentDescription = "$appLabel icon",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize().padding(4.dp)
+            )
+        } else {
+            FocusGuardMark(size = size * 0.62f)
+        }
     }
 }
 
@@ -735,7 +866,9 @@ fun AppsAndShortsTab(
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(filteredApps, key = { it.packageName }) { app ->
+            if (filteredApps.isEmpty()) {
+                item(key = "empty-app-results") { EmptyAppResults(searchQuery) }
+            } else items(filteredApps, key = { it.packageName }) { app ->
                 val currentMode = when {
                     blockedSet.contains(app.packageName) -> FocusPrefs.APP_MODE_BLOCKED
                     pausedSet.contains(app.packageName) -> FocusPrefs.APP_MODE_PAUSE
@@ -745,17 +878,36 @@ fun AppsAndShortsTab(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 7.dp),
+                        .padding(vertical = 5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = app.label,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f).padding(end = 8.dp)
-                    )
+                    AppIconBadge(packageName = app.packageName, appLabel = app.label)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column(modifier = Modifier.weight(1f).padding(end = 6.dp)) {
+                        Text(
+                            text = app.label,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        val modeDescription = when (currentMode) {
+                            FocusPrefs.APP_MODE_BLOCKED -> "Blocked"
+                            FocusPrefs.APP_MODE_PAUSE -> "Mindful pause · 15s"
+                            else -> "Open"
+                        }
+                        val modeDescriptionColor = when (currentMode) {
+                            FocusPrefs.APP_MODE_BLOCKED -> MaterialTheme.colorScheme.error
+                            FocusPrefs.APP_MODE_PAUSE -> MaterialTheme.colorScheme.tertiary
+                            else -> TextMuted
+                        }
+                        Text(
+                            text = modeDescription,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = modeDescriptionColor,
+                            maxLines = 1
+                        )
+                    }
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         val modes = listOf(
                             FocusPrefs.APP_MODE_OPEN to "Open",
@@ -766,31 +918,33 @@ fun AppsAndShortsTab(
                             val selected = currentMode == mode
                             val canSelect = !isLocked || mode >= currentMode
                             val chipBg = when {
-                                selected && mode == FocusPrefs.APP_MODE_BLOCKED -> Color(0xFF450A0A)
-                                selected && mode == FocusPrefs.APP_MODE_PAUSE -> Color(0xFF451A03)
-                                selected -> ElevatedBg
+                                selected && mode == FocusPrefs.APP_MODE_BLOCKED -> MaterialTheme.colorScheme.errorContainer
+                                selected && mode == FocusPrefs.APP_MODE_PAUSE -> MaterialTheme.colorScheme.tertiaryContainer
+                                selected -> MaterialTheme.colorScheme.primaryContainer
                                 else -> Color.Transparent
                             }
                             val chipText = when {
-                                selected && mode == FocusPrefs.APP_MODE_BLOCKED -> Color(0xFFFCA5A5)
-                                selected && mode == FocusPrefs.APP_MODE_PAUSE -> Color(0xFFFCD34D)
-                                selected -> AccentCyan
+                                selected && mode == FocusPrefs.APP_MODE_BLOCKED -> MaterialTheme.colorScheme.onErrorContainer
+                                selected && mode == FocusPrefs.APP_MODE_PAUSE -> MaterialTheme.colorScheme.onTertiaryContainer
+                                selected -> MaterialTheme.colorScheme.onPrimaryContainer
                                 canSelect -> TextMuted
-                                else -> Color(0xFF475569)
+                                else -> TextMuted.copy(alpha = 0.55f)
                             }
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(chipBg)
-                                    .border(0.5.dp, if (selected) chipText.copy(alpha = 0.5f) else HairlineBorder, RoundedCornerShape(8.dp))
+                                    .border(1.dp, if (selected) chipText.copy(alpha = 0.6f) else HairlineBorder, RoundedCornerShape(8.dp))
                                     .clickable(enabled = canSelect) {
                                         FocusPrefs.setAppMode(context, app.packageName, mode)
                                         blockedSet = FocusPrefs.getBlockedPackages(context)
                                         pausedSet = FocusPrefs.getPausedPackages(context)
                                     }
-                                    .padding(horizontal = 9.dp, vertical = 5.dp)
+                                    .defaultMinSize(minWidth = 44.dp, minHeight = 48.dp)
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Text(text = label, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = chipText)
+                                Text(text = label, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold, color = chipText)
                             }
                         }
                     }
@@ -903,11 +1057,56 @@ fun StudyOsTab(
     var scheduleEnabled by remember { mutableStateOf(FocusPrefs.isScheduleEnabled(context)) }
     var startMin by remember { mutableIntStateOf(FocusPrefs.getScheduleStartMinutes(context)) }
     var endMin by remember { mutableIntStateOf(FocusPrefs.getScheduleEndMinutes(context)) }
+    var clockTick by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var notificationReadiness by remember { mutableStateOf(FocusNotifier.readiness(context)) }
+    var showNotificationRationale by remember { mutableStateOf(false) }
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) {
+        notificationReadiness = FocusNotifier.readiness(context)
+    }
+    val askForFocusAlerts = {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !notificationReadiness.permissionGranted) {
+            showNotificationRationale = true
+        }
+    }
+    var scheduledPackages by remember { mutableStateOf(FocusPrefs.getScheduledPackages(context)) }
+    var scheduleSearch by remember { mutableStateOf("") }
+    val scheduleApps = remember {
+        val pm = context.packageManager
+        val launchIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+        pm.queryIntentActivities(launchIntent, PackageManager.MATCH_ALL)
+            .mapNotNull { info ->
+                val pkg = info.activityInfo?.packageName ?: return@mapNotNull null
+                if (pkg == context.packageName) return@mapNotNull null
+                AppEntry(info.loadLabel(pm).toString(), pkg)
+            }
+            .distinctBy { it.packageName }
+            .sortedBy { it.label.lowercase() }
+    }
+    val filteredScheduleApps = remember(scheduleApps, scheduleSearch) {
+        if (scheduleSearch.isBlank()) scheduleApps else scheduleApps.filter {
+            it.label.contains(scheduleSearch, ignoreCase = true) ||
+                it.packageName.contains(scheduleSearch, ignoreCase = true)
+        }
+    }
 
     var selectedPomoMins by remember { mutableIntStateOf(50) }
     var lockDuringPomo by remember { mutableStateOf(FocusPrefs.isPomodoroLockEnabled(context)) }
     val todayMins = FocusPrefs.getTodayFocusedMinutes(context)
     val todaySessions = FocusPrefs.getTodaySessions(context)
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(15_000L)
+            clockTick = System.currentTimeMillis()
+            notificationReadiness = FocusNotifier.readiness(context)
+        }
+    }
+    val scheduleActive = remember(scheduleEnabled, startMin, endMin, clockTick) {
+        FocusPrefs.isStudyWindowCurrentlyActive(context)
+    }
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val exactAlarmsAvailable = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
 
     Column(
         modifier = Modifier
@@ -1025,6 +1224,7 @@ fun StudyOsTab(
                         if (!it && isLocked) return@Switch
                         scheduleEnabled = it
                         FocusPrefs.setScheduleEnabled(context, it)
+                        if (it) askForFocusAlerts()
                     }
                 )
             }
@@ -1038,6 +1238,10 @@ fun StudyOsTab(
                 onAdjust = { delta ->
                     FocusPrefs.adjustScheduleMinutes(context, isStart = true, deltaMinutes = delta)
                     startMin = FocusPrefs.getScheduleStartMinutes(context)
+                },
+                onTimeSelected = { minute ->
+                    FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = minute)
+                    startMin = FocusPrefs.getScheduleStartMinutes(context)
                 }
             )
 
@@ -1050,8 +1254,147 @@ fun StudyOsTab(
                 onAdjust = { delta ->
                     FocusPrefs.adjustScheduleMinutes(context, isStart = false, deltaMinutes = delta)
                     endMin = FocusPrefs.getScheduleEndMinutes(context)
+                },
+                onTimeSelected = { minute ->
+                    FocusPrefs.setScheduleTimeMinutes(context, isStart = false, minutes = minute)
+                    endMin = FocusPrefs.getScheduleEndMinutes(context)
                 }
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Text("Apps locked only during this window (${scheduledPackages.size} selected)", fontWeight = FontWeight.SemiBold)
+            Text(
+                "This list is separate from the Apps tab. Outside the window, schedule-only apps stay open.",
+                style = MaterialTheme.typography.bodySmall,
+                color = TextMuted
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            OutlinedTextField(
+                value = scheduleSearch,
+                onValueChange = { scheduleSearch = it },
+                label = { Text("Search installed apps") },
+                singleLine = true,
+                enabled = !isLocked,
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier.fillMaxWidth()
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 260.dp)
+            ) {
+                if (filteredScheduleApps.isEmpty()) {
+                    item(key = "empty-schedule-results") { EmptyAppResults(scheduleSearch) }
+                } else items(filteredScheduleApps, key = { it.packageName }) { app ->
+                    val selected = app.packageName in scheduledPackages
+                    val rowShape = RoundedCornerShape(12.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(rowShape)
+                            .background(
+                                if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.38f)
+                                else Color.Transparent
+                            )
+                            .border(
+                                1.dp,
+                                if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                else Color.Transparent,
+                                rowShape
+                            )
+                            .clickable(enabled = !isLocked) {
+                                val updated = scheduledPackages.toMutableSet().apply {
+                                    if (!add(app.packageName)) remove(app.packageName)
+                                }
+                                FocusPrefs.setScheduledPackages(context, updated)
+                                scheduledPackages = FocusPrefs.getScheduledPackages(context)
+                            }
+                            .defaultMinSize(minHeight = 60.dp)
+                            .padding(horizontal = 8.dp, vertical = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AppIconBadge(packageName = app.packageName, appLabel = app.label, size = 36.dp)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Checkbox(
+                            checked = selected,
+                            enabled = !isLocked,
+                            onCheckedChange = { checked ->
+                                val updated = scheduledPackages.toMutableSet().apply {
+                                    if (checked) add(app.packageName) else remove(app.packageName)
+                                }
+                                FocusPrefs.setScheduledPackages(context, updated)
+                                scheduledPackages = FocusPrefs.getScheduledPackages(context)
+                            }
+                        )
+                        Column(modifier = Modifier.weight(1f).padding(start = 4.dp)) {
+                            Text(
+                                app.label,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                if (selected) "Selected for this window" else "Not selected",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (selected) MaterialTheme.colorScheme.primary else TextMuted,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                if (scheduleActive) "Status: Window active — scheduled apps are locked."
+                else "Status: Window inactive — scheduled apps are usable unless another rule applies.",
+                color = if (scheduleActive) AccentAmber else TextMuted,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                "Start is included, end is excluded. Overnight windows are supported; matching start and end times mean all day.",
+                color = TextMuted,
+                style = MaterialTheme.typography.bodySmall
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            StatusLine("Precise schedule boundaries", exactAlarmsAvailable)
+            if (!exactAlarmsAvailable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                Text(
+                    "Alarms & reminders access lets FocusGuard deliver exact start/end transitions and alerts. Without it, an already-open app may update at its next foreground check and boundary alerts may be delayed.",
+                    color = TextMuted,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                TextButton(
+                    onClick = {
+                        context.startActivity(
+                            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                                .setData(Uri.parse("package:${context.packageName}"))
+                        )
+                    }
+                ) { Text("Allow precise schedule alerts") }
+            }
+            StatusLine("Daily Auto-Lock alerts", notificationReadiness.scheduleAlertsAvailable)
+            StatusLine("App-block alerts", notificationReadiness.appBlockAlertsAvailable)
+            StatusLine("Comic focus nudges", notificationReadiness.nudgeAlertsAvailable)
+            if (!notificationReadiness.permissionGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                TextButton(onClick = { showNotificationRationale = true }) { Text("Enable focus notifications") }
+            }
+            if (!notificationReadiness.appEnabled ||
+                !notificationReadiness.scheduleChannelEnabled ||
+                !notificationReadiness.blockChannelEnabled ||
+                !notificationReadiness.nudgeChannelEnabled
+            ) {
+                TextButton(
+                    onClick = {
+                        context.startActivity(
+                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                        )
+                    }
+                ) { Text("Open notification settings") }
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -1072,6 +1415,7 @@ fun StudyOsTab(
                     onCheckedChange = {
                         comicNudges = it
                         FocusPrefs.setComicNudgesEnabled(context, it)
+                        if (it) askForFocusAlerts()
                     }
                 )
             }
@@ -1084,6 +1428,27 @@ fun StudyOsTab(
                 Text("Preview Comic Notification", fontSize = 12.sp)
             }
         }
+
+        if (showNotificationRationale) {
+            AlertDialog(
+                onDismissRequest = { showNotificationRationale = false },
+                title = { Text("Allow focus notifications?") },
+                text = {
+                    Text("FocusGuard can notify you when the Daily Auto-Lock Window starts or ends and when an app is blocked. Alerts are optional; app blocking keeps working if you decline.")
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showNotificationRationale = false
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }) { Text("Continue") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showNotificationRationale = false }) { Text("Not now") }
+                }
+            )
+        }
     }
 }
 
@@ -1092,35 +1457,48 @@ fun TimeAdjustRow(
     label: String,
     minutesFromMidnight: Int,
     enabled: Boolean,
-    onAdjust: (Int) -> Unit
+    onAdjust: (Int) -> Unit,
+    onTimeSelected: (Int) -> Unit
 ) {
+    val context = LocalContext.current
     val hours = minutesFromMidnight / 60
     val mins = minutesFromMidnight % 60
     val formatted = String.format("%02d:%02d", hours, mins)
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "$label: $formatted",
-            fontWeight = FontWeight.Medium,
-            style = TextStyle(fontFeatureSettings = "tnum"),
-            modifier = Modifier.weight(1f)
-        )
-        OutlinedButton(
-            onClick = { onAdjust(-30) },
-            enabled = enabled,
-            shape = RoundedCornerShape(8.dp),
-            contentPadding = PaddingValues(horizontal = 10.dp)
-        ) { Text("-30m", fontSize = 12.sp) }
-        Spacer(modifier = Modifier.width(6.dp))
-        OutlinedButton(
-            onClick = { onAdjust(30) },
-            enabled = enabled,
-            shape = RoundedCornerShape(8.dp),
-            contentPadding = PaddingValues(horizontal = 10.dp)
-        ) { Text("+30m", fontSize = 12.sp) }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(label, fontWeight = FontWeight.Medium, fontSize = 13.sp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            OutlinedButton(
+                onClick = { onAdjust(-30) },
+                enabled = enabled,
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp)
+            ) { Text("-30m", fontSize = 12.sp) }
+            Button(
+                onClick = {
+                    TimePickerDialog(
+                        context,
+                        { _, hour, minute -> onTimeSelected(hour * 60 + minute) },
+                        hours,
+                        mins,
+                        DateFormat.is24HourFormat(context)
+                    ).show()
+                },
+                enabled = enabled,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(8.dp)
+            ) { Text(formatted, style = TextStyle(fontFeatureSettings = "tnum")) }
+            OutlinedButton(
+                onClick = { onAdjust(30) },
+                enabled = enabled,
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp)
+            ) { Text("+30m", fontSize = 12.sp) }
+        }
     }
 }
 
@@ -1161,7 +1539,12 @@ fun ShieldLockTab(
             Spacer(modifier = Modifier.height(8.dp))
             StatusLine("Accessibility & Settings Watchdog", isServiceEnabled)
             StatusLine("Local DNS & Mirror Firewall", vpnActive)
-            StatusLine("Device Admin (Blocks Uninstall)", isDeviceAdminEnabled)
+            StatusLine("Device Admin deactivation warning", isDeviceAdminEnabled)
+            Text(
+                "A regular Device Admin cannot guarantee uninstall prevention. While a focus lock is active, the Accessibility Service can dismiss a clearly identified FocusGuard uninstall confirmation; some OEM dialogs may not expose enough information.",
+                style = MaterialTheme.typography.bodySmall,
+                color = TextMuted
+            )
 
             if (!isDeviceAdminEnabled) {
                 Spacer(modifier = Modifier.height(10.dp))
@@ -1172,7 +1555,7 @@ fun ShieldLockTab(
                             putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComponent)
                             putExtra(
                                 DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                                "Prevents uninstalling FocusGuard during study and strict-lock periods."
+                                "Shows a warning before Device Admin is disabled. During an active focus lock, the enabled Accessibility Service may also dismiss a clearly identified FocusGuard uninstall confirmation."
                             )
                         }
                         context.startActivity(intent)
@@ -1180,7 +1563,7 @@ fun ShieldLockTab(
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Activate Device Admin Uninstall Lock")
+                    Text("Enable Device Admin Warning")
                 }
             }
         }

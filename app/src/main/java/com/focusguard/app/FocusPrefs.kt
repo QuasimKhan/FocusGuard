@@ -25,6 +25,9 @@ object FocusPrefs {
     private const val KEY_SCHEDULE_ENABLED = "schedule_enabled"
     private const val KEY_SCHEDULE_START_MIN = "schedule_start_min"
     private const val KEY_SCHEDULE_END_MIN = "schedule_end_min"
+    private const val KEY_SCHEDULED_PACKAGES = "scheduled_packages"
+    private const val KEY_LAST_SCHEDULE_BOUNDARY_TOKEN = "last_schedule_boundary_token"
+    private const val KEY_LAST_APP_BLOCK_NOTIFICATION_PREFIX = "last_app_block_notification_"
 
     // Pomodoro & Daily Stats Keys
     private const val KEY_POMO_END_ELAPSED_MS = "pomo_end_elapsed_ms"
@@ -48,6 +51,8 @@ object FocusPrefs {
 
     // In-memory 5-minute passes after completing the 15-second breathing pause
     private val temporaryPasses = ConcurrentHashMap<String, Long>()
+    private val boundaryTokenLock = Any()
+    private val notificationTokenLock = Any()
 
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -162,6 +167,7 @@ object FocusPrefs {
     fun setScheduleEnabled(context: Context, enabled: Boolean) {
         if (!enabled && isProtectionLocked(context)) return
         prefs(context).edit().putBoolean(KEY_SCHEDULE_ENABLED, enabled).apply()
+        ScheduleCoordinator.reschedule(context)
     }
 
     fun getScheduleStartMinutes(context: Context): Int =
@@ -170,13 +176,48 @@ object FocusPrefs {
     fun getScheduleEndMinutes(context: Context): Int =
         prefs(context).getInt(KEY_SCHEDULE_END_MIN, 22 * 60) // Default 22:00
 
+    fun setScheduleTimeMinutes(context: Context, isStart: Boolean, minutes: Int) {
+        if (isProtectionLocked(context)) return
+        val key = if (isStart) KEY_SCHEDULE_START_MIN else KEY_SCHEDULE_END_MIN
+        prefs(context).edit().putInt(key, minutes.coerceIn(0, 1439)).apply()
+        ScheduleCoordinator.reschedule(context)
+    }
+
+    /** Apps selected for the Daily Auto-Lock Window, independent of global app modes. */
+    fun getScheduledPackages(context: Context): Set<String> =
+        prefs(context).getStringSet(KEY_SCHEDULED_PACKAGES, emptySet())?.toSet() ?: emptySet()
+
+    fun setScheduledPackages(context: Context, packages: Set<String>) {
+        if (isProtectionLocked(context)) return
+        prefs(context).edit().putStringSet(KEY_SCHEDULED_PACKAGES, packages.toSet()).apply()
+        ScheduleCoordinator.reschedule(context)
+    }
+
     fun adjustScheduleMinutes(context: Context, isStart: Boolean, deltaMinutes: Int) {
         if (isProtectionLocked(context)) return
         val key = if (isStart) KEY_SCHEDULE_START_MIN else KEY_SCHEDULE_END_MIN
         val current = prefs(context).getInt(key, if (isStart) 360 else 1320)
         val updated = ((current + deltaMinutes) % 1440 + 1440) % 1440
         prefs(context).edit().putInt(key, updated).apply()
+        ScheduleCoordinator.reschedule(context)
     }
+
+    fun claimScheduleBoundary(context: Context, token: String): Boolean = synchronized(boundaryTokenLock) {
+        if (token.isBlank()) return@synchronized false
+        val p = prefs(context)
+        if (p.getString(KEY_LAST_SCHEDULE_BOUNDARY_TOKEN, null) == token) return@synchronized false
+        p.edit().putString(KEY_LAST_SCHEDULE_BOUNDARY_TOKEN, token).commit()
+    }
+
+    fun claimAppBlockNotification(context: Context, packageName: String, cooldownMs: Long = 5 * 60_000L): Boolean =
+        synchronized(notificationTokenLock) {
+            val key = KEY_LAST_APP_BLOCK_NOTIFICATION_PREFIX + packageName
+            val p = prefs(context)
+            val now = SystemClock.elapsedRealtime().coerceAtLeast(1L)
+            val previous = p.getLong(key, 0L)
+            if (previous > 0L && now >= previous && now - previous < cooldownMs) return@synchronized false
+            p.edit().putLong(key, now).commit()
+        }
 
     fun isStudyWindowCurrentlyActive(context: Context): Boolean {
         if (!isScheduleEnabled(context)) return false

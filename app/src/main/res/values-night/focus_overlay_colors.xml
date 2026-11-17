@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="focus_overlay_background">#0B1118</color>
+    <color name="focus_overlay_surface">#111B25</color>
+    <color name="focus_overlay_surface_variant">#192633</color>
+    <color name="focus_overlay_text">#E9EFF5</color>
+    <color name="focus_overlay_muted">#B3C0CC</color>
+    <color name="focus_overlay_accent">#62BCEB</color>
+    <color name="focus_overlay_on_accent">#082433</color>
+    <color name="focus_overlay_accent_container">#173F54</color>
+    <color name="focus_overlay_on_accent_container">#D8F2FF</color>
+    <color name="focus_overlay_outline">#2C3B49</color>
+    <color name="focus_overlay_timer">#FFC66D</color>
+</resources>
