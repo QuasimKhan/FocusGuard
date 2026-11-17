@@ -26,7 +26,7 @@ A zero-bloat, 100% on-device Android distraction blocker, short-form video filte
 ### Step 1: Download the APK
 
 1. On your Android phone, open the [**Latest Release Page**](https://github.com/quasimkhan/FocusGuard/releases/latest).
-2. Under **Assets**, tap the latest FocusGuard APK for your device architecture (the current build is `1.4.0`).
+2. Under **Assets**, tap the APK named `FocusGuard-<version-tag>-Quasim.apk`.
 3. Open the downloaded `.apk` file and tap **Install** (allow **Install unknown apps** for your browser or file manager if prompted).
 
 ### Step 2: Enable the Accessibility Engine (Android 13–16)
@@ -66,6 +66,26 @@ FocusGuard checks GitHub Releases automatically every 24 hours (or manually via 
 ## Building from Source
 
 Debug builds need no signing setup. Release builds require `RELEASE_STORE_FILE`, `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`, and `RELEASE_KEY_PASSWORD` supplied through user-level Gradle properties (for example, `~/.gradle/gradle.properties`) or CI environment variables. Keep these values and the keystore outside the repository; a release build reports a clear error when configuration is missing.
+
+## Automated Production Releases
+
+Pushing an annotated `vMAJOR.MINOR.PATCH` tag starts `.github/workflows/release.yml`. The workflow checks that the tag matches `versionName` and the version-code formula (`MAJOR × 10000 + MINOR × 100 + PATCH`), runs `testDebugUnitTest`, builds a signed release APK, and publishes generated release notes with the APK as the repository's latest GitHub Release. The uploaded asset is named `FocusGuard-v<version>-Quasim.apk`, which matches the in-app update checker. If a version tag was pushed before this workflow was available, use **Actions → Build & Publish Production APK → Run workflow** and enter that existing tag.
+
+Configure these repository **Actions secrets** before the first production release:
+
+- `KEYSTORE_BASE64`: the release keystore encoded as base64.
+- `RELEASE_STORE_PASSWORD`: the keystore password.
+- `RELEASE_KEY_ALIAS`: the signing key alias.
+- `RELEASE_KEY_PASSWORD`: the signing key password.
+
+For each release, update `versionCode` and `versionName` in `app/build.gradle.kts`, commit the change to `main`, then create and push an annotated tag for that same version. For example:
+
+```sh
+git tag -a v1.5.0 -m "FocusGuard 1.5.0"
+git push origin main v1.5.0
+```
+
+GitHub Actions then runs the tests and release build, attaches the updater-compatible APK, and marks the release as latest. Do not reuse an existing version tag; increment the version first.
 
 ---
 
