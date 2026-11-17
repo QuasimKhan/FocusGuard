@@ -829,12 +829,25 @@ fun AppsAndShortsTab(
             .sortedBy { it.label.lowercase() }
     }
 
-    val filteredApps = remember(searchQuery, installedApps) {
-        if (searchQuery.isBlank()) installedApps
-        else installedApps.filter {
-            it.label.contains(searchQuery, ignoreCase = true) ||
-                it.packageName.contains(searchQuery, ignoreCase = true)
+    val filteredApps = remember(searchQuery, installedApps, blockedSet, pausedSet) {
+        val matching = if (searchQuery.isBlank()) {
+            installedApps
+        } else {
+            installedApps.filter {
+                it.label.contains(searchQuery, ignoreCase = true) ||
+                    it.packageName.contains(searchQuery, ignoreCase = true)
+            }
         }
+
+        matching.sortedWith(
+            compareBy<AppEntry> { app ->
+                when {
+                    blockedSet.contains(app.packageName) -> 0 // Blocked apps at the very top
+                    pausedSet.contains(app.packageName) -> 1  // 15s Paused apps next
+                    else -> 2                                 // Open apps below
+                }
+            }.thenBy { it.label.lowercase() }
+        )
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -954,7 +967,6 @@ fun AppsAndShortsTab(
         }
     }
 }
-
 @Composable
 fun WebsitesAndDnsTab(
     vpnActive: Boolean,
@@ -1060,18 +1072,22 @@ fun StudyOsTab(
     var clockTick by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var notificationReadiness by remember { mutableStateOf(FocusNotifier.readiness(context)) }
     var showNotificationRationale by remember { mutableStateOf(false) }
+
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) {
         notificationReadiness = FocusNotifier.readiness(context)
     }
+
     val askForFocusAlerts = {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !notificationReadiness.permissionGranted) {
             showNotificationRationale = true
         }
     }
+
     var scheduledPackages by remember { mutableStateOf(FocusPrefs.getScheduledPackages(context)) }
     var scheduleSearch by remember { mutableStateOf("") }
+
     val scheduleApps = remember {
         val pm = context.packageManager
         val launchIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
@@ -1084,17 +1100,28 @@ fun StudyOsTab(
             .distinctBy { it.packageName }
             .sortedBy { it.label.lowercase() }
     }
-    val filteredScheduleApps = remember(scheduleApps, scheduleSearch) {
-        if (scheduleSearch.isBlank()) scheduleApps else scheduleApps.filter {
-            it.label.contains(scheduleSearch, ignoreCase = true) ||
-                it.packageName.contains(scheduleSearch, ignoreCase = true)
+
+    // Selected apps pinned at top alphabetically, followed by unselected apps alphabetically
+    val filteredScheduleApps = remember(scheduleApps, scheduleSearch, scheduledPackages) {
+        val matching = if (scheduleSearch.isBlank()) {
+            scheduleApps
+        } else {
+            scheduleApps.filter {
+                it.label.contains(scheduleSearch, ignoreCase = true) ||
+                    it.packageName.contains(scheduleSearch, ignoreCase = true)
+            }
         }
+        matching.sortedWith(
+            compareBy<AppEntry> { it.packageName !in scheduledPackages }
+                .thenBy { it.label.lowercase() }
+        )
     }
 
     var selectedPomoMins by remember { mutableIntStateOf(50) }
     var lockDuringPomo by remember { mutableStateOf(FocusPrefs.isPomodoroLockEnabled(context)) }
     val todayMins = FocusPrefs.getTodayFocusedMinutes(context)
     val todaySessions = FocusPrefs.getTodaySessions(context)
+
     LaunchedEffect(Unit) {
         while (true) {
             delay(15_000L)
@@ -1102,330 +1129,411 @@ fun StudyOsTab(
             notificationReadiness = FocusNotifier.readiness(context)
         }
     }
+
     val scheduleActive = remember(scheduleEnabled, startMin, endMin, clockTick) {
         FocusPrefs.isStudyWindowCurrentlyActive(context)
     }
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val exactAlarmsAvailable = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        SectionPanel {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Deep-Work Study Timer", fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                Text(
-                    text = "Today: ${todayMins}m ($todaySessions)",
-                    style = TextStyle(fontFeatureSettings = "tnum"),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AccentCyan
-                )
-            }
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val isCompact = maxWidth < 380.dp
+        val sectionGap = if (isCompact) 10.dp else 12.dp
+        val timerFontSize = if (isCompact) 28.sp else 34.sp
+        val iconSize = if (isCompact) 32.dp else 36.dp
+        val listMaxHeight = if (isCompact) 210.dp else 260.dp
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            if (pomoRemainingMs > 0L) {
-                Text(
-                    text = formatDuration(pomoRemainingMs),
-                    fontSize = 34.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    style = TextStyle(fontFeatureSettings = "tnum"),
-                    color = AccentCyan
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                if (!lockDuringPomo) {
-                    OutlinedButton(
-                        onClick = { FocusPrefs.stopPomodoro(context) },
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Stop Timer")
-                    }
-                } else {
-                    Text(
-                        "Distractions & Settings locked until session completes.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
-                    )
-                }
-            } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    listOf(25, 50, 90).forEach { mins ->
-                        val active = selectedPomoMins == mins
-                        if (active) {
-                            Button(
-                                onClick = { selectedPomoMins = mins },
-                                shape = RoundedCornerShape(10.dp),
-                                modifier = Modifier.weight(1f)
-                            ) { Text("${mins}m") }
-                        } else {
-                            OutlinedButton(
-                                onClick = { selectedPomoMins = mins },
-                                shape = RoundedCornerShape(10.dp),
-                                modifier = Modifier.weight(1f)
-                            ) { Text("${mins}m") }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "Lock distractions during session",
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
-                    )
-                    Switch(
-                        checked = lockDuringPomo,
-                        onCheckedChange = {
-                            lockDuringPomo = it
-                            FocusPrefs.setPomodoroLockEnabled(context, it)
-                        }
-                    )
-                }
-
-                Button(
-                    onClick = { FocusPrefs.startPomodoro(context, selectedPomoMins) },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Start ${selectedPomoMins}-Minute Study Block", fontWeight = FontWeight.Bold)
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        SectionPanel {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Daily Auto-Lock Window", fontWeight = FontWeight.Bold)
-                    Text(
-                        "Automatically enforces blocks & settings during study hours",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
-                    )
-                }
-                Switch(
-                    checked = scheduleEnabled,
-                    enabled = !isLocked || !scheduleEnabled,
-                    onCheckedChange = {
-                        if (!it && isLocked) return@Switch
-                        scheduleEnabled = it
-                        FocusPrefs.setScheduleEnabled(context, it)
-                        if (it) askForFocusAlerts()
-                    }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            TimeAdjustRow(
-                label = "Start Time",
-                minutesFromMidnight = startMin,
-                enabled = !isLocked,
-                onAdjust = { delta ->
-                    FocusPrefs.adjustScheduleMinutes(context, isStart = true, deltaMinutes = delta)
-                    startMin = FocusPrefs.getScheduleStartMinutes(context)
-                },
-                onTimeSelected = { minute ->
-                    FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = minute)
-                    startMin = FocusPrefs.getScheduleStartMinutes(context)
-                }
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            TimeAdjustRow(
-                label = "End Time",
-                minutesFromMidnight = endMin,
-                enabled = !isLocked,
-                onAdjust = { delta ->
-                    FocusPrefs.adjustScheduleMinutes(context, isStart = false, deltaMinutes = delta)
-                    endMin = FocusPrefs.getScheduleEndMinutes(context)
-                },
-                onTimeSelected = { minute ->
-                    FocusPrefs.setScheduleTimeMinutes(context, isStart = false, minutes = minute)
-                    endMin = FocusPrefs.getScheduleEndMinutes(context)
-                }
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-            Text("Apps locked only during this window (${scheduledPackages.size} selected)", fontWeight = FontWeight.SemiBold)
-            Text(
-                "This list is separate from the Apps tab. Outside the window, schedule-only apps stay open.",
-                style = MaterialTheme.typography.bodySmall,
-                color = TextMuted
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            OutlinedTextField(
-                value = scheduleSearch,
-                onValueChange = { scheduleSearch = it },
-                label = { Text("Search installed apps") },
-                singleLine = true,
-                enabled = !isLocked,
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.fillMaxWidth()
-            )
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 260.dp)
-            ) {
-                if (filteredScheduleApps.isEmpty()) {
-                    item(key = "empty-schedule-results") { EmptyAppResults(scheduleSearch) }
-                } else items(filteredScheduleApps, key = { it.packageName }) { app ->
-                    val selected = app.packageName in scheduledPackages
-                    val rowShape = RoundedCornerShape(12.dp)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(sectionGap),
+            contentPadding = PaddingValues(bottom = 16.dp)
+        ) {
+            // 1. Deep-Work Study Timer Card
+            item(key = "pomo-section") {
+                SectionPanel {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(rowShape)
-                            .background(
-                                if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.38f)
-                                else Color.Transparent
-                            )
-                            .border(
-                                1.dp,
-                                if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                                else Color.Transparent,
-                                rowShape
-                            )
-                            .clickable(enabled = !isLocked) {
-                                val updated = scheduledPackages.toMutableSet().apply {
-                                    if (!add(app.packageName)) remove(app.packageName)
-                                }
-                                FocusPrefs.setScheduledPackages(context, updated)
-                                scheduledPackages = FocusPrefs.getScheduledPackages(context)
-                            }
-                            .defaultMinSize(minHeight = 60.dp)
-                            .padding(horizontal = 8.dp, vertical = 5.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        AppIconBadge(packageName = app.packageName, appLabel = app.label, size = 36.dp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Checkbox(
-                            checked = selected,
-                            enabled = !isLocked,
-                            onCheckedChange = { checked ->
-                                val updated = scheduledPackages.toMutableSet().apply {
-                                    if (checked) add(app.packageName) else remove(app.packageName)
-                                }
-                                FocusPrefs.setScheduledPackages(context, updated)
-                                scheduledPackages = FocusPrefs.getScheduledPackages(context)
-                            }
+                        Text(
+                            text = "Deep-Work Study Timer",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f).padding(end = 8.dp)
                         )
-                        Column(modifier = Modifier.weight(1f).padding(start = 4.dp)) {
+                        Text(
+                            text = "Today: ${todayMins}m ($todaySessions)",
+                            style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
+                            fontWeight = FontWeight.SemiBold,
+                            color = AccentCyan,
+                            maxLines = 1
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    if (pomoRemainingMs > 0L) {
+                        Text(
+                            text = formatDuration(pomoRemainingMs),
+                            fontSize = timerFontSize,
+                            fontWeight = FontWeight.ExtraBold,
+                            style = TextStyle(fontFeatureSettings = "tnum"),
+                            color = AccentCyan
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (!lockDuringPomo) {
+                            OutlinedButton(
+                                onClick = { FocusPrefs.stopPomodoro(context) },
+                                shape = RoundedCornerShape(10.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Stop Timer")
+                            }
+                        } else {
                             Text(
-                                app.label,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Medium,
+                                text = "Distractions & Settings locked until session completes.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextMuted
+                            )
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(if (isCompact) 6.dp else 8.dp)
+                        ) {
+                            listOf(25, 50, 90).forEach { mins ->
+                                val active = selectedPomoMins == mins
+                                if (active) {
+                                    Button(
+                                        onClick = { selectedPomoMins = mins },
+                                        shape = RoundedCornerShape(10.dp),
+                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text("${mins}m", maxLines = 1)
+                                    }
+                                } else {
+                                    OutlinedButton(
+                                        onClick = { selectedPomoMins = mins },
+                                        shape = RoundedCornerShape(10.dp),
+                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text("${mins}m", maxLines = 1)
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Lock distractions during session",
+                                modifier = Modifier.weight(1f).padding(end = 8.dp),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextMuted
+                            )
+                            Switch(
+                                checked = lockDuringPomo,
+                                onCheckedChange = {
+                                    lockDuringPomo = it
+                                    FocusPrefs.setPomodoroLockEnabled(context, it)
+                                }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Button(
+                            onClick = { FocusPrefs.startPomodoro(context, selectedPomoMins) },
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Start ${selectedPomoMins}-Minute Study Block",
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
-                            Text(
-                                if (selected) "Selected for this window" else "Not selected",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = if (selected) MaterialTheme.colorScheme.primary else TextMuted,
-                                maxLines = 1
-                            )
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                if (scheduleActive) "Status: Window active — scheduled apps are locked."
-                else "Status: Window inactive — scheduled apps are usable unless another rule applies.",
-                color = if (scheduleActive) AccentAmber else TextMuted,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Text(
-                "Start is included, end is excluded. Overnight windows are supported; matching start and end times mean all day.",
-                color = TextMuted,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            StatusLine("Precise schedule boundaries", exactAlarmsAvailable)
-            if (!exactAlarmsAvailable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Text(
-                    "Alarms & reminders access lets FocusGuard deliver exact start/end transitions and alerts. Without it, an already-open app may update at its next foreground check and boundary alerts may be delayed.",
-                    color = TextMuted,
-                    style = MaterialTheme.typography.bodySmall
-                )
-                TextButton(
-                    onClick = {
-                        context.startActivity(
-                            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                                .setData(Uri.parse("package:${context.packageName}"))
+            // 2. Daily Auto-Lock Window & App Selector
+            item(key = "schedule-section") {
+                SectionPanel {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                            Text(
+                                text = "Daily Auto-Lock Window",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Automatically enforces blocks & settings during study hours",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextMuted
+                            )
+                        }
+                        Switch(
+                            checked = scheduleEnabled,
+                            enabled = !isLocked || !scheduleEnabled,
+                            onCheckedChange = {
+                                if (!it && isLocked) return@Switch
+                                scheduleEnabled = it
+                                FocusPrefs.setScheduleEnabled(context, it)
+                                if (it) askForFocusAlerts()
+                            }
                         )
                     }
-                ) { Text("Allow precise schedule alerts") }
-            }
-            StatusLine("Daily Auto-Lock alerts", notificationReadiness.scheduleAlertsAvailable)
-            StatusLine("App-block alerts", notificationReadiness.appBlockAlertsAvailable)
-            StatusLine("Comic focus nudges", notificationReadiness.nudgeAlertsAvailable)
-            if (!notificationReadiness.permissionGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                TextButton(onClick = { showNotificationRationale = true }) { Text("Enable focus notifications") }
-            }
-            if (!notificationReadiness.appEnabled ||
-                !notificationReadiness.scheduleChannelEnabled ||
-                !notificationReadiness.blockChannelEnabled ||
-                !notificationReadiness.nudgeChannelEnabled
-            ) {
-                TextButton(
-                    onClick = {
-                        context.startActivity(
-                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                        )
-                    }
-                ) { Text("Open notification settings") }
-            }
-        }
 
-        Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-        var comicNudges by remember { mutableStateOf(FocusPrefs.isComicNudgesEnabled(context)) }
-        SectionPanel {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Comic Focus Nudges", fontWeight = FontWeight.Bold)
+                    TimeAdjustRow(
+                        label = "Start Time",
+                        minutesFromMidnight = startMin,
+                        enabled = !isLocked,
+                        onAdjust = { delta ->
+                            FocusPrefs.adjustScheduleMinutes(context, isStart = true, deltaMinutes = delta)
+                            startMin = FocusPrefs.getScheduleStartMinutes(context)
+                        },
+                        onTimeSelected = { minute ->
+                            FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = minute)
+                            startMin = FocusPrefs.getScheduleStartMinutes(context)
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    TimeAdjustRow(
+                        label = "End Time",
+                        minutesFromMidnight = endMin,
+                        enabled = !isLocked,
+                        onAdjust = { delta ->
+                            FocusPrefs.adjustScheduleMinutes(context, isStart = false, deltaMinutes = delta)
+                            endMin = FocusPrefs.getScheduleEndMinutes(context)
+                        },
+                        onTimeSelected = { minute ->
+                            FocusPrefs.setScheduleTimeMinutes(context, isStart = false, minutes = minute)
+                            endMin = FocusPrefs.getScheduleEndMinutes(context)
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     Text(
-                        "Sends witty reminders if you linger 12–20m on distracting apps",
+                        text = "Apps locked only during this window (${scheduledPackages.size} selected)",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Selected apps appear at the top. Outside this window, schedule-only apps stay open.",
                         style = MaterialTheme.typography.bodySmall,
                         color = TextMuted
                     )
-                }
-                Switch(
-                    checked = comicNudges,
-                    onCheckedChange = {
-                        comicNudges = it
-                        FocusPrefs.setComicNudgesEnabled(context, it)
-                        if (it) askForFocusAlerts()
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = scheduleSearch,
+                        onValueChange = { scheduleSearch = it },
+                        label = { Text("Search installed apps") },
+                        singleLine = true,
+                        enabled = !isLocked,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Bounded scrollable container with selected apps sorted first
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = listMaxHeight)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        if (filteredScheduleApps.isEmpty()) {
+                            EmptyAppResults(scheduleSearch)
+                        } else {
+                            filteredScheduleApps.forEach { app ->
+                                val selected = app.packageName in scheduledPackages
+                                val rowShape = RoundedCornerShape(10.dp)
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(rowShape)
+                                        .background(
+                                            if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.38f)
+                                            else Color.Transparent
+                                        )
+                                        .border(
+                                            1.dp,
+                                            if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                                            else HairlineBorder.copy(alpha = 0.45f),
+                                            rowShape
+                                        )
+                                        .clickable(enabled = !isLocked) {
+                                            val updated = scheduledPackages.toMutableSet().apply {
+                                                if (!add(app.packageName)) remove(app.packageName)
+                                            }
+                                            FocusPrefs.setScheduledPackages(context, updated)
+                                            scheduledPackages = FocusPrefs.getScheduledPackages(context)
+                                        }
+                                        .defaultMinSize(minHeight = if (isCompact) 52.dp else 56.dp)
+                                        .padding(horizontal = if (isCompact) 6.dp else 8.dp, vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    AppIconBadge(
+                                        packageName = app.packageName,
+                                        appLabel = app.label,
+                                        size = iconSize
+                                    )
+                                    Spacer(modifier = Modifier.width(if (isCompact) 6.dp else 8.dp))
+                                    Checkbox(
+                                        checked = selected,
+                                        enabled = !isLocked,
+                                        onCheckedChange = { checked ->
+                                            val updated = scheduledPackages.toMutableSet().apply {
+                                                if (checked) add(app.packageName) else remove(app.packageName)
+                                            }
+                                            FocusPrefs.setScheduledPackages(context, updated)
+                                            scheduledPackages = FocusPrefs.getScheduledPackages(context)
+                                        }
+                                    )
+                                    Column(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(start = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = app.label,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Medium,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = if (selected) "Selected · Top priority" else "Not selected",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = if (selected) MaterialTheme.colorScheme.primary else TextMuted,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
-                )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Text(
+                        text = if (scheduleActive) "Status: Window active — scheduled apps are locked."
+                        else "Status: Window inactive — scheduled apps are usable unless another rule applies.",
+                        color = if (scheduleActive) AccentAmber else TextMuted,
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = "Start is included, end is excluded. Overnight windows are supported; matching start and end times mean all day.",
+                        color = TextMuted,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    StatusLine("Precise schedule boundaries", exactAlarmsAvailable)
+                    if (!exactAlarmsAvailable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        Text(
+                            text = "Alarms & reminders access lets FocusGuard deliver exact start/end transitions and alerts.",
+                            color = TextMuted,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        TextButton(
+                            onClick = {
+                                context.startActivity(
+                                    Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                                        .setData(Uri.parse("package:${context.packageName}"))
+                                )
+                            }
+                        ) { Text("Allow precise schedule alerts") }
+                    }
+                    StatusLine("Daily Auto-Lock alerts", notificationReadiness.scheduleAlertsAvailable)
+                    StatusLine("App-block alerts", notificationReadiness.appBlockAlertsAvailable)
+                    StatusLine("Comic focus nudges", notificationReadiness.nudgeAlertsAvailable)
+
+                    if (!notificationReadiness.permissionGranted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        TextButton(onClick = { showNotificationRationale = true }) {
+                            Text("Enable focus notifications")
+                        }
+                    }
+                    if (!notificationReadiness.appEnabled ||
+                        !notificationReadiness.scheduleChannelEnabled ||
+                        !notificationReadiness.blockChannelEnabled ||
+                        !notificationReadiness.nudgeChannelEnabled
+                    ) {
+                        TextButton(
+                            onClick = {
+                                context.startActivity(
+                                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                        .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                                )
+                            }
+                        ) { Text("Open notification settings") }
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedButton(
-                onClick = { FocusNotifier.sendComicSessionNudge(context, 15) },
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Preview Comic Notification", fontSize = 12.sp)
+
+            // 3. Comic Focus Nudges Card
+            item(key = "comic-nudges-section") {
+                var comicNudges by remember { mutableStateOf(FocusPrefs.isComicNudgesEnabled(context)) }
+                SectionPanel {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                            Text(
+                                text = "Comic Focus Nudges",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Sends witty reminders if you linger 12–20m on distracting apps",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = TextMuted
+                            )
+                        }
+                        Switch(
+                            checked = comicNudges,
+                            onCheckedChange = {
+                                comicNudges = it
+                                FocusPrefs.setComicNudgesEnabled(context, it)
+                                if (it) askForFocusAlerts()
+                            }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = { FocusNotifier.sendComicSessionNudge(context, 15) },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Preview Comic Notification", style = MaterialTheme.typography.labelLarge)
+                    }
+                }
             }
         }
 
@@ -1450,7 +1558,6 @@ fun StudyOsTab(
             )
         }
     }
-}
 
 @Composable
 fun TimeAdjustRow(
