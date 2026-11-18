@@ -98,5 +98,6 @@ GitHub Actions then runs the tests and release build, attaches the updater-compa
 - **License:** Released under the [MIT License](LICENSE) by **Quasim.™**
 
 ## Download & Auto-Updates
-- **Direct APK:** Download the latest signed APK from [GitHub Releases](https://github.com/quasimkhan/FocusGuard/releases/latest).
-- **Obtainium (Auto-Updates):** [Add FocusGuard to Obtainium](obtainium://add/https://github.com/quasimkhan/FocusGuard)
+
+- **Direct APK Download:** Get the latest signed release from [GitHub Releases](https://github.com/quasimkhan/FocusGuard/releases/latest).
+- **Auto-Updates via Obtainium:** [Add FocusGuard to Obtainium](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard) *(Automatically tracks new GitHub releases and updates in place).*
