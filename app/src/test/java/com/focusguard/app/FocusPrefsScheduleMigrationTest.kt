@@ -53,34 +53,41 @@ class FocusPrefsScheduleMigrationTest {
         assertEquals(FocusPrefs.APP_MODE_PAUSE, FocusPrefs.getAppMode(context, packageName))
     }
 
-    @Test fun activeScheduleAllowsMembershipEditsButKeepsTimesAndEnablementLocked() {
-        val packageName = "com.example.target"
-        FocusPrefs.setAppMode(context, packageName, FocusPrefs.APP_MODE_BLOCKED)
+    @Test fun activeScheduleAllowsAddingAppsButPreventsRemovalAndKeepsTimesLocked() {
+        val firstPkg = "com.example.target"
+        val secondPkg = "com.example.extra"
+        FocusPrefs.setAppMode(context, firstPkg, FocusPrefs.APP_MODE_BLOCKED)
         FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = 0)
         FocusPrefs.setScheduleTimeMinutes(context, isStart = false, minutes = 0)
         FocusPrefs.setScheduleEnabled(context, true)
 
-        FocusPrefs.setScheduledPackages(context, setOf(packageName))
-        assertEquals(setOf(packageName), FocusPrefs.getScheduledPackages(context))
-        assertEquals(FocusPrefs.APP_MODE_BLOCKED, FocusPrefs.getAppMode(context, packageName))
+        // Adding apps while Daily Auto-Lock is enabled succeeds
+        FocusPrefs.setScheduledPackages(context, setOf(firstPkg))
+        assertEquals(setOf(firstPkg), FocusPrefs.getScheduledPackages(context))
+        assertEquals(FocusPrefs.APP_MODE_BLOCKED, FocusPrefs.getAppMode(context, firstPkg))
 
-        FocusPrefs.setScheduledPackages(context, emptySet())
+        // Attempting to remove firstPkg while adding secondPkg preserves firstPkg and adds secondPkg
+        FocusPrefs.setScheduledPackages(context, setOf(secondPkg))
         FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = 18 * 60 + 37)
         FocusPrefs.setScheduleEnabled(context, false)
 
-        assertTrue(FocusPrefs.getScheduledPackages(context).isEmpty())
+        assertEquals(setOf(firstPkg, secondPkg), FocusPrefs.getScheduledPackages(context))
         assertTrue(FocusPrefs.isScheduleEnabled(context))
         assertEquals(0, FocusPrefs.getScheduleStartMinutes(context))
         assertEquals(0, FocusPrefs.getScheduleEndMinutes(context))
-        assertEquals(FocusPrefs.APP_MODE_BLOCKED, FocusPrefs.getAppMode(context, packageName))
+        assertEquals(FocusPrefs.APP_MODE_BLOCKED, FocusPrefs.getAppMode(context, firstPkg))
     }
 
-    @Test fun strictLockAloneDoesNotAllowScheduleMembershipEdits() {
+    @Test fun strictLockAllowsAddingScheduleAppsButPreventsRemovingExistingOnes() {
+        val existingPkg = "com.example.existing"
+        val addedPkg = "com.example.target"
+        FocusPrefs.setScheduledPackages(context, setOf(existingPkg))
         FocusPrefs.engageStrictLock(context, cooldownMinutes = 60)
 
-        FocusPrefs.setScheduledPackages(context, setOf("com.example.target"))
+        // Adding a new app succeeds under Strict Lock, while existingPkg cannot be removed
+        FocusPrefs.setScheduledPackages(context, setOf(addedPkg))
 
-        assertTrue(FocusPrefs.getScheduledPackages(context).isEmpty())
+        assertEquals(setOf(existingPkg, addedPkg), FocusPrefs.getScheduledPackages(context))
     }
 
     @Test fun scheduleTimeCanBeSavedAtMinuteResolution() {
