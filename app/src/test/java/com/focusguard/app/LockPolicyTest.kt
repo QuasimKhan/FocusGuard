@@ -16,6 +16,7 @@ class LockPolicyTest {
         protectionLocked: Boolean = false,
         mode: Int = FocusPrefs.APP_MODE_OPEN,
         scheduleEnabled: Boolean = true,
+        scheduledPackages: Set<String> = scheduled,
         start: Int = 18 * 60 + 37,
         end: Int = 21 * 60 + 12,
         pass: Boolean = false,
@@ -27,7 +28,7 @@ class LockPolicyTest {
         protectionLocked = protectionLocked,
         globalMode = mode,
         scheduleEnabled = scheduleEnabled,
-        scheduledPackages = scheduled,
+        scheduledPackages = scheduledPackages,
         scheduleStartMinute = start,
         scheduleEndMinute = end,
         temporaryPassActive = pass,
@@ -47,6 +48,20 @@ class LockPolicyTest {
         assertEquals(LockReason.GLOBAL_BLOCK, result.reason)
     }
 
+    @Test fun removingScheduleMembershipLeavesGlobalPauseOrBlockInEffect() {
+        val pause = LockPolicy.evaluate(
+            input(mode = FocusPrefs.APP_MODE_PAUSE, scheduledPackages = emptySet())
+        )
+        val block = LockPolicy.evaluate(
+            input(mode = FocusPrefs.APP_MODE_BLOCKED, scheduledPackages = emptySet())
+        )
+
+        assertEquals(LockAction.PAUSE, pause.action)
+        assertEquals(LockReason.MINDFUL_PAUSE, pause.reason)
+        assertEquals(LockAction.BLOCK, block.action)
+        assertEquals(LockReason.GLOBAL_BLOCK, block.reason)
+    }
+
     @Test fun activeScheduleBlocksAtInclusiveStartAndReportsEnd() {
         val result = LockPolicy.evaluate(input())
         assertEquals(LockAction.BLOCK, result.action)
@@ -55,7 +70,19 @@ class LockPolicyTest {
     }
 
     @Test fun scheduleEndIsExclusive() {
-        assertEquals(LockAction.ALLOW, LockPolicy.evaluate(input(now = "2026-11-17T21:12:00")).action)
+        val expiredSchedule = LockPolicy.evaluate(input(now = "2026-11-17T21:12:00"))
+        assertEquals(LockAction.ALLOW, expiredSchedule.action)
+        assertEquals(
+            false,
+            InterventionOverlayRules.shouldRestoreIntervention(packageName, packageName, expiredSchedule)
+        )
+        val independentGlobalRule = LockPolicy.evaluate(
+            input(now = "2026-11-17T21:12:00", mode = FocusPrefs.APP_MODE_BLOCKED)
+        )
+        assertEquals(
+            true,
+            InterventionOverlayRules.shouldRestoreIntervention(packageName, packageName, independentGlobalRule)
+        )
     }
 
     @Test fun overnightScheduleReturnsNextLocalEnd() {

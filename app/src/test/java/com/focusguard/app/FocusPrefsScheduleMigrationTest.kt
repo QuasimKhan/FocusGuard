@@ -53,6 +53,36 @@ class FocusPrefsScheduleMigrationTest {
         assertEquals(FocusPrefs.APP_MODE_PAUSE, FocusPrefs.getAppMode(context, packageName))
     }
 
+    @Test fun activeScheduleAllowsMembershipEditsButKeepsTimesAndEnablementLocked() {
+        val packageName = "com.example.target"
+        FocusPrefs.setAppMode(context, packageName, FocusPrefs.APP_MODE_BLOCKED)
+        FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = 0)
+        FocusPrefs.setScheduleTimeMinutes(context, isStart = false, minutes = 0)
+        FocusPrefs.setScheduleEnabled(context, true)
+
+        FocusPrefs.setScheduledPackages(context, setOf(packageName))
+        assertEquals(setOf(packageName), FocusPrefs.getScheduledPackages(context))
+        assertEquals(FocusPrefs.APP_MODE_BLOCKED, FocusPrefs.getAppMode(context, packageName))
+
+        FocusPrefs.setScheduledPackages(context, emptySet())
+        FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = 18 * 60 + 37)
+        FocusPrefs.setScheduleEnabled(context, false)
+
+        assertTrue(FocusPrefs.getScheduledPackages(context).isEmpty())
+        assertTrue(FocusPrefs.isScheduleEnabled(context))
+        assertEquals(0, FocusPrefs.getScheduleStartMinutes(context))
+        assertEquals(0, FocusPrefs.getScheduleEndMinutes(context))
+        assertEquals(FocusPrefs.APP_MODE_BLOCKED, FocusPrefs.getAppMode(context, packageName))
+    }
+
+    @Test fun strictLockAloneDoesNotAllowScheduleMembershipEdits() {
+        FocusPrefs.engageStrictLock(context, cooldownMinutes = 60)
+
+        FocusPrefs.setScheduledPackages(context, setOf("com.example.target"))
+
+        assertTrue(FocusPrefs.getScheduledPackages(context).isEmpty())
+    }
+
     @Test fun scheduleTimeCanBeSavedAtMinuteResolution() {
         FocusPrefs.setScheduleTimeMinutes(context, isStart = true, minutes = 18 * 60 + 37)
         assertEquals(18 * 60 + 37, FocusPrefs.getScheduleStartMinutes(context))

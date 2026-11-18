@@ -55,10 +55,10 @@ object FocusPrefs {
     private val notificationTokenLock = Any()
 
     private fun prefs(context: Context) =
-        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     fun isMasterActive(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_MASTER_ACTIVE, true)
+            prefs(context).getBoolean(KEY_MASTER_ACTIVE, true)
 
     fun setMasterActive(context: Context, active: Boolean) {
         if (!active && isProtectionLocked(context)) return
@@ -66,18 +66,17 @@ object FocusPrefs {
     }
 
     fun isEnforcementActive(context: Context): Boolean =
-        isMasterActive(context) || isProtectionLocked(context)
+            isMasterActive(context) || isProtectionLocked(context)
 
     fun isShortsBlocked(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_BLOCK_SHORTS, true)
+            prefs(context).getBoolean(KEY_BLOCK_SHORTS, true)
 
     fun setShortsBlocked(context: Context, blocked: Boolean) {
         if (!blocked && isProtectionLocked(context)) return
         prefs(context).edit().putBoolean(KEY_BLOCK_SHORTS, blocked).apply()
     }
 
-    fun isVpnEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_VPN_ENABLED, false)
+    fun isVpnEnabled(context: Context): Boolean = prefs(context).getBoolean(KEY_VPN_ENABLED, false)
 
     fun setVpnEnabled(context: Context, enabled: Boolean) {
         if (!enabled && isProtectionLocked(context)) return
@@ -87,10 +86,10 @@ object FocusPrefs {
     // --- 3-Mode App Control (Open = 0, 15s Pause = 1, Blocked = 2) ---
 
     fun getBlockedPackages(context: Context): Set<String> =
-        prefs(context).getStringSet(KEY_BLOCKED_PACKAGES, emptySet()) ?: emptySet()
+            prefs(context).getStringSet(KEY_BLOCKED_PACKAGES, emptySet()) ?: emptySet()
 
     fun getPausedPackages(context: Context): Set<String> =
-        prefs(context).getStringSet(KEY_PAUSED_PACKAGES, emptySet()) ?: emptySet()
+            prefs(context).getStringSet(KEY_PAUSED_PACKAGES, emptySet()) ?: emptySet()
 
     fun getAppMode(context: Context, packageName: String): Int {
         return when {
@@ -102,8 +101,11 @@ object FocusPrefs {
 
     fun setAppMode(context: Context, packageName: String, targetMode: Int) {
         val currentMode = getAppMode(context, packageName)
-        // While locked, allow tightening restrictions (Open -> Pause -> Blocked) but forbid loosening
-        if (isProtectionLocked(context) && targetMode < currentMode) return
+        // Daily Auto-Lock is an independent policy layer. It can continue blocking a selected
+        // app during its active window without preventing edits to that app's global mode.
+        if ((isStrictLockActive(context) || isPomodoroLockCurrentlyActive(context)) &&
+            targetMode < currentMode
+        ) return
 
         val blocked = getBlockedPackages(context).toMutableSet()
         val paused = getPausedPackages(context).toMutableSet()
@@ -115,10 +117,11 @@ object FocusPrefs {
             APP_MODE_BLOCKED -> blocked.add(packageName)
         }
 
-        prefs(context).edit()
-            .putStringSet(KEY_BLOCKED_PACKAGES, blocked)
-            .putStringSet(KEY_PAUSED_PACKAGES, paused)
-            .apply()
+        prefs(context)
+                .edit()
+                .putStringSet(KEY_BLOCKED_PACKAGES, blocked)
+                .putStringSet(KEY_PAUSED_PACKAGES, paused)
+                .apply()
     }
 
     fun grantTemporaryPass(packageName: String, durationMs: Long = 5 * 60_000L) {
@@ -135,16 +138,18 @@ object FocusPrefs {
     // --- Custom Domain Rules ---
 
     fun getCustomBlockedDomains(context: Context): Set<String> =
-        prefs(context).getStringSet(KEY_BLOCKED_DOMAINS, emptySet()) ?: emptySet()
+            prefs(context).getStringSet(KEY_BLOCKED_DOMAINS, emptySet()) ?: emptySet()
 
     fun addBlockedDomain(context: Context, rawDomain: String) {
-        val clean = rawDomain.trim()
-            .lowercase()
-            .removePrefix("https://")
-            .removePrefix("http://")
-            .removePrefix("www.")
-            .substringBefore("/")
-            .trimEnd('.')
+        val clean =
+                rawDomain
+                        .trim()
+                        .lowercase()
+                        .removePrefix("https://")
+                        .removePrefix("http://")
+                        .removePrefix("www.")
+                        .substringBefore("/")
+                        .trimEnd('.')
         if (clean.isBlank() || (!clean.contains(".") && !clean.contains("*"))) return
 
         val current = getCustomBlockedDomains(context).toMutableSet()
@@ -162,7 +167,7 @@ object FocusPrefs {
     // --- Daily Study Window ---
 
     fun isScheduleEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_SCHEDULE_ENABLED, false)
+            prefs(context).getBoolean(KEY_SCHEDULE_ENABLED, false)
 
     fun setScheduleEnabled(context: Context, enabled: Boolean) {
         if (!enabled && isProtectionLocked(context)) return
@@ -171,10 +176,10 @@ object FocusPrefs {
     }
 
     fun getScheduleStartMinutes(context: Context): Int =
-        prefs(context).getInt(KEY_SCHEDULE_START_MIN, 6 * 60) // Default 06:00
+            prefs(context).getInt(KEY_SCHEDULE_START_MIN, 6 * 60) // Default 06:00
 
     fun getScheduleEndMinutes(context: Context): Int =
-        prefs(context).getInt(KEY_SCHEDULE_END_MIN, 22 * 60) // Default 22:00
+            prefs(context).getInt(KEY_SCHEDULE_END_MIN, 22 * 60) // Default 22:00
 
     fun setScheduleTimeMinutes(context: Context, isStart: Boolean, minutes: Int) {
         if (isProtectionLocked(context)) return
@@ -185,11 +190,22 @@ object FocusPrefs {
 
     /** Apps selected for the Daily Auto-Lock Window, independent of global app modes. */
     fun getScheduledPackages(context: Context): Set<String> =
-        prefs(context).getStringSet(KEY_SCHEDULED_PACKAGES, emptySet())?.toSet() ?: emptySet()
+            prefs(context).getStringSet(KEY_SCHEDULED_PACKAGES, emptySet())?.toSet() ?: emptySet()
 
     fun setScheduledPackages(context: Context, packages: Set<String>) {
-        if (isProtectionLocked(context)) return
-        prefs(context).edit().putStringSet(KEY_SCHEDULED_PACKAGES, packages.toSet()).apply()
+        val current = getScheduledPackages(context)
+        val finalPackages =
+                if (isStudyWindowCurrentlyActive(context) ||
+                    isStrictLockActive(context) ||
+                    isPomodoroLockCurrentlyActive(context)
+                ) {
+                    // Keep selected apps in place while the schedule or another protection lock
+                    // is active.
+                    current + packages
+                } else {
+                    packages.toSet()
+                }
+        prefs(context).edit().putStringSet(KEY_SCHEDULED_PACKAGES, finalPackages).apply()
         ScheduleCoordinator.reschedule(context)
     }
 
@@ -202,22 +218,29 @@ object FocusPrefs {
         ScheduleCoordinator.reschedule(context)
     }
 
-    fun claimScheduleBoundary(context: Context, token: String): Boolean = synchronized(boundaryTokenLock) {
-        if (token.isBlank()) return@synchronized false
-        val p = prefs(context)
-        if (p.getString(KEY_LAST_SCHEDULE_BOUNDARY_TOKEN, null) == token) return@synchronized false
-        p.edit().putString(KEY_LAST_SCHEDULE_BOUNDARY_TOKEN, token).commit()
-    }
+    fun claimScheduleBoundary(context: Context, token: String): Boolean =
+            synchronized(boundaryTokenLock) {
+                if (token.isBlank()) return@synchronized false
+                val p = prefs(context)
+                if (p.getString(KEY_LAST_SCHEDULE_BOUNDARY_TOKEN, null) == token)
+                        return@synchronized false
+                p.edit().putString(KEY_LAST_SCHEDULE_BOUNDARY_TOKEN, token).commit()
+            }
 
-    fun claimAppBlockNotification(context: Context, packageName: String, cooldownMs: Long = 5 * 60_000L): Boolean =
-        synchronized(notificationTokenLock) {
-            val key = KEY_LAST_APP_BLOCK_NOTIFICATION_PREFIX + packageName
-            val p = prefs(context)
-            val now = SystemClock.elapsedRealtime().coerceAtLeast(1L)
-            val previous = p.getLong(key, 0L)
-            if (previous > 0L && now >= previous && now - previous < cooldownMs) return@synchronized false
-            p.edit().putLong(key, now).commit()
-        }
+    fun claimAppBlockNotification(
+            context: Context,
+            packageName: String,
+            cooldownMs: Long = 5 * 60_000L
+    ): Boolean =
+            synchronized(notificationTokenLock) {
+                val key = KEY_LAST_APP_BLOCK_NOTIFICATION_PREFIX + packageName
+                val p = prefs(context)
+                val now = SystemClock.elapsedRealtime().coerceAtLeast(1L)
+                val previous = p.getLong(key, 0L)
+                if (previous > 0L && now >= previous && now - previous < cooldownMs)
+                        return@synchronized false
+                p.edit().putLong(key, now).commit()
+            }
 
     fun isStudyWindowCurrentlyActive(context: Context): Boolean {
         if (!isScheduleEnabled(context)) return false
@@ -236,7 +259,7 @@ object FocusPrefs {
     // --- Pomodoro Deep-Work Timer ---
 
     fun isPomodoroLockEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_POMO_LOCK_ENABLED, true)
+            prefs(context).getBoolean(KEY_POMO_LOCK_ENABLED, true)
 
     fun setPomodoroLockEnabled(context: Context, enabled: Boolean) {
         if (!enabled && isPomodoroLockCurrentlyActive(context)) return
@@ -245,11 +268,12 @@ object FocusPrefs {
 
     fun startPomodoro(context: Context, minutes: Int) {
         val endElapsed = SystemClock.elapsedRealtime() + minutes * 60_000L
-        prefs(context).edit()
-            .putLong(KEY_POMO_END_ELAPSED_MS, endElapsed)
-            .putInt(KEY_POMO_PLANNED_MINS, minutes)
-            .putBoolean(KEY_MASTER_ACTIVE, true)
-            .apply()
+        prefs(context)
+                .edit()
+                .putLong(KEY_POMO_END_ELAPSED_MS, endElapsed)
+                .putInt(KEY_POMO_PLANNED_MINS, minutes)
+                .putBoolean(KEY_MASTER_ACTIVE, true)
+                .apply()
     }
 
     fun stopPomodoro(context: Context) {
@@ -273,11 +297,10 @@ object FocusPrefs {
         return remaining
     }
 
-    fun isPomodoroRunning(context: Context): Boolean =
-        getPomodoroRemainingMs(context) > 0L
+    fun isPomodoroRunning(context: Context): Boolean = getPomodoroRemainingMs(context) > 0L
 
     fun isPomodoroLockCurrentlyActive(context: Context): Boolean =
-        isPomodoroLockEnabled(context) && isPomodoroRunning(context)
+            isPomodoroLockEnabled(context) && isPomodoroRunning(context)
 
     private fun recordCompletedSession(context: Context, minutes: Int) {
         val p = prefs(context)
@@ -287,10 +310,10 @@ object FocusPrefs {
         val prevSessions = if (savedDate == today) p.getInt(KEY_TODAY_SESSIONS, 0) else 0
 
         p.edit()
-            .putString(KEY_STATS_DATE, today)
-            .putInt(KEY_TODAY_FOCUSED_MINS, prevMins + minutes)
-            .putInt(KEY_TODAY_SESSIONS, prevSessions + 1)
-            .apply()
+                .putString(KEY_STATS_DATE, today)
+                .putInt(KEY_TODAY_FOCUSED_MINS, prevMins + minutes)
+                .putInt(KEY_TODAY_SESSIONS, prevSessions + 1)
+                .apply()
     }
 
     fun getTodayFocusedMinutes(context: Context): Int {
@@ -313,13 +336,14 @@ object FocusPrefs {
 
     fun engageStrictLock(context: Context, cooldownMinutes: Int) {
         val durationMs = cooldownMinutes * 60_000L
-        prefs(context).edit()
-            .putInt(KEY_LOCK_STATE, LOCK_ENGAGED)
-            .putLong(KEY_COOLDOWN_DURATION_MS, durationMs)
-            .putLong(KEY_UNLOCK_WALL_MS, 0L)
-            .putLong(KEY_UNLOCK_START_ELAPSED_MS, 0L)
-            .putBoolean(KEY_MASTER_ACTIVE, true)
-            .apply()
+        prefs(context)
+                .edit()
+                .putInt(KEY_LOCK_STATE, LOCK_ENGAGED)
+                .putLong(KEY_COOLDOWN_DURATION_MS, durationMs)
+                .putLong(KEY_UNLOCK_WALL_MS, 0L)
+                .putLong(KEY_UNLOCK_START_ELAPSED_MS, 0L)
+                .putBoolean(KEY_MASTER_ACTIVE, true)
+                .apply()
     }
 
     fun requestUnlock(context: Context) {
@@ -327,31 +351,33 @@ object FocusPrefs {
         if (p.getInt(KEY_LOCK_STATE, LOCK_UNLOCKED) != LOCK_ENGAGED) return
         val durationMs = p.getLong(KEY_COOLDOWN_DURATION_MS, 60 * 60_000L)
         p.edit()
-            .putInt(KEY_LOCK_STATE, LOCK_COOLING_DOWN)
-            .putLong(KEY_UNLOCK_WALL_MS, System.currentTimeMillis() + durationMs)
-            .putLong(KEY_UNLOCK_START_ELAPSED_MS, SystemClock.elapsedRealtime())
-            .apply()
+                .putInt(KEY_LOCK_STATE, LOCK_COOLING_DOWN)
+                .putLong(KEY_UNLOCK_WALL_MS, System.currentTimeMillis() + durationMs)
+                .putLong(KEY_UNLOCK_START_ELAPSED_MS, SystemClock.elapsedRealtime())
+                .apply()
     }
 
     fun cancelUnlockRequest(context: Context) {
         val p = prefs(context)
         if (p.getInt(KEY_LOCK_STATE, LOCK_UNLOCKED) != LOCK_COOLING_DOWN) return
         p.edit()
-            .putInt(KEY_LOCK_STATE, LOCK_ENGAGED)
-            .putLong(KEY_UNLOCK_WALL_MS, 0L)
-            .putLong(KEY_UNLOCK_START_ELAPSED_MS, 0L)
-            .apply()
+                .putInt(KEY_LOCK_STATE, LOCK_ENGAGED)
+                .putLong(KEY_UNLOCK_WALL_MS, 0L)
+                .putLong(KEY_UNLOCK_START_ELAPSED_MS, 0L)
+                .apply()
     }
 
     fun onDeviceReboot(context: Context) {
         val p = prefs(context)
         if (p.getInt(KEY_LOCK_STATE, LOCK_UNLOCKED) == LOCK_COOLING_DOWN) {
-            val wallRemaining = (p.getLong(KEY_UNLOCK_WALL_MS, 0L) - System.currentTimeMillis())
-                .coerceAtLeast(0L)
+            val wallRemaining =
+                    (p.getLong(KEY_UNLOCK_WALL_MS, 0L) - System.currentTimeMillis()).coerceAtLeast(
+                            0L
+                    )
             p.edit()
-                .putLong(KEY_COOLDOWN_DURATION_MS, wallRemaining)
-                .putLong(KEY_UNLOCK_START_ELAPSED_MS, SystemClock.elapsedRealtime())
-                .apply()
+                    .putLong(KEY_COOLDOWN_DURATION_MS, wallRemaining)
+                    .putLong(KEY_UNLOCK_START_ELAPSED_MS, SystemClock.elapsedRealtime())
+                    .apply()
         }
         p.edit().putLong(KEY_POMO_END_ELAPSED_MS, 0L).apply()
     }
@@ -366,19 +392,20 @@ object FocusPrefs {
 
         val wallRemaining = (unlockWallMs - System.currentTimeMillis()).coerceAtLeast(0L)
         val nowElapsed = SystemClock.elapsedRealtime()
-        val monotonicRemaining = if (nowElapsed >= startElapsedMs) {
-            (durationMs - (nowElapsed - startElapsedMs)).coerceAtLeast(0L)
-        } else {
-            wallRemaining
-        }
+        val monotonicRemaining =
+                if (nowElapsed >= startElapsedMs) {
+                    (durationMs - (nowElapsed - startElapsedMs)).coerceAtLeast(0L)
+                } else {
+                    wallRemaining
+                }
 
         val remaining = maxOf(wallRemaining, monotonicRemaining)
         if (remaining <= 0L) {
             p.edit()
-                .putInt(KEY_LOCK_STATE, LOCK_UNLOCKED)
-                .putLong(KEY_UNLOCK_WALL_MS, 0L)
-                .putLong(KEY_UNLOCK_START_ELAPSED_MS, 0L)
-                .apply()
+                    .putInt(KEY_LOCK_STATE, LOCK_UNLOCKED)
+                    .putLong(KEY_UNLOCK_WALL_MS, 0L)
+                    .putLong(KEY_UNLOCK_START_ELAPSED_MS, 0L)
+                    .apply()
             return 0L
         }
         return remaining
@@ -389,18 +416,17 @@ object FocusPrefs {
         return prefs(context).getInt(KEY_LOCK_STATE, LOCK_UNLOCKED)
     }
 
-    fun isStrictLockActive(context: Context): Boolean =
-        getLockState(context) != LOCK_UNLOCKED
+    fun isStrictLockActive(context: Context): Boolean = getLockState(context) != LOCK_UNLOCKED
 
     fun isProtectionLocked(context: Context): Boolean =
-        isStrictLockActive(context) ||
-            isStudyWindowCurrentlyActive(context) ||
-            isPomodoroLockCurrentlyActive(context)
+            isStrictLockActive(context) ||
+                    isStudyWindowCurrentlyActive(context) ||
+                    isPomodoroLockCurrentlyActive(context)
 
     // --- Comic Focus Nudges & Usage Tracking ---
 
     fun isComicNudgesEnabled(context: Context): Boolean =
-        prefs(context).getBoolean(KEY_COMIC_NUDGES_ENABLED, true)
+            prefs(context).getBoolean(KEY_COMIC_NUDGES_ENABLED, true)
 
     fun setComicNudgesEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit().putBoolean(KEY_COMIC_NUDGES_ENABLED, enabled).apply()
@@ -413,9 +439,9 @@ object FocusPrefs {
         val currentTotal = if (savedDate == today) p.getLong(KEY_TODAY_USAGE_MS, 0L) else 0L
         val updated = currentTotal + deltaMs
         p.edit()
-            .putString(KEY_SCREEN_USAGE_DATE, today)
-            .putLong(KEY_TODAY_USAGE_MS, updated)
-            .apply()
+                .putString(KEY_SCREEN_USAGE_DATE, today)
+                .putLong(KEY_TODAY_USAGE_MS, updated)
+                .apply()
         return updated
     }
 
@@ -429,5 +455,5 @@ object FocusPrefs {
     }
 
     fun getConfiguredCooldownMinutes(context: Context): Int =
-        (prefs(context).getLong(KEY_COOLDOWN_DURATION_MS, 60 * 60_000L) / 60_000L).toInt()
+            (prefs(context).getLong(KEY_COOLDOWN_DURATION_MS, 60 * 60_000L) / 60_000L).toInt()
 }
