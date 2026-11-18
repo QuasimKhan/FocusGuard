@@ -1,0 +1,5 @@
+FocusGuard is an open-source digital wellbeing and study focus tool for Android.
+- Block distracting apps or enforce a 15-second mindful pause before opening
+- Automatically block YouTube Shorts and Instagram Reels while keeping regular videos and DMs open
+- Daily Auto-Lock Window and Deep-Work Study Timer with tamper-resistant settings protection
+- Local VPN DNS domain blocker with custom rules and comic focus nudges
