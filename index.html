@@ -196,6 +196,25 @@
       box-shadow: 0 4px 18px rgba(98, 188, 235, 0.28);
       transition: transform 0.16s ease, box-shadow 0.16s ease;
     }
+    .nav-cta svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .nav-cta {
+    font-size: 0.7rem; /* ~11.2px on narrow phones */
+    gap: 4px;
+    padding: 5px 8px;
+    margin-left: 8px;
+  }
+
+  .nav-cta svg {
+    width: 12px;
+    height: 12px;
+  }
+}
 
     .nav-cta:hover {
       transform: translateY(-1px);
