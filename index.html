@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,993 +12,191 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <style>
-    :root {
-      --bg: #070B11;
-      --bg-soft: #0C131D;
-      --panel: #101925;
-      --elevated: #162334;
-      --border: #233346;
-      --border-bright: #36506E;
-      --cyan: #62BCEB;
-      --cyan-glow: rgba(98, 188, 235, 0.18);
-      --emerald: #79C6A5;
-      --emerald-glow: rgba(121, 198, 165, 0.15);
-      --amber: #FFC66D;
-      --amber-glow: rgba(255, 198, 109, 0.12);
-      --rose: #FF8A80;
-      --text: #EEF3F8;
-      --muted: #98A9BA;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Keyframe Animations */
-    @keyframes floatPhone {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes pulseBeacon {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.45); opacity: 0.45; }
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes shieldSweep {
-      0% { transform: translateX(-120%) skewX(-20deg); }
-      100% { transform: translateX(260%) skewX(-20deg); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(26px);
-      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .reveal.in-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Ambient Mesh & Grid Background */
-    .ambient-bg {
-      position: relative;
-      background-image:
-        radial-gradient(ellipse 75% 45% at 50% -5%, rgba(98, 188, 235, 0.18), transparent 70%),
-        radial-gradient(ellipse 50% 35% at 88% 18%, rgba(121, 198, 165, 0.1), transparent 65%),
-        linear-gradient(rgba(35, 51, 70, 0.18) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(35, 51, 70, 0.18) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
-    }
-
-    /* Navbar */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      border-bottom: 1px solid rgba(35, 51, 70, 0.85);
-      background: rgba(7, 11, 17, 0.86);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-
-    .nav-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 68px;
-      gap: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-    }
-
-    .brand img {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid var(--border-bright);
-      box-shadow: 0 4px 14px rgba(98, 188, 235, 0.2);
-    }
-
-    .brand-badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: clamp(0.65rem, 2.2vw, 0.75rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  color: var(--cyan);
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-@media (max-width: 480px) {
-  .brand-badge {
-    padding: 2px 6px;
-    border-radius: 5px;
-    margin-right: 30px;
-  }
-}
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-    }
-
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 16px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--cyan), #49A6D6);
-      color: #051B26 !important;
-      font-weight: 800;
-      font-size: 0.85rem;
-      box-shadow: 0 4px 18px rgba(98, 188, 235, 0.28);
-      transition: transform 0.16s ease, box-shadow 0.16s ease;
-    }
-    .nav-cta svg {
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 480px) {
-  .nav-cta {
-    font-size: 0.7rem; /* ~11.2px on narrow phones */
-    gap: 4px;
-    padding: 5px 8px;
-    margin-left: 8px;
-  }
-
-  .nav-cta svg {
-    width: 12px;
-    height: 12px;
-  }
-}
-
-    .nav-cta:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(98, 188, 235, 0.42);
-    }
-
-    /* Hero */
-    .hero {
-      padding: 64px 0 52px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 44px;
-      align-items: center;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: var(--emerald-glow);
-      border: 1px solid rgba(121, 198, 165, 0.38);
-      color: var(--emerald);
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      padding: 6px 14px;
-      border-radius: 999px;
-      margin-bottom: 20px;
-    }
-
-    .dot-wrap {
-      position: relative;
-      width: 8px;
-      height: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .dot-wrap::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: var(--emerald);
-      animation: pulseBeacon 2s infinite ease-in-out;
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--emerald);
-      position: relative;
-    }
-
-    h1 {
-      font-size: clamp(2.15rem, 4.4vw, 3.4rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.12;
-      margin-bottom: 18px;
-    }
-
-    h1 span {
-      background: linear-gradient(120deg, var(--cyan), var(--emerald), var(--cyan));
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientShift 6s linear infinite;
-    }
-
-    .hero-lead {
-      color: var(--muted);
-      font-size: 1.06rem;
-      margin-bottom: 28px;
-      max-width: 580px;
-    }
-
-    .cta-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 11px;
-      margin-bottom: 14px;
-    }
-
-    .btn {
-      position: relative;
-      overflow: hidden;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 13px 20px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.92rem;
-      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--cyan), #4CA8D8);
-      color: #061D29;
-      box-shadow: 0 8px 24px rgba(98, 188, 235, 0.28);
-    }
-
-    .btn-primary::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-      animation: shieldSweep 3.8s infinite ease-in-out;
-    }
-
-    .btn-secondary {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--cyan);
-      background: var(--elevated);
-    }
-
-    .release-meta {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 22px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Trust Strip */
-    .trust-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .trust-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .trust-badge svg {
-      width: 15px;
-      height: 15px;
-      color: var(--emerald);
-      flex-shrink: 0;
-    }
-
-    /* Hero Device Frame */
-    .hero-visual {
-      position: relative;
-      display: flex;
-      justify-content: center;
-    }
-
-    .hero-halo {
-      position: absolute;
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(98, 188, 235, 0.22), transparent 70%);
-      filter: blur(22px);
-      z-index: 0;
-    }
-
-    .phone-frame {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 310px;
-      border-radius: 32px;
-      padding: 10px;
-      background: linear-gradient(160deg, var(--border-bright), var(--panel));
-      box-shadow: 0 26px 64px rgba(0, 0, 0, 0.72), 0 0 42px var(--cyan-glow);
-      animation: floatPhone 6s ease-in-out infinite;
-    }
-
-    .phone-frame img {
-      width: 100%;
-      border-radius: 24px;
-      border: 1px solid var(--border);
-    }
-
-    .floating-chip {
-      position: absolute;
-      bottom: 22px;
-      left: -22px;
-      background: rgba(16, 25, 37, 0.94);
-      border: 1px solid var(--border-bright);
-      backdrop-filter: blur(12px);
-      padding: 10px 14px;
-      border-radius: 14px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      max-width: 255px;
-    }
-
-    .floating-chip img {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
-    }
-
-    .floating-chip strong {
-      display: block;
-      font-size: 0.82rem;
-      color: var(--text);
-    }
-
-    .floating-chip span {
-      font-size: 0.74rem;
-      color: var(--emerald);
-      font-weight: 600;
-    }
-
-    /* Authentic Quranic & Hadith Wisdom Cards */
-    .wisdom-card {
-      background: linear-gradient(145deg, #101A27, #0B131D);
-      border: 1px solid var(--border-bright);
-      border-left: 4px solid var(--amber);
-      border-radius: 20px;
-      padding: 28px 30px;
-      margin: 16px 0;
-      position: relative;
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
-    }
-
-    .wisdom-card.emerald-accent {
-      border-left-color: var(--emerald);
-    }
-
-    .wisdom-card.cyan-accent {
-      border-left-color: var(--cyan);
-    }
-
-    .wisdom-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .wisdom-label {
-      font-size: 0.74rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--amber);
-    }
-
-    .wisdom-card.emerald-accent .wisdom-label {
-      color: var(--emerald);
-    }
-
-    .wisdom-card.cyan-accent .wisdom-label {
-      color: var(--cyan);
-    }
-
-    .wisdom-tag {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--muted);
-      background: var(--elevated);
-      border: 1px solid var(--border);
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
-
-    .wisdom-arabic {
-      font-family: 'Amiri Quran', 'Amiri', 'Traditional Arabic', serif;
-      font-size: clamp(1.45rem, 2.8vw, 1.9rem);
-      line-height: 2.15;
-      color: #F8FAFC;
-      margin-bottom: 12px;
-      direction: rtl;
-      text-align: right;
-      font-weight: 400;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    .wisdom-quote {
-      font-size: 1.04rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-
-    .wisdom-ref {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    /* Sections */
-    section {
-      padding: 58px 0;
-    }
-
-    .section-eyebrow {
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--cyan);
-      margin-bottom: 6px;
-    }
-
-    .section-title {
-      font-size: clamp(1.55rem, 3vw, 2.15rem);
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      margin-bottom: 10px;
-    }
-
-    .section-sub {
-      color: var(--muted);
-      margin-bottom: 32px;
-      font-size: 1rem;
-      max-width: 700px;
-    }
-
-    /* Why Shorts & Reels Harm Youth Section */
-    .crisis-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .crisis-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 22px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .crisis-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(255, 138, 128, 0.45);
-    }
-
-    .crisis-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 11px;
-      background: rgba(255, 138, 128, 0.12);
-      border: 1px solid rgba(255, 138, 128, 0.3);
-      color: var(--rose);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-    }
-
-    .crisis-card h3 {
-      font-size: 1.05rem;
-      margin-bottom: 8px;
-    }
-
-    .crisis-card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .mission-box {
-      background: var(--panel);
-      border: 1px solid var(--border-bright);
-      border-radius: 20px;
-      padding: 28px;
-      display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 28px;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .mission-box h3 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
-      color: var(--cyan);
-    }
-
-    .mission-box p {
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin-bottom: 12px;
-    }
-
-    .mission-box img {
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: var(--bg-soft);
-    }
-
-    /* Privacy Guarantee Matrix */
-    .zero-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
-
-    .zero-card {
-      background: linear-gradient(180deg, var(--panel), var(--bg-soft));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 22px 18px;
-      text-align: center;
-      transition: border-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .zero-card:hover {
-      border-color: var(--emerald);
-      transform: translateY(-2px);
-    }
-
-    .zero-num {
-      font-size: 1.85rem;
-      font-weight: 800;
-      color: var(--emerald);
-      line-height: 1.1;
-      margin-bottom: 6px;
-    }
-
-    .zero-card h4 {
-      font-size: 0.98rem;
-      margin-bottom: 4px;
-    }
-
-    .zero-card p {
-      font-size: 0.84rem;
-      color: var(--muted);
-    }
-
-    /* Feature Cards */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 16px;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      transition: border-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .card:hover {
-      border-color: var(--cyan);
-      transform: translateY(-3px);
-    }
-
-    .card-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--cyan-glow);
-      border: 1px solid rgba(98, 188, 235, 0.3);
-      color: var(--cyan);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-    }
-
-    .card-tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--cyan);
-      margin-bottom: 6px;
-    }
-
-    .card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-    }
-
-    .card p {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    /* App Screenshots Gallery */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .shot-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 14px;
-      text-align: center;
-      transition: transform 0.25s ease, border-color 0.25s ease;
-    }
-
-    .shot-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-bright);
-    }
-
-    .shot-card img {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      margin-bottom: 12px;
-    }
-
-    .shot-card h4 {
-      font-size: 0.98rem;
-      margin-bottom: 4px;
-    }
-
-    .shot-card p {
-      font-size: 0.83rem;
-      color: var(--muted);
-    }
-
-    /* Visual 4-Step Setup Grid with Custom Vector Graphics */
-    .setup-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
-      gap: 18px;
-    }
-
-    .setup-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: border-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .setup-card:hover {
-      border-color: var(--cyan);
-      transform: translateY(-2px);
-    }
-
-    .setup-graphic {
-      width: 100%;
-      height: 112px;
-      border-radius: 12px;
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .setup-step-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.74rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--cyan);
-      margin-bottom: 6px;
-    }
-
-    .setup-card h4 {
-      font-size: 1.05rem;
-      margin-bottom: 8px;
-    }
-
-    .setup-card p {
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .tip {
-      margin-top: auto;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(255, 198, 109, 0.09);
-      border: 1px solid rgba(255, 198, 109, 0.3);
-      color: #FDE68A;
-      font-size: 0.8rem;
-      line-height: 1.45;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 0;
-      margin-top: 32px;
-      background: var(--bg-soft);
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    .footer-inner {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-    }
-
-    .footer-links a:hover {
-      color: var(--cyan);
-    }
-
-    /* Responsive Breakpoints */
-    @media (max-width: 900px) {
-      .hero-grid,
-      .mission-box {
-        grid-template-columns: 1fr;
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bg: '#070B11',
+            bgSoft: '#0C131D',
+            panel: '#101925',
+            elevated: '#162334',
+            border: '#233346',
+            borderBright: '#36506E',
+            cyan: '#62BCEB',
+            emerald: '#79C6A5',
+            amber: '#FFC66D',
+            rose: '#FF8A80',
+            textMain: '#EEF3F8',
+            muted: '#98A9BA',
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+            quran: ['"Amiri Quran"', '"Amiri"', '"Traditional Arabic"', 'serif'],
+          },
+          keyframes: {
+            floatPhone: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            gradientShift: {
+              '0%, 100%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+            },
+            shieldSweep: {
+              '0%': { transform: 'translateX(-140%) skewX(-20deg)' },
+              '100%': { transform: 'translateX(320%) skewX(-20deg)' },
+            },
+          },
+          animation: {
+            floatPhone: 'floatPhone 6s ease-in-out infinite',
+            gradientShift: 'gradientShift 6s linear infinite',
+            shieldSweep: 'shieldSweep 3.8s ease-in-out infinite',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .ambient-bg {
+        background-image:
+          radial-gradient(ellipse 75% 45% at 50% -5%, rgba(98, 188, 235, 0.18), transparent 70%),
+          radial-gradient(ellipse 50% 35% at 88% 18%, rgba(121, 198, 165, 0.1), transparent 65%),
+          linear-gradient(rgba(35, 51, 70, 0.18) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(35, 51, 70, 0.18) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
       }
 
-      .hero {
-        padding: 44px 0 40px;
-        text-align: center;
+      .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
-      .hero-lead {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .cta-group,
-      .trust-strip,
-      .release-meta {
-        justify-content: center;
-      }
-
-      .floating-chip {
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 14px;
-        width: 90%;
-      }
-
-      .gallery-grid {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      }
-    }
-
-    @media (max-width: 600px) {
-      .nav-links a:not(.nav-cta) {
-        display: none;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      .wisdom-card {
-        padding: 20px 18px;
-      }
-
-      .wisdom-arabic {
-        font-size: 1.35rem;
-        line-height: 2;
+      .reveal.in-view {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   </style>
 </head>
-<body>
-  <nav>
-    <div class="container nav-inner">
-      <a href="#" class="brand">
-        <img src="images/icon.png" alt="FocusGuard Icon" />
+<body class="bg-bg text-textMain font-sans antialiased overflow-x-hidden leading-relaxed">
+
+  <!-- Sticky Navbar -->
+  <nav class="sticky top-0 z-50 border-b border-border/85 bg-bg/85 backdrop-blur-xl">
+    <div class="max-w-[1140px] mx-auto px-5 min-h-[68px] flex items-center justify-between gap-3">
+      <a href="#" class="flex items-center gap-2.5 font-extrabold text-lg tracking-tight shrink-0">
+        <img src="images/icon.png" alt="FocusGuard Icon" class="w-9 h-9 rounded-[10px] border border-borderBright shadow-[0_4px_14px_rgba(98,188,235,0.2)]" />
         <span>FocusGuard</span>
-        <span class="brand-badge">by Quasim.™</span>
+        <span class="inline-flex items-center text-[11px] sm:text-xs font-bold tracking-wider whitespace-nowrap text-cyan bg-elevated border border-border px-2 py-0.5 rounded-md">
+          by Quasim.™
+        </span>
       </a>
-      <div class="nav-links">
-        <a href="#why">Why FocusGuard</a>
-        <a href="#features">Features</a>
-        <a href="#preview">Screens</a>
-        <a href="#setup">Setup</a>
-        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener">Wiki</a>
-        <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" class="nav-cta js-direct-apk" download>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+
+      <div class="flex items-center gap-5 text-sm font-medium text-muted">
+        <a href="#why" class="hidden md:inline hover:text-textMain transition-colors">Why FocusGuard</a>
+        <a href="#features" class="hidden md:inline hover:text-textMain transition-colors">Features</a>
+        <a href="#preview" class="hidden md:inline hover:text-textMain transition-colors">Screens</a>
+        <a href="#setup" class="hidden md:inline hover:text-textMain transition-colors">Setup</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener" class="hidden sm:inline hover:text-textMain transition-colors">Wiki</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" download class="js-direct-apk inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-gradient-to-br from-cyan to-[#49A6D6] text-[#051B26] font-extrabold text-xs sm:text-[13px] shadow-[0_4px_18px_rgba(98,188,235,0.28)] hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(98,188,235,0.42)] transition-all">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
           <span>Download</span>
         </a>
       </div>
     </div>
   </nav>
 
-  <div class="ambient-bg">
-    <header class="hero">
-      <div class="container hero-grid">
+  <!-- Ambient Top Section -->
+  <div class="ambient-bg relative">
+    <!-- Hero -->
+    <header class="py-12 md:py-16">
+      <div class="max-w-[1140px] mx-auto px-5 grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-11 items-center text-center lg:text-left">
         <div class="reveal">
-          <div class="pill">
+          <div class="inline-flex items-center gap-2 bg-emerald/15 border border-emerald/40 text-emerald text-xs font-extrabold tracking-wider px-3.5 py-1.5 rounded-full mb-5">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald"></span>
+            </span>
             FREE FOREVER · ZERO ADS · 100% ON-DEVICE
           </div>
-          <h1>Guard Your Gaze, Your Time, and <span>Your Future.</span></h1>
-          <p class="hero-lead">
+
+          <h1 class="text-4xl sm:text-5xl lg:text-[3.35rem] font-extrabold tracking-tight leading-[1.12] mb-4">
+            Guard Your Gaze, Your Time, and
+            <span class="bg-gradient-to-r from-cyan via-emerald to-cyan bg-[length:200%_auto] bg-clip-text text-transparent animate-gradientShift">
+              Your Future.
+            </span>
+          </h1>
+
+          <p class="text-muted text-base sm:text-[1.06rem] mb-7 max-w-[580px] mx-auto lg:mx-0">
             Algorithmic feeds are engineered to hijack attention and weaken willpower. FocusGuard is a zero-bloat native Android shield that blocks YouTube Shorts, Instagram Reels, distracting apps, and 130,000+ adult domains—entirely offline on your device.
           </p>
 
-          <div class="cta-group">
-            <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" class="btn btn-primary js-direct-apk" download>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <!-- Download CTA Group -->
+          <div class="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-2.5 mb-3.5">
+            <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" download class="js-direct-apk relative overflow-hidden inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-gradient-to-br from-cyan to-[#4CA8D8] text-[#061D29] font-bold text-sm shadow-[0_8px_24px_rgba(98,188,235,0.28)] hover:-translate-y-0.5 transition-transform">
+              <span class="pointer-events-none absolute inset-y-0 left-0 w-2/5 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shieldSweep"></span>
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
               <span id="hero-apk-label">Download Direct APK</span>
             </a>
-            <a href="https://indusapp.store/9o4g51w8" target="_blank" rel="noopener" class="btn btn-secondary">
+
+            <a href="https://indusapp.store/9o4g51w8" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-panel border border-border text-textMain font-bold text-sm hover:border-cyan hover:bg-elevated hover:-translate-y-0.5 transition-all">
               Indus Appstore (PhonePe)
             </a>
-            <a href="https://apkpure.com/p/com.focusguard.app" target="_blank" rel="noopener" class="btn btn-secondary">
+
+            <a href="https://apkpure.com/p/com.focusguard.app" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-panel border border-border text-textMain font-bold text-sm hover:border-cyan hover:bg-elevated hover:-translate-y-0.5 transition-all">
               APKPure
             </a>
-            <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="btn btn-secondary">
+
+            <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-panel border border-border text-textMain font-bold text-sm hover:border-cyan hover:bg-elevated hover:-translate-y-0.5 transition-all">
               Obtainium Auto-Update
             </a>
           </div>
-          <div id="release-status" class="release-meta">Resolving direct signed APK from GitHub...</div>
 
-          <div class="trust-strip">
-            <div class="trust-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          <div id="release-status" class="text-xs text-muted mb-6 flex items-center justify-center lg:justify-start gap-2">
+            Resolving direct signed APK from GitHub...
+          </div>
+
+          <!-- Trust Strip -->
+          <div class="flex flex-wrap justify-center lg:justify-start gap-2.5">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
+              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
               No Ads or Paywalls
             </div>
-            <div class="trust-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
+              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
               Zero Data Collection
             </div>
-            <div class="trust-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
+              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
               No External VPN Servers
             </div>
-            <div class="trust-badge">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
+              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
               MIT Open Source
             </div>
           </div>
         </div>
 
-        <div class="hero-visual reveal">
-          <div class="hero-halo"></div>
-          <div class="phone-frame">
-            <img src="images/1.png" alt="FocusGuard Android Dashboard" />
-            <div class="floating-chip">
-              <img src="images/icon.png" alt="Shield Active" />
+        <!-- Hero Device Frame -->
+        <div class="reveal relative flex justify-center">
+          <div class="absolute w-80 h-80 rounded-full bg-cyan/20 blur-2xl pointer-events-none"></div>
+          <div class="relative z-10 w-full max-w-[310px] rounded-[32px] p-2.5 bg-gradient-to-br from-borderBright to-panel shadow-[0_26px_64px_rgba(0,0,0,0.72),0_0_42px_rgba(98,188,235,0.18)] animate-floatPhone">
+            <img src="images/1.png" alt="FocusGuard Android Dashboard" class="w-full rounded-[24px] border border-border" />
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 lg:left-[-22px] lg:translate-x-0 w-[90%] lg:w-auto max-w-[255px] bg-panel/95 border border-borderBright backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2.5 text-left">
+              <img src="images/icon.png" alt="Shield Active" class="w-8 h-8 rounded-[9px] shrink-0" />
               <div>
-                <strong>100% Local Enforcement</strong>
-                <span>Shorts, Reels & DNS Guard Active</span>
+                <strong class="block text-xs text-textMain">100% Local Enforcement</strong>
+                <span class="text-[11px] text-emerald font-semibold">Shorts, Reels & DNS Guard Active</span>
               </div>
             </div>
           </div>
@@ -1006,248 +204,272 @@
       </div>
     </header>
 
-    <!-- Quranic & Hadith Reflection #1: Stewardship of Time & Youth -->
-    <div class="container reveal">
-      <div class="wisdom-card">
-        <div class="wisdom-header">
-          <div class="wisdom-label">Stewardship of Time & Health</div>
-          <span class="wisdom-tag">Sahih al-Bukhari 6412</span>
+    <!-- Hadith Reflection #1 -->
+    <div class="max-w-[1140px] mx-auto px-5 pb-6 reveal">
+      <div class="bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-amber rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)]">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-extrabold tracking-widest uppercase text-amber">Stewardship of Time & Health</span>
+          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Sahih al-Bukhari 6412</span>
         </div>
-        <div class="wisdom-arabic">نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ الصِّحَّةُ وَالْفَرَاغُ</div>
-        <div class="wisdom-quote">“There are two blessings which many people lose out on: good health and free time.”</div>
-        <div class="wisdom-ref">Narrated by Ibn Abbas (رضي الله عنهما) — Protecting your hours from mindless scrolling preserves the prime years of your life.</div>
+        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
+          نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ الصِّحَّةُ وَالْفَرَاغُ
+        </p>
+        <p class="text-base font-semibold text-textMain mb-1.5">
+          “There are two blessings which many people lose out on: good health and free time.”
+        </p>
+        <p class="text-xs sm:text-sm text-muted">
+          Narrated by Ibn Abbas (رضي الله عنهما) — Protecting your hours from mindless scrolling preserves the prime years of your life.
+        </p>
       </div>
     </div>
   </div>
 
-  <!-- Why Shorts, Reels & Algorithm Traps Are Destroying Youth -->
-  <section id="why">
-    <div class="container">
+  <!-- Why Shorts & Reels Harm Youth Section -->
+  <section id="why" class="py-14">
+    <div class="max-w-[1140px] mx-auto px-5">
       <div class="reveal">
-        <div class="section-eyebrow">The Hidden Cost of Infinite Feeds</div>
-        <h2 class="section-title">Why Shorts, Reels & Toxic Feeds Are Hollowing Out a Generation</h2>
-        <p class="section-sub">
+        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">The Hidden Cost of Infinite Feeds</div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Why Shorts, Reels & Toxic Feeds Are Hollowing Out a Generation</h2>
+        <p class="text-muted text-base max-w-[700px] mb-8">
           Modern platforms do not profit when you learn, pray, build, or rest—they profit when you cannot look away. Short-form vertical video and explicit corners of the web exploit brain chemistry at the expense of a young person's focus and character.
         </p>
       </div>
 
-      <div class="crisis-grid reveal">
-        <div class="crisis-card">
-          <div class="crisis-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 reveal">
+        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           </div>
-          <h3>Fragmented Attention Span</h3>
-          <p>Rapid 15-second dopamine hits train the brain to reject deep reading, exam preparation, Quranic reflection, and sustained problem-solving.</p>
+          <h3 class="text-base font-bold mb-2">Fragmented Attention Span</h3>
+          <p class="text-sm text-muted">Rapid 15-second dopamine hits train the brain to reject deep reading, exam preparation, Quranic reflection, and sustained problem-solving.</p>
         </div>
 
-        <div class="crisis-card">
-          <div class="crisis-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </div>
-          <h3>Subconscious Impulse Loops</h3>
-          <p>Auto-playing Reels and Shorts bypass conscious choice. You open an app to check one message and emerge an hour later drained and regretful.</p>
+          <h3 class="text-base font-bold mb-2">Subconscious Impulse Loops</h3>
+          <p class="text-sm text-muted">Auto-playing Reels and Shorts bypass conscious choice. You open an app to check one message and emerge an hour later drained and regretful.</p>
         </div>
 
-        <div class="crisis-card">
-          <div class="crisis-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <h3>Corrupted Gaze & Spiritual Numbness</h3>
-          <p>Unfiltered algorithms push immodesty, outrage, and explicit content directly onto young screens—eroding modesty (<em>Haya</em>), sleep, and peace of heart.</p>
+          <h3 class="text-base font-bold mb-2">Corrupted Gaze & Spiritual Numbness</h3>
+          <p class="text-sm text-muted">Unfiltered algorithms push immodesty, outrage, and explicit content directly onto young screens—eroding modesty (<em>Haya</em>), sleep, and peace of heart.</p>
         </div>
 
-        <div class="crisis-card">
-          <div class="crisis-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </div>
-          <h3>Stolen Youth & Ambition</h3>
-          <p>Hours lost every evening compound into lost years. Youth is the prime season to master skills, seek beneficial knowledge, and build meaningful work.</p>
+          <h3 class="text-base font-bold mb-2">Stolen Youth & Ambition</h3>
+          <p class="text-sm text-muted">Hours lost every evening compound into lost years. Youth is the prime season to master skills, seek beneficial knowledge, and build meaningful work.</p>
         </div>
       </div>
 
-      <div class="mission-box reveal">
+      <!-- Mission Box -->
+      <div class="bg-panel border border-borderBright rounded-[20px] p-6 sm:p-7 grid grid-cols-1 lg:grid-cols-[1.25fr_0.75fr] gap-7 items-center mb-6 reveal">
         <div>
-          <h3>The Purpose of FocusGuard</h3>
-          <p>
+          <h3 class="text-xl font-bold text-cyan mb-2.5">The Purpose of FocusGuard</h3>
+          <p class="text-muted text-sm sm:text-[0.95rem] mb-3">
             You shouldn't have to throw away your smartphone—or sacrifice useful lectures on YouTube and messages on Instagram—just to escape algorithmic addiction.
           </p>
-          <p>
-            <strong>FocusGuard</strong> was built to restore human agency: surgically removing the addictive hooks (Shorts, Reels, adult sites, and impulsive app launches) while leaving your phone's productive tools intact.
+          <p class="text-muted text-sm sm:text-[0.95rem]">
+            <strong class="text-textMain">FocusGuard</strong> was built to restore human agency: surgically removing the addictive hooks (Shorts, Reels, adult sites, and impulsive app launches) while leaving your phone's productive tools intact.
           </p>
         </div>
         <div>
-          <img src="images/hotspot.png" alt="FocusGuard Surgical Protection Overview" />
+          <img src="images/hotspot.png" alt="FocusGuard Surgical Protection Overview" class="w-full rounded-2xl border border-border bg-bgSoft" />
         </div>
       </div>
 
-      <!-- Quranic Reflection #2: Accountability of Hearing, Sight & Heart -->
-      <div class="wisdom-card cyan-accent reveal">
-        <div class="wisdom-header">
-          <div class="wisdom-label">Accountability of Sight, Hearing & Mind</div>
-          <span class="wisdom-tag">Surah Al-Isra (17:36)</span>
+      <!-- Quranic Reflection #2 -->
+      <div class="bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-cyan rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)] reveal">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-extrabold tracking-widest uppercase text-cyan">Accountability of Sight, Hearing & Mind</span>
+          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Surah Al-Isra (17:36)</span>
         </div>
-        <div class="wisdom-arabic">إِنَّ السَّمْعَ وَالْبَصَرَ وَالْفُؤَادَ كُلُّ أُولَٰئِكَ كَانَ عَنْهُ مَسْئُولًا</div>
-        <div class="wisdom-quote">“Indeed, the hearing, the sight, and the heart — about all of those one will be questioned.”</div>
-        <div class="wisdom-ref">Al-Qur'an 17:36 — Every feed we scroll and every clip we watch leaves an imprint on the heart.</div>
+        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
+          إِنَّ السَّمْعَ وَالْبَصَرَ وَالْفُؤَادَ كُلُّ أُولَٰئِكَ كَانَ عَنْهُ مَسْئُولًا
+        </p>
+        <p class="text-base font-semibold text-textMain mb-1.5">
+          “Indeed, the hearing, the sight, and the heart — about all of those one will be questioned.”
+        </p>
+        <p class="text-xs sm:text-sm text-muted">
+          Al-Qur'an 17:36 — Every feed we scroll and every clip we watch leaves an imprint on the heart.
+        </p>
       </div>
     </div>
   </section>
 
   <!-- Zero Ads / Zero Data Guarantee -->
-  <section style="padding-top: 12px;">
-    <div class="container">
+  <section class="pt-3 pb-14">
+    <div class="max-w-[1140px] mx-auto px-5">
       <div class="reveal">
-        <div class="section-eyebrow">Uncompromising Privacy</div>
-        <h2 class="section-title">No Ads. No Subscriptions. No Data Leaving Your Phone.</h2>
-        <p class="section-sub">Your struggle with distraction is not a business model. FocusGuard has zero backend servers and zero tracking SDKs.</p>
+        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Uncompromising Privacy</div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">No Ads. No Subscriptions. No Data Leaving Your Phone.</h2>
+        <p class="text-muted text-base max-w-[700px] mb-8">Your struggle with distraction is not a business model. FocusGuard has zero backend servers and zero tracking SDKs.</p>
       </div>
 
-      <div class="zero-grid reveal">
-        <div class="zero-card">
-          <div class="zero-num">0 Ads</div>
-          <h4>Clean & Distraction-Free</h4>
-          <p>Never shows banners, pop-ups, or sponsored upsells while you are trying to focus.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 reveal">
+        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
+          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">0 Ads</div>
+          <h4 class="text-base font-bold mb-1">Clean & Distraction-Free</h4>
+          <p class="text-xs sm:text-sm text-muted">Never shows banners, pop-ups, or sponsored upsells while you are trying to focus.</p>
         </div>
-        <div class="zero-card">
-          <div class="zero-num">0 Bytes</div>
-          <h4>Personal Data Collected</h4>
-          <p>No accounts, no email sign-up, no analytics, and no usage logs uploaded anywhere.</p>
+
+        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
+          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">0 Bytes</div>
+          <h4 class="text-base font-bold mb-1">Personal Data Collected</h4>
+          <p class="text-xs sm:text-sm text-muted">No accounts, no email sign-up, no analytics, and no usage logs uploaded anywhere.</p>
         </div>
-        <div class="zero-card">
-          <div class="zero-num">100%</div>
-          <h4>Local On-Device DNS</h4>
-          <p>Web filtering runs inside local device memory—your browsing traffic never touches a third-party server.</p>
+
+        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
+          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">100%</div>
+          <h4 class="text-base font-bold mb-1">Local On-Device DNS</h4>
+          <p class="text-xs sm:text-sm text-muted">Web filtering runs inside local device memory—your browsing traffic never touches a third-party server.</p>
         </div>
-        <div class="zero-card">
-          <div class="zero-num">Free</div>
-          <h4>Forever & Open Source</h4>
-          <p>Every feature—Strict Lock, 130k+ domain shield, and Study OS—is unlocked for everyone under MIT.</p>
+
+        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
+          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">Free</div>
+          <h4 class="text-base font-bold mb-1">Forever & Open Source</h4>
+          <p class="text-xs sm:text-sm text-muted">Every feature—Strict Lock, 130k+ domain shield, and Study OS—is unlocked for everyone under MIT.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Core Features -->
-  <section id="features">
-    <div class="container">
+  <section id="features" class="py-14">
+    <div class="max-w-[1140px] mx-auto px-5">
       <div class="reveal">
-        <div class="section-eyebrow">Precision Engineering</div>
-        <h2 class="section-title">Built for Deep, Uninterrupted Focus</h2>
-        <p class="section-sub">Every shield runs natively in Kotlin & Jetpack Compose with near-zero battery impact.</p>
+        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Precision Engineering</div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Built for Deep, Uninterrupted Focus</h2>
+        <p class="text-muted text-base max-w-[700px] mb-8">Every shield runs natively in Kotlin & Jetpack Compose with near-zero battery impact.</p>
       </div>
 
-      <div class="grid reveal">
-        <div class="card">
-          <div class="card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 reveal">
+        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
+          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
           </div>
-          <span class="card-tag">Surgical Filter</span>
-          <h3>Block Shorts & Reels Only</h3>
-          <p>Automatically exits YouTube Shorts and Instagram Reels the moment they open, while keeping long-form lectures, search, and DMs working normally.</p>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Surgical Filter</span>
+          <h3 class="text-lg font-bold mb-2">Block Shorts & Reels Only</h3>
+          <p class="text-sm text-muted">Automatically exits YouTube Shorts and Instagram Reels the moment they open, while keeping long-form lectures, search, and DMs working normally.</p>
         </div>
 
-        <div class="card">
-          <div class="card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
+          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
-          <span class="card-tag">Mindful Friction</span>
-          <h3>3-Mode App Control</h3>
-          <p>Assign any installed app to <strong>Open</strong>, <strong>15s Pause</strong> (a breathing prompt before a 5-minute pass), or <strong>Block</strong>.</p>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Mindful Friction</span>
+          <h3 class="text-lg font-bold mb-2">3-Mode App Control</h3>
+          <p class="text-sm text-muted">Assign any installed app to <strong class="text-textMain">Open</strong>, <strong class="text-textMain">15s Pause</strong> (a breathing prompt before a 5-minute pass), or <strong class="text-textMain">Block</strong>.</p>
         </div>
 
-        <div class="card">
-          <div class="card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
+          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <span class="card-tag">Local Loopback VPN</span>
-          <h3>130,000+ Domain Web Shield</h3>
-          <p>Blocks adult sites, rotating mirror domains, and custom <code>*wildcard*</code> rules across Chrome, Brave, Firefox, and Incognito tabs.</p>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Local Loopback VPN</span>
+          <h3 class="text-lg font-bold mb-2">130,000+ Domain Web Shield</h3>
+          <p class="text-sm text-muted">Blocks adult sites, rotating mirror domains, and custom <code class="text-cyan">*wildcard*</code> rules across Chrome, Brave, Firefox, and Incognito tabs.</p>
         </div>
 
-        <div class="card">
-          <div class="card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
+          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           </div>
-          <span class="card-tag">Study OS</span>
-          <h3>Pomodoro & Daily Auto-Lock</h3>
-          <p>Run 25m / 50m / 90m focus blocks or schedule recurring daily auto-lock windows with add-only app protection while active.</p>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Study OS</span>
+          <h3 class="text-lg font-bold mb-2">Pomodoro & Daily Auto-Lock</h3>
+          <p class="text-sm text-muted">Run 25m / 50m / 90m focus blocks or schedule recurring daily auto-lock windows with add-only app protection while active.</p>
         </div>
 
-        <div class="card">
-          <div class="card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
+          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
-          <span class="card-tag">Anti-Impulse Armor</span>
-          <h3>Strict Lock & Clock Guard</h3>
-          <p>Cooldown timers (15m to 7d) anchored to Android's monotonic uptime clock so changing phone time cannot bypass active locks.</p>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Anti-Impulse Armor</span>
+          <h3 class="text-lg font-bold mb-2">Strict Lock & Clock Guard</h3>
+          <p class="text-sm text-muted">Cooldown timers (15m to 7d) anchored to Android's monotonic uptime clock so changing phone time cannot bypass active locks.</p>
         </div>
 
-        <div class="card">
-          <div class="card-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
+          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           </div>
-          <span class="card-tag">Seamless Maintenance</span>
-          <h3>In-App Release Updater</h3>
-          <p>Checks GitHub Releases every 24 hours so you can install signed updates in place without losing your blocklists or schedules.</p>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Seamless Maintenance</span>
+          <h3 class="text-lg font-bold mb-2">In-App Release Updater</h3>
+          <p class="text-sm text-muted">Checks GitHub Releases every 24 hours so you can install signed updates in place without losing your blocklists or schedules.</p>
         </div>
       </div>
 
-      <!-- Hadith Reflection #3: Leaving What Does Not Benefit You -->
-      <div class="wisdom-card reveal" style="margin-top: 28px;">
-        <div class="wisdom-header">
-          <div class="wisdom-label">Excellence in Focus & Purpose</div>
-          <span class="wisdom-tag">Jami' at-Tirmidhi 2317</span>
+      <!-- Hadith Reflection #3 -->
+      <div class="mt-7 bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-amber rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)] reveal">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-extrabold tracking-widest uppercase text-amber">Excellence in Focus & Purpose</span>
+          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Jami' at-Tirmidhi 2317</span>
         </div>
-        <div class="wisdom-arabic">مِنْ حُسْنِ إِسْلَامِ الْمَرْءِ تَرْكُهُ مَا لَا يَعْنِيهِ</div>
-        <div class="wisdom-quote">“Part of the perfection of a person’s Islam is leaving alone that which does not concern them.”</div>
-        <div class="wisdom-ref">Narrated by Abu Hurairah (رضي الله عنه) — Clarity of mind begins when you cut away digital noise that adds no value to your Deen or Dunya.</div>
+        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
+          مِنْ حُسْنِ إِسْلَامِ الْمَرْءِ تَرْكُهُ مَا لَا يَعْنِيهِ
+        </p>
+        <p class="text-base font-semibold text-textMain mb-1.5">
+          “Part of the perfection of a person’s Islam is leaving alone that which does not concern them.”
+        </p>
+        <p class="text-xs sm:text-sm text-muted">
+          Narrated by Abu Hurairah (رضي الله عنه) — Clarity of mind begins when you cut away digital noise that adds no value to your Deen or Dunya.
+        </p>
       </div>
     </div>
   </section>
 
   <!-- App Screenshots Showcase -->
-  <section id="preview">
-    <div class="container">
+  <section id="preview" class="py-14">
+    <div class="max-w-[1140px] mx-auto px-5">
       <div class="reveal">
-        <div class="section-eyebrow">Inside FocusGuard</div>
-        <h2 class="section-title">Calm, Dark-Mode Interface Designed for Clarity</h2>
-        <p class="section-sub">High-contrast controls that stay out of your way until you need them.</p>
+        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Inside FocusGuard</div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Calm, Dark-Mode Interface Designed for Clarity</h2>
+        <p class="text-muted text-base max-w-[700px] mb-8">High-contrast controls that stay out of your way until you need them.</p>
       </div>
 
-      <div class="gallery-grid reveal">
-        <div class="shot-card">
-          <img src="images/1.png" alt="FocusGuard Shield Dashboard" loading="lazy" />
-          <h4>Command Dashboard</h4>
-          <p>One-tap master shield status, live lock countdowns, and instant system health visibility.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal">
+        <div class="bg-panel border border-border rounded-[20px] p-3.5 text-center hover:-translate-y-1 hover:border-borderBright transition-all">
+          <img src="images/1.png" alt="FocusGuard Shield Dashboard" loading="lazy" class="w-full rounded-[14px] border border-border mb-3" />
+          <h4 class="text-base font-bold mb-1">Command Dashboard</h4>
+          <p class="text-xs sm:text-sm text-muted">One-tap master shield status, live lock countdowns, and instant system health visibility.</p>
         </div>
-        <div class="shot-card">
-          <img src="images/2.png" alt="Apps and Shorts Control" loading="lazy" />
-          <h4>Apps & Shorts Control</h4>
-          <p>Toggle Shorts/Reels filtering and assign Open, 15s Pause, or Block rules per app.</p>
+
+        <div class="bg-panel border border-border rounded-[20px] p-3.5 text-center hover:-translate-y-1 hover:border-borderBright transition-all">
+          <img src="images/2.png" alt="Apps and Shorts Control" loading="lazy" class="w-full rounded-[14px] border border-border mb-3" />
+          <h4 class="text-base font-bold mb-1">Apps & Shorts Control</h4>
+          <p class="text-xs sm:text-sm text-muted">Toggle Shorts/Reels filtering and assign Open, 15s Pause, or Block rules per app.</p>
         </div>
-        <div class="shot-card">
-          <img src="images/3.png" alt="Study OS and Strict Lock" loading="lazy" />
-          <h4>Study OS & Armor</h4>
-          <p>Deep-work Pomodoro sessions, Daily Auto-Lock schedules, and tamper-resistant cooldowns.</p>
+
+        <div class="bg-panel border border-border rounded-[20px] p-3.5 text-center hover:-translate-y-1 hover:border-borderBright transition-all">
+          <img src="images/3.png" alt="Study OS and Strict Lock" loading="lazy" class="w-full rounded-[14px] border border-border mb-3" />
+          <h4 class="text-base font-bold mb-1">Study OS & Armor</h4>
+          <p class="text-xs sm:text-sm text-muted">Deep-work Pomodoro sessions, Daily Auto-Lock schedules, and tamper-resistant cooldowns.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Visual 4-Step Setup Guide with Custom Vector Diagrams -->
-  <section id="setup">
-    <div class="container">
+  <!-- Visual 4-Step Setup Guide -->
+  <section id="setup" class="py-14">
+    <div class="max-w-[1140px] mx-auto px-5">
       <div class="reveal">
-        <div class="section-eyebrow">Visual Onboarding</div>
-        <h2 class="section-title">Easy 4-Step First-Time Setup</h2>
-        <p class="section-sub">Follow these four visual cards once after installing so Android lets FocusGuard protect you reliably.</p>
+        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Visual Onboarding</div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Easy 4-Step First-Time Setup</h2>
+        <p class="text-muted text-base max-w-[700px] mb-8">Follow these four visual cards once after installing so Android lets FocusGuard protect you reliably.</p>
       </div>
 
-      <div class="setup-grid reveal">
-        <!-- Step 1 Card -->
-        <div class="setup-card">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5 reveal">
+        <!-- Step 1 -->
+        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
           <div>
-            <div class="setup-graphic">
+            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
               <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
                 <rect x="24" y="14" width="172" height="56" rx="12" fill="#111B26" stroke="#36506E" stroke-width="1.5"/>
                 <rect x="38" y="26" width="32" height="32" rx="8" fill="#172433" stroke="#62BCEB" stroke-width="1.5"/>
@@ -1257,17 +479,19 @@
                 <text x="115" y="57" text-anchor="middle" fill="#79C6A5" font-family="sans-serif" font-size="8.5" font-weight="700">TAP INSTALL</text>
               </svg>
             </div>
-            <div class="setup-step-badge">Step 01 · Download</div>
-            <h4>Install the Signed APK</h4>
-            <p>Tap <strong>Download Direct APK</strong> above (or install via Indus Appstore / APKPure), open the file, and allow <strong>Install unknown apps</strong> if prompted.</p>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 01 · Download</div>
+            <h4 class="text-base font-bold mb-2">Install the Signed APK</h4>
+            <p class="text-sm text-muted mb-3">Tap <strong class="text-textMain">Download Direct APK</strong> above (or install via Indus Appstore / APKPure), open the file, and allow <strong class="text-textMain">Install unknown apps</strong> if prompted.</p>
           </div>
-          <div class="tip"><strong>Fastest Method:</strong> Direct APK installs in 5 seconds with zero store sign-in required.</div>
+          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
+            <strong>Fastest Method:</strong> Direct APK installs in 5 seconds with zero store sign-in required.
+          </div>
         </div>
 
-        <!-- Step 2 Card -->
-        <div class="setup-card">
+        <!-- Step 2 -->
+        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
           <div>
-            <div class="setup-graphic">
+            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
               <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
                 <rect x="16" y="14" width="84" height="56" rx="10" fill="#111B26" stroke="#36506E" stroke-width="1.5"/>
                 <circle cx="84" cy="26" r="2.2" fill="#FFC66D"/>
@@ -1282,17 +506,19 @@
                 <circle cx="175" cy="52" r="6" fill="#070B11"/>
               </svg>
             </div>
-            <div class="setup-step-badge">Step 02 · Core Engine</div>
-            <h4>Enable Accessibility</h4>
-            <p>Tap <strong>Open Accessibility settings</strong> in FocusGuard → select <strong>FocusGuard</strong> and switch it <strong>ON</strong>.</p>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 02 · Core Engine</div>
+            <h4 class="text-base font-bold mb-2">Enable Accessibility</h4>
+            <p class="text-sm text-muted mb-3">Tap <strong class="text-textMain">Open Accessibility settings</strong> in FocusGuard → select <strong class="text-textMain">FocusGuard</strong> and switch it <strong class="text-textMain">ON</strong>.</p>
           </div>
-          <div class="tip"><strong>Android 13–16 Greyed Out?</strong> Open <em>Settings → Apps → FocusGuard → tap ⋮ (top right) → Allow restricted settings</em> first.</div>
+          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
+            <strong>Android 13–16 Greyed Out?</strong> Open <em>Settings → Apps → FocusGuard → tap ⋮ (top right) → Allow restricted settings</em> first.
+          </div>
         </div>
 
-        <!-- Step 3 Card -->
-        <div class="setup-card">
+        <!-- Step 3 -->
+        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
           <div>
-            <div class="setup-graphic">
+            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
               <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
                 <rect x="28" y="16" width="164" height="52" rx="12" fill="#111B26" stroke="#36506E" stroke-width="1.5"/>
                 <rect x="44" y="31" width="34" height="20" rx="4" stroke="#79C6A5" stroke-width="2"/>
@@ -1302,17 +528,19 @@
                 <text x="92" y="53" fill="#79C6A5" font-family="sans-serif" font-size="8.5" font-weight="600">+ Autostart Enabled</text>
               </svg>
             </div>
-            <div class="setup-step-badge">Step 03 · 24/7 Reliability</div>
-            <h4>Set Battery to Unrestricted</h4>
-            <p>Long-press FocusGuard → <strong>App info → Battery → Unrestricted</strong>. On Xiaomi, POCO, Realme, Vivo, or Oppo, also enable <strong>Autostart</strong>.</p>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 03 · 24/7 Reliability</div>
+            <h4 class="text-base font-bold mb-2">Set Battery to Unrestricted</h4>
+            <p class="text-sm text-muted mb-3">Long-press FocusGuard → <strong class="text-textMain">App info → Battery → Unrestricted</strong>. On Xiaomi, POCO, Realme, Vivo, or Oppo, also enable <strong class="text-textMain">Autostart</strong>.</p>
           </div>
-          <div class="tip">Prevents aggressive phone battery savers from pausing your shield overnight.</div>
+          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
+            Prevents aggressive phone battery savers from pausing your shield overnight.
+          </div>
         </div>
 
-        <!-- Step 4 Card -->
-        <div class="setup-card">
+        <!-- Step 4 -->
+        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
           <div>
-            <div class="setup-graphic">
+            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
               <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
                 <rect x="28" y="16" width="164" height="52" rx="12" fill="#111B26" stroke="#62BCEB" stroke-width="1.5"/>
                 <path d="M58 26l14 6v10c0 9-6 16-14 19-8-3-14-10-14-19V32l14-6z" fill="#62BCEB" fill-opacity="0.2" stroke="#62BCEB" stroke-width="2"/>
@@ -1321,40 +549,48 @@
                 <text x="84" y="53" fill="#62BCEB" font-family="sans-serif" font-size="8.5" font-weight="600">130k+ Domains Blocked</text>
               </svg>
             </div>
-            <div class="setup-step-badge">Step 04 · Web & Study OS</div>
-            <h4>Activate Local DNS Shield</h4>
-            <p>Open the <strong>Web</strong> tab → toggle <strong>Block Adult Contents</strong> ON and tap <strong>OK</strong> on Android's local VPN dialog.</p>
+            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 04 · Web & Study OS</div>
+            <h4 class="text-base font-bold mb-2">Activate Local DNS Shield</h4>
+            <p class="text-sm text-muted mb-3">Open the <strong class="text-textMain">Web</strong> tab → toggle <strong class="text-textMain">Block Adult Contents</strong> ON and tap <strong class="text-textMain">OK</strong> on Android's local VPN dialog.</p>
           </div>
-          <div class="tip"><strong>Chrome Tip:</strong> Turn <em>Off</em> Chrome → Settings → Privacy & security → <em>Use secure DNS</em>.</div>
+          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
+            <strong>Chrome Tip:</strong> Turn <em>Off</em> Chrome → Settings → Privacy & security → <em>Use secure DNS</em>.
+          </div>
         </div>
       </div>
 
-      <!-- Quranic Reflection #4: Lowering the Gaze & Purity of Heart -->
-      <div class="wisdom-card emerald-accent reveal" style="margin-top: 34px;">
-        <div class="wisdom-header">
-          <div class="wisdom-label">Guarding the Gaze & Purity of Heart</div>
-          <span class="wisdom-tag">Surah An-Nur (24:30)</span>
+      <!-- Quranic Reflection #4 -->
+      <div class="mt-8 bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-emerald rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)] reveal">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-extrabold tracking-widest uppercase text-emerald">Guarding the Gaze & Purity of Heart</span>
+          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Surah An-Nur (24:30)</span>
         </div>
-        <div class="wisdom-arabic">قُل لِّلْمُؤْمِنِينَ يَغُضُّوا مِنْ أَبْصَارِهِمْ وَيَحْفَظُوا فُرُوجَهُمْ ۚ ذَٰلِكَ أَزْكَىٰ لَهُمْ ۗ إِنَّ اللَّهَ خَبِيرٌ بِمَا يَصْنَعُونَ</div>
-        <div class="wisdom-quote">“Tell the believing men to lower their gaze and guard their modesty. That is purer for them. Indeed, Allah is All-Aware of what they do.”</div>
-        <div class="wisdom-ref">Al-Qur'an 24:30 — Technology should strengthen your character and modesty, never compromise them.</div>
+        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
+          قُل لِّلْمُؤْمِنِينَ يَغُضُّوا مِنْ أَبْصَارِهِمْ وَيَحْفَظُوا فُرُوجَهُمْ ۚ ذَٰلِكَ أَزْكَىٰ لَهُمْ ۗ إِنَّ اللَّهَ خَبِيرٌ بِمَا يَصْنَعُونَ
+        </p>
+        <p class="text-base font-semibold text-textMain mb-1.5">
+          “Tell the believing men to lower their gaze and guard their modesty. That is purer for them. Indeed, Allah is All-Aware of what they do.”
+        </p>
+        <p class="text-xs sm:text-sm text-muted">
+          Al-Qur'an 24:30 — Technology should strengthen your character and modesty, never compromise them.
+        </p>
       </div>
     </div>
   </section>
 
-  <footer>
-    <div class="container footer-inner">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <img src="images/icon.png" alt="FocusGuard" width="26" height="26" style="border-radius: 6px;" />
-        <span><strong>FocusGuard</strong> (<code>com.focusguard.app</code>) · MIT License · Developed by <strong>Quasim.™</strong></span>
+  <!-- Minimal, Centered & Premium Footer -->
+  <footer class="border-t border-border/80 bg-bgSoft/70 py-10 mt-8">
+    <div class="max-w-[1140px] mx-auto px-5 flex flex-col items-center justify-center text-center gap-2.5">
+      <div class="inline-flex items-center gap-2">
+        <img src="images/icon.png" alt="FocusGuard" class="w-5 h-5 rounded-md border border-borderBright" />
+        <span class="text-xs font-bold tracking-wider uppercase text-cyan" id="footer-version">v1.5.2</span>
       </div>
-      <div class="footer-links">
-        <a href="https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener">GitHub Repo</a>
-        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener">Documentation Wiki</a>
-        <a href="https://github.com/quasimkhan/FocusGuard/blob/main/PRIVACY.md" target="_blank" rel="noopener">Privacy Policy</a>
-        <a href="https://github.com/quasimkhan/FocusGuard/issues" target="_blank" rel="noopener">Report Bug</a>
-        <a href="mailto:quasimdotdev@gmail.com">Email</a>
-      </div>
+      <p class="text-sm text-muted">
+        Developed by
+        <a href="https://linkedin.com/in/quasimkhan" target="_blank" rel="noopener" class="font-bold text-textMain hover:text-cyan underline decoration-borderBright underline-offset-4 transition-colors">
+          Quasim
+        </a>
+      </p>
     </div>
   </footer>
 
@@ -1371,14 +607,18 @@
 
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
-    // 2. Direct APK download resolver for BOTH navbar and hero buttons (never opens releases page)
+    // 2. Direct APK download resolver & live latest release version sync
     const apkButtons = document.querySelectorAll(".js-direct-apk");
     const heroLabel = document.getElementById("hero-apk-label");
     const releaseMeta = document.getElementById("release-status");
+    const footerVersion = document.getElementById("footer-version");
 
     fetch("https://api.github.com/repos/quasimkhan/FocusGuard/releases/latest")
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
+        if (data.tag_name && footerVersion) {
+          footerVersion.textContent = data.tag_name;
+        }
         const apk = (data.assets || []).find((a) => a.name.endsWith(".apk"));
         if (apk) {
           apkButtons.forEach((btn) => {
