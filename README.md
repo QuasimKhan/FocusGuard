@@ -1,106 +1,205 @@
-# FocusGuard by Quasim.™
+# FocusGuard
 
-[![Latest Release](https://img.shields.io/github/v/release/quasimkhan/FocusGuard?style=flat-square&color=38BDF8)](https://github.com/quasimkhan/FocusGuard/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/quasimkhan/FocusGuard/total?style=flat-square&color=10B981)](https://github.com/quasimkhan/FocusGuard/releases/latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-slate.svg?style=flat-square)](LICENSE)
+<div align="center">
 
-A zero-bloat, 100% on-device Android distraction blocker, short-form video filter, local DNS adult firewall, and focus study lock with best-effort tamper friction.
+<img width="100%" src="assets/banner.svg" alt="FocusGuard by Quasim.™ Banner" />
+
+<br />
+
+[![Latest Release](https://img.shields.io/github/v/release/quasimkhan/FocusGuard?style=for-the-badge&color=62BCEB&labelColor=111B25&label=Release](https://github.com/quasimkhan/FocusGuard/releases/latest)
+[![Total Downloads](https://img.shields.io/github/downloads/quasimkhan/FocusGuard/total?style=for-the-badge&color=79C6A5&labelColor=111B25&label=Downloads](https://github.com/quasimkhan/FocusGuard/releases/latest)
+[![Platform](https://img.shields.io/badge/Android-10%2B%20(API%2029--36)-FFC66D?style=for-the-badge&labelColor=111B25](https://github.com/quasimkhan/FocusGuard/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-E9EFF5?style=for-the-badge&labelColor=111B25](LICENSE)
+
+<br />
+
+**A zero-bloat, 100% on-device Android distraction blocker, short-form video filter, local DNS adult firewall, and focus study lock with best-effort tamper friction.**
+
+<br />
+
+[**🌐 Live Website**](https://quasimkhan.github.io/FocusGuard/) ·
+[**⬇️ Direct APK**](https://github.com/quasimkhan/FocusGuard/releases/latest) ·
+[**📱 Indus Appstore**](https://indusapp.store/9o4g51w8) ·
+[**📦 APKPure**](https://apkpure.com/p/com.focusguard.app) ·
+[**🔄 Obtainium**](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard) ·
+[**📖 User Wiki**](https://github.com/quasimkhan/FocusGuard/wiki)
+
+</div>
 
 ---
 
 ## Why FocusGuard?
 
-- **Block Shorts & Reels Only:** Automatically exits YouTube Shorts and Instagram Reels while keeping long-form lectures, search, and DMs working normally.
-- **3-Mode App Control (`Open` · `15s Pause` · `Block`):** Hard-block addictive apps or add a 15-second mindful breathing pause before unlocking a 5-minute pass.
-- **On-Device Adult & Web Shield (IPv4 + IPv6):** Blocks 130,000+ adult domains, rotating mirror domains, and custom `*wildcard*` rules across Chrome, Brave, Firefox, and Incognito tabs—with zero external VPN servers or internet slowdown.
-- **Study OS:** Built-in Deep-Work Pomodoro timer (`25m` / `50m` / `90m`) with daily progress tracking and a recurring, independently configured auto-lock app list.
-- **Armor:** Best-effort focus protection while FocusGuard's Accessibility Service is enabled, plus monotonic cooldown timers that cannot be bypassed by changing the phone's clock.
-- **100% Private:** No accounts, no analytics, no cloud servers. Everything runs locally on your phone.
+Most blockers require subscriptions, cloud accounts, or invasive analytics.
+
+**FocusGuard** runs every shield locally inside your phone's memory, giving you precise control over attention traps without slowing down your device or sending personal data off your phone.
+
+| Core Engine | Capabilities & Protection |
+| :--- | :--- |
+| **Surgical Shorts & Reels Filter** | Automatically exits **YouTube Shorts** and **Instagram Reels** the moment they open, while keeping long-form lectures, search, subscriptions, and DMs working normally. |
+| **3-Mode App Control** | Assign every installed app to **Open**, **15s Pause**, or **Block**. The 15-second pause enforces a mindful breathing prompt before unlocking a temporary 5-minute pass. |
+| **On-Device Web & Adult Shield** | Local loopback DNS firewall (**IPv4 + IPv6**) blocking **130,000+ adult domains**, rotating mirror sites, and custom wildcard rules across Chrome, Brave, Firefox, and Incognito tabs—with zero external VPN servers or internet slowdown. |
+| **Study OS** | Built-in Deep-Work Pomodoro timer (**25m · 50m · 90m**) with daily focus tracking, plus a recurring **Daily Auto-Lock Window** with an independent, add-only app list while active. |
+| **Anti-Impulse Armor** | Best-effort tamper friction while Accessibility is enabled, plus monotonic cooldown timers (**15m to 7d**) anchored to Android's uptime clock so changing device time cannot bypass active locks. |
+| **100% Private & Open Source** | Written in native **Kotlin & Jetpack Compose**. Zero accounts, zero analytics SDKs, zero ads—openly available under the [MIT License](LICENSE). |
 
 ---
 
-## How to Download & Install on Android
+## Download & Install on Android
 
-> **Note:** FocusGuard uses Android Accessibility and local VPN APIs for system-wide blocking, so it is distributed directly via verified GitHub Releases rather than the Google Play Store.
+> **Distribution Note:** Because FocusGuard uses Android Accessibility and local VPN APIs for system-wide blocking, it is distributed via verified GitHub Releases, Indus Appstore, APKPure, and Obtainium rather than the Google Play Store.
 
-### Step 1: Download the APK
+### Official Download Channels
 
-1. On your Android phone, open the [**Latest Release Page**](https://github.com/quasimkhan/FocusGuard/releases/latest).
-2. Under **Assets**, tap the APK named `FocusGuard-<version-tag>-Quasim.apk`.
-3. Open the downloaded `.apk` file and tap **Install** (allow **Install unknown apps** for your browser or file manager if prompted).
+| Channel | Best For | Link |
+| :--- | :--- | :--- |
+| **GitHub Releases (Direct APK)** | Verified primary release signed by `Quasim.™` | [**Download Latest APK**](https://github.com/quasimkhan/FocusGuard/releases/latest) |
+| **Indus Appstore (PhonePe)** | One-tap install and store updates in India | [**Get on Indus Appstore**](https://indusapp.store/9o4g51w8) |
+| **APKPure** | Alternative store mirror for `com.focusguard.app` | [**Get on APKPure**](https://apkpure.com/p/com.focusguard.app) |
+| **Obtainium** | Automatic in-place updates directly from GitHub | [**Add to Obtainium**](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard) |
+
+---
+
+## First-Time Android Setup Guide
+
+### Step 1: Install the APK
+
+1. Open the [**Latest Release Page**](https://github.com/quasimkhan/FocusGuard/releases/latest) on your Android phone, or use **Indus Appstore** or **APKPure**.
+2. Under **Assets**, tap `FocusGuard-<version-tag>-Quasim.apk`.
+3. Open the downloaded `.apk` file and tap **Install**.
+4. If prompted, grant **Install unknown apps** permission to your browser or file manager.
 
 ### Step 2: Enable the Accessibility Engine (Android 13–16)
 
-1. Open **FocusGuard** and tap **Enable** on the _Accessibility Service Offline_ banner.
+1. Open **FocusGuard** and tap **Open Accessibility settings** on the *Accessibility Service Offline* banner.
 2. Under **Downloaded apps**, tap **FocusGuard**.
-    - _If FocusGuard is greyed out ("Restricted setting"):_ Open **Phone Settings → Apps → FocusGuard → tap the 3-dot menu (`⋮`) in the top-right corner → Allow restricted settings**, then return to Accessibility and switch **FocusGuard** ON.
+3. If FocusGuard is greyed out with a **Restricted setting** message:
+   - Open **Phone Settings → Apps → FocusGuard**.
+   - Tap the three-dot menu (`⋮`) in the top-right corner.
+   - Select **Allow restricted settings** and authenticate with your PIN or fingerprint.
+4. Return to **Settings → Accessibility → FocusGuard**.
+5. Switch **Use FocusGuard** to **ON**.
 
 ### Step 3: Keep FocusGuard Running in the Background
 
-Android phone brands aggressively close background services unless exempted once:
+Android phone manufacturers aggressively stop background services unless they are exempted.
 
-1. Long-press the **FocusGuard** icon on your home screen → tap **App info**.
-2. Set **Battery** to **Unrestricted / No restrictions**.
-3. On **Xiaomi / POCO / Redmi / Realme / Vivo / Oppo**, also turn **Autostart** ON.
+1. Long-press the **FocusGuard** icon on your home screen.
+2. Tap **App info**.
+3. Set **Battery** to **Unrestricted / No restrictions**.
+4. On **Xiaomi / POCO / Redmi / Realme / Vivo / Oppo**, also turn **Autostart** **ON**.
 
-### Step 4: Activate Web Shield & Focus Protection
+### Step 4: Activate Web Shield & Armor Protection
 
-1. Open the **Web** tab in FocusGuard → switch **Local DNS Adult & Web Shield** ON and tap **OK** on Android's VPN connection prompt.
-    - _Chrome Tip:_ Open **Chrome Settings → Privacy and security → Use secure DNS** and turn it **Off** so Chrome uses FocusGuard's local DNS shield.
-2. In **Armor**, optionally enable the Device Admin warning. Regular Device Admin enrollment cannot guarantee uninstall prevention. While a focus lock is active and Accessibility is enabled, FocusGuard attempts to dismiss a clearly identified FocusGuard uninstall confirmation; some OEM installer screens do not expose enough information and may fail open.
+1. Open the **Web** tab in FocusGuard.
+2. Switch **Block Adult Contents (Local DNS Shield)** to **ON**.
+3. Tap **OK** on Android's local VPN connection prompt.
 
-### Daily Auto-Lock Window
+   **Chrome Tip:** Open **Chrome Settings → Privacy and security → Use secure DNS** and turn it **Off** so Chrome routes DNS lookups through FocusGuard's local shield.
 
-Open **Study OS**, enable **Daily Auto-Lock Window**, set the start and end times, then search and select the apps for this schedule. This list is independent of the global Open / 15s Pause / Block modes in the Apps tab. Schedule-only apps are usable outside the window, while any global rule remains in effect. The start minute is included, the end minute is excluded, windows can cross midnight, and matching start/end times mean all day.
+4. In **Armor**, optionally enable the **Device Admin** warning.
 
-On Android 12 and later, allow **Alarms & reminders** access in Study OS for precise mid-session transitions and boundary alerts. If access is unavailable, FocusGuard still checks the local schedule when a foreground app changes, but an already-open app and its alert may update late.
-
-On Android 13 and later, enabling the schedule or Comic Focus Nudges explains and requests notification permission. Choose **Not now** to keep using FocusGuard without alerts; blocking remains active. The Study OS status shows whether app notifications and the Daily Auto-Lock, App Block, and Comic Nudge channels are available. If a channel is off, open Android **App info → Notifications** and enable that channel. Notification settings do not change lock enforcement.
+   Regular Device Admin enrollment cannot guarantee uninstall prevention. While a focus lock is active and Accessibility is enabled, FocusGuard attempts to dismiss a clearly identified FocusGuard uninstall confirmation. Some OEM installer screens do not expose enough information and may fail open.
 
 ---
 
-## Automatic Updates
+## Daily Auto-Lock Window & Notifications
 
-FocusGuard checks GitHub Releases automatically every 24 hours (or manually via **Armor → Check Updates**). Whenever a new version is released, an **Update Available** banner appears at the top of the app—tap **Download** and install the APK over your existing app without losing any settings or blocklists.
+Open **Study OS**, enable **Daily Auto-Lock Window**, set the **Start Time** and **End Time**, then search and select the apps for this schedule.
 
-## Building from Source
+- **Independent Schedule List:** This list is separate from the global `Open` / `15s` / `Block` modes in the **Apps** tab. Schedule-only apps remain usable outside the window, while any global rule remains in effect.
+- **Boundary Rules:** The start minute is included, and the end minute is excluded. Overnight windows, such as `22:00` to `06:00`, are supported. Matching start and end times enforce all day.
+- **Exact Alarms (Android 12+):** Allow **Alarms & reminders** access in Study OS for precise mid-session transitions and boundary alerts. If unavailable, FocusGuard still checks the schedule whenever a foreground app changes, though an already-open app and its alert may update late.
+- **Focus Notifications (Android 13+):** Enabling the schedule or **Comic Focus Nudges** prompts for notification permission. Choose **Not now** to keep using FocusGuard silently—blocking still remains active. You can verify or toggle individual channels (**Daily Auto-Lock**, **App Block**, **Comic Nudge**) anytime in **Android App info → Notifications**.
 
-Debug builds need no signing setup. Release builds require `RELEASE_STORE_FILE`, `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`, and `RELEASE_KEY_PASSWORD` supplied through user-level Gradle properties (for example, `~/.gradle/gradle.properties`) or CI environment variables. Keep these values and the keystore outside the repository; a release build reports a clear error when configuration is missing.
+---
 
-## Automated Production Releases
+## Automatic In-App Updates
 
-Pushing an annotated `vMAJOR.MINOR.PATCH` tag starts `.github/workflows/release.yml`. The workflow checks that the tag matches `versionName` and the version-code formula (`MAJOR × 10000 + MINOR × 100 + PATCH`), runs `testDebugUnitTest`, builds a signed release APK, and publishes generated release notes with the APK as the repository's latest GitHub Release. The uploaded asset is named `FocusGuard-v<version>-Quasim.apk`, which matches the in-app update checker. If a version tag was pushed before this workflow was available, use **Actions → Build & Publish Production APK → Run workflow** and enter that existing tag.
+FocusGuard checks GitHub Releases automatically every 24 hours, or manually via **Armor → Check Updates**.
 
-Configure these repository **Actions secrets** before the first production release:
+Whenever a newer release is published, an **Update Available** banner appears at the top of the dashboard.
 
-- `KEYSTORE_BASE64`: the release keystore encoded as base64.
-- `RELEASE_STORE_PASSWORD`: the keystore password.
-- `RELEASE_KEY_ALIAS`: the signing key alias.
-- `RELEASE_KEY_PASSWORD`: the signing key password.
+Tap **Download** and install the signed APK directly over your existing app without losing any blocklists, schedules, or focus stats.
 
-For each release, update `versionCode` and `versionName` in `app/build.gradle.kts`, commit the change to `main`, then create and push an annotated tag for that same version. For example:
+---
 
-```sh
-git tag -a v1.5.0 -m "FocusGuard 1.5.0"
-git push origin main v1.5.0
+## Building & Releasing from Source
+
+<details>
+<summary><strong>Local Builds & Automated GitHub Actions CI</strong></summary>
+
+### Local Builds
+
+Debug builds require no signing setup:
+
+```bash
+./gradlew --no-daemon testDebugUnitTest assembleDebug
 ```
 
-GitHub Actions then runs the tests and release build, attaches the updater-compatible APK, and marks the release as latest. Do not reuse an existing version tag; increment the version first.
+Release builds require the following credentials:
+
+- `RELEASE_STORE_FILE`
+- `RELEASE_STORE_PASSWORD`
+- `RELEASE_KEY_ALIAS`
+- `RELEASE_KEY_PASSWORD`
+
+Supply them through user-level Gradle properties (`~/.gradle/gradle.properties`) or CI environment variables.
+
+**Keep these credentials and your keystore outside the repository.**
+
+### Automated Production Releases
+
+Pushing an annotated `vMAJOR.MINOR.PATCH` tag triggers `.github/workflows/release.yml`, which:
+
+1. Verifies that the Git tag matches `versionName` and the version-code formula:
+
+   `MAJOR × 10000 + MINOR × 100 + PATCH`
+
+2. Executes:
+
+   ```bash
+   ./gradlew --no-daemon testDebugUnitTest assembleRelease
+   ```
+
+3. Signs the APK as `FocusGuard-v<version>-Quasim.apk` and publishes it as the repository's latest GitHub Release.
+
+### Configure GitHub Actions Secrets
+
+Configure these repository Actions secrets before cutting a release:
+
+| Secret | Description |
+| :--- | :--- |
+| `KEYSTORE_BASE64` | Release `.jks` keystore encoded as Base64 |
+| `RELEASE_STORE_PASSWORD` | Keystore password |
+| `RELEASE_KEY_ALIAS` | Signing key alias |
+| `RELEASE_KEY_PASSWORD` | Signing key password |
+
+### Create and Push a Release Tag
+
+```bash
+git tag -a v1.5.2 -m "FocusGuard 1.5.2"
+git push origin main v1.5.2
+```
+
+</details>
 
 ---
 
-## Support & Contact
+## Documentation, Support & Contact
 
-- **Report a Bug or Request a Feature:** [Open a GitHub Issue](https://github.com/quasimkhan/FocusGuard/issues)
-- **Email:** [quasimdotdev@gmail.com](mailto:quasimdotdev@gmail.com)
+- **Official Website:** [quasimkhan.github.io/FocusGuard](https://quasimkhan.github.io/FocusGuard/)
+- **Documentation & Troubleshooting Wiki:** [github.com/quasimkhan/FocusGuard/wiki](https://github.com/quasimkhan/FocusGuard/wiki)
+- **Privacy Policy:** [PRIVACY.md](PRIVACY.md)
+- **Report a Bug / Request a Feature:** [Open a GitHub Issue](https://github.com/quasimkhan/FocusGuard/issues)
+- **Email:** quasimdotdev@gmail.com
 - **X (Twitter):** [@quasimdotdev](https://x.com/quasimdotdev)
 - **LinkedIn:** [linkedin.com/in/quasimkhan](https://linkedin.com/in/quasimkhan)
-- **License:** Released under the [MIT License](LICENSE) by **Quasim.™**
 
-## Download & Auto-Updates
+---
 
-- **Direct APK Download:** Get the latest signed release from [GitHub Releases](https://github.com/quasimkhan/FocusGuard/releases/latest).
-- **PhonePe App Store:** Click here to get the app from [PhonePe App Store](https://indusapp.store/9o4g51w8)
-- **APKSURE Download:** Click here to get the app from [APKSURE](https://apkpure.com/p/com.focusguard.app)
+<div align="center">
 
-- [Read the Full User Guide & Setup Wiki](https://github.com/quasimkhan/FocusGuard/wiki)
+Released under the MIT License · Crafted in Native Kotlin by **Quasim.™**
+
+</div>
