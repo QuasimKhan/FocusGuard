@@ -100,5 +100,5 @@ GitHub Actions then runs the tests and release build, attaches the updater-compa
 ## Download & Auto-Updates
 
 - **Direct APK Download:** Get the latest signed release from [GitHub Releases](https://github.com/quasimkhan/FocusGuard/releases/latest).
-- **PhonePe App Store:** Download from here as well [PhonePe App Store](https://indusapp.store/9o4g51w8)
-- **APKSURE Download:** Get the latest [APKSURE](https://apkpure.com/p/com.focusguard.app)
+- **PhonePe App Store:** Click here to get the app from [PhonePe App Store](https://indusapp.store/9o4g51w8)
+- **APKSURE Download:** Click here to get the app from [APKSURE](https://apkpure.com/p/com.focusguard.app)
