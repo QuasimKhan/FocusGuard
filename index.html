@@ -100,7 +100,7 @@
 </head>
 <body class="bg-void text-ink font-sans antialiased selection:bg-skyAccent/30 selection:text-skyAccent overflow-x-hidden">
 
-  <!-- Floating Glass Pill Navigation (Mobile-First) -->
+  <!-- Floating Glass Pill Navigation -->
   <header class="sticky top-0 z-40 px-3 sm:px-5 pt-3">
     <nav class="max-w-5xl mx-auto h-14 px-3.5 sm:px-5 rounded-2xl bg-surface/80 border border-stroke/90 backdrop-blur-xl flex items-center justify-between gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
       <a href="#" class="flex items-center gap-2.5 shrink-0">
@@ -204,14 +204,12 @@
       <!-- Right Interactive Device Mockup -->
       <div class="lg:col-span-5 flex justify-center reveal">
         <div class="relative w-full max-w-[285px] sm:max-w-[305px]">
-          <!-- Radar Pulse Ring -->
           <div class="absolute inset-0 m-auto w-64 h-64 rounded-full border border-skyAccent/30 animate-radarPing pointer-events-none"></div>
           <div class="absolute -inset-4 bg-gradient-to-tr from-skyAccent/20 via-transparent to-mint/20 rounded-[40px] blur-2xl pointer-events-none"></div>
 
           <div class="relative z-10 rounded-[34px] p-2.5 bg-gradient-to-b from-strokeBright to-surface border border-strokeBright/80 shadow-[0_30px_70px_rgba(0,0,0,0.85)] animate-floatSlow">
             <img src="images/1.png" alt="FocusGuard Shield Dashboard" class="w-full rounded-[26px] border border-stroke" />
 
-            <!-- Floating Live Status Pill -->
             <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[92%] bg-surface/95 border border-strokeBright backdrop-blur-xl px-3.5 py-2.5 rounded-2xl shadow-2xl flex items-center justify-between gap-2">
               <div class="flex items-center gap-2.5">
                 <img src="images/icon.png" alt="Shield" class="w-8 h-8 rounded-lg" />
@@ -220,7 +218,6 @@
                   <div class="text-[10px] font-semibold text-mint">Shorts · Reels · Adult DNS</div>
                 </div>
               </div>
-              <!-- Animated Equalizer Graphic -->
               <div class="flex items-end gap-0.5 h-4">
                 <span class="w-1 h-full bg-mint rounded-full animate-waveBar"></span>
                 <span class="w-1 h-3 bg-skyAccent rounded-full animate-waveBar [animation-delay:0.2s]"></span>
@@ -233,7 +230,7 @@
     </div>
   </section>
 
-  <!-- Interactive Clinical & Neuroscience Studies Section (Click to Open Modals) -->
+  <!-- Interactive Clinical & Neuroscience Studies Section -->
   <section id="studies" class="py-12 sm:py-16 px-4 sm:px-6">
     <div class="max-w-5xl mx-auto">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7 reveal">
@@ -245,7 +242,6 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 reveal">
-        <!-- Study Card 1 -->
         <button type="button" onclick="openStudyModal('dopamine')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
           <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 rounded-2xl bg-coral/15 border border-coral/30 text-coral flex items-center justify-center">
@@ -261,7 +257,6 @@
           </span>
         </button>
 
-        <!-- Study Card 2 -->
         <button type="button" onclick="openStudyModal('attention')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
           <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 rounded-2xl bg-skyAccent/15 border border-skyAccent/30 text-skyAccent flex items-center justify-center">
@@ -277,7 +272,6 @@
           </span>
         </button>
 
-        <!-- Study Card 3 -->
         <button type="button" onclick="openStudyModal('mental')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
           <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 rounded-2xl bg-gold/15 border border-gold/30 text-gold flex items-center justify-center">
@@ -293,7 +287,6 @@
           </span>
         </button>
 
-        <!-- Study Card 4 -->
         <button type="button" onclick="openStudyModal('physical')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
           <div class="flex items-center justify-between mb-4">
             <div class="w-10 h-10 rounded-2xl bg-mint/15 border border-mint/30 text-mint flex items-center justify-center">
@@ -346,7 +339,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-6 gap-4 reveal">
-        <!-- Feature 1 (Wide Visual Bento) -->
         <div class="bento-card md:col-span-4 p-6 flex flex-col justify-between">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
             <div>
@@ -354,7 +346,6 @@
               <h3 class="text-lg sm:text-xl font-extrabold mt-1">Kill Shorts & Reels — Keep Lectures & DMs</h3>
               <p class="text-xs sm:text-sm text-dim mt-1">Exits YouTube Shorts & Instagram Reels instantly without breaking search, subscriptions, or chats.</p>
             </div>
-            <!-- Conceptual Vector Diagram -->
             <div class="shrink-0 bg-surface border border-stroke rounded-2xl p-3 flex items-center gap-3">
               <div class="text-center">
                 <div class="w-9 h-9 rounded-xl bg-coral/15 border border-coral/40 text-coral flex items-center justify-center mx-auto font-extrabold text-xs">✕</div>
@@ -374,7 +365,6 @@
           </div>
         </div>
 
-        <!-- Feature 2 -->
         <div class="bento-card md:col-span-2 p-6 flex flex-col justify-between">
           <div>
             <span class="text-[10px] font-extrabold uppercase tracking-widest text-mint">Local Loopback VPN</span>
@@ -387,7 +377,6 @@
           </div>
         </div>
 
-        <!-- Feature 3 -->
         <div class="bento-card md:col-span-2 p-6">
           <span class="text-[10px] font-extrabold uppercase tracking-widest text-gold">Mindful Friction</span>
           <h3 class="text-lg font-extrabold mt-1">3-Mode App Control</h3>
@@ -399,7 +388,6 @@
           </div>
         </div>
 
-        <!-- Feature 4 -->
         <div class="bento-card md:col-span-2 p-6">
           <span class="text-[10px] font-extrabold uppercase tracking-widest text-skyAccent">Study OS</span>
           <h3 class="text-lg font-extrabold mt-1">Pomodoro & Auto-Lock</h3>
@@ -411,7 +399,6 @@
           </div>
         </div>
 
-        <!-- Feature 5 -->
         <div class="bento-card md:col-span-2 p-6">
           <span class="text-[10px] font-extrabold uppercase tracking-widest text-coral">Anti-Impulse Armor</span>
           <h3 class="text-lg font-extrabold mt-1">Strict Lock & Clock Guard</h3>
@@ -474,7 +461,6 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
-        <!-- Step 1 -->
         <div class="bento-card p-4 flex flex-col justify-between">
           <div>
             <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
@@ -493,7 +479,6 @@
           </div>
         </div>
 
-        <!-- Step 2 -->
         <div class="bento-card p-4 flex flex-col justify-between">
           <div>
             <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
@@ -517,7 +502,6 @@
           </div>
         </div>
 
-        <!-- Step 3 -->
         <div class="bento-card p-4 flex flex-col justify-between">
           <div>
             <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
@@ -536,7 +520,6 @@
           </div>
         </div>
 
-        <!-- Step 4 -->
         <div class="bento-card p-4 flex flex-col justify-between">
           <div>
             <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
@@ -557,7 +540,7 @@
     </div>
   </section>
 
-  <!-- Centered, Low-Opacity Minimal Footer with All Restored Links -->
+  <!-- Centered, Low-Opacity Minimal Footer -->
   <footer class="border-t border-stroke/60 py-12 px-4 sm:px-6 mt-6">
     <div class="max-w-4xl mx-auto flex flex-col items-center justify-center text-center gap-4 opacity-60 hover:opacity-95 transition-opacity duration-300">
       <div class="inline-flex items-center gap-2">
@@ -585,7 +568,7 @@
 
   <!-- Interactive Clinical Study Modal -->
   <div id="study-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-void/80 backdrop-blur-xl" onclick="if(event.target===this) closeStudyModal()">
-    <div class="w-full max-w-lg bg-card border border-strokeBright rounded-3xl p-6 sm:p-7 shadow-[0_25px_70px_rgba(0,0,0,0.9)] relative animate-[floatSlow_0.25s_ease-out]">
+    <div class="w-full max-w-lg bg-card border border-strokeBright rounded-3xl p-6 sm:p-7 shadow-[0_25px_70px_rgba(0,0,0,0.9)] relative">
       <button type="button" onclick="closeStudyModal()" aria-label="Close modal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-surface border border-stroke text-dim hover:text-ink flex items-center justify-center transition-colors">
         ✕
       </button>
@@ -613,7 +596,6 @@
   </div>
 
   <script>
-    // 1. Clinical & Neuroscience Studies Data for Modals
     const STUDIES = {
       dopamine: {
         badge: "Neurobiology · Reward Pathway",
@@ -687,7 +669,6 @@
       if (e.key === "Escape") closeStudyModal();
     });
 
-    // 2. Scroll-Reveal Animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -699,7 +680,6 @@
 
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
-    // 3. Direct APK Download Resolver & Live Release Version Sync
     const apkButtons = document.querySelectorAll(".js-direct-apk");
     const heroLabel = document.getElementById("hero-apk-label");
     const releaseMeta = document.getElementById("release-status");
