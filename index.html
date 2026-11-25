@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FocusGuard by Quasim.™ — Reclaim Your Time, Focus & Discipline</title>
-  <meta name="description" content="Zero-bloat, 100% on-device Android distraction blocker, YouTube Shorts & Instagram Reels filter, local DNS adult firewall, and Deep-Work Study OS. Free forever, no ads, no data tracking." />
+  <title>FocusGuard by Quasim.™ — Reclaim Your Attention, Gaze & Time</title>
+  <meta name="description" content="Zero-bloat, 100% on-device Android shield that blocks YouTube Shorts, Instagram Reels, distracting apps, and 130,000+ adult domains. Free forever, zero ads, zero tracking." />
   <link rel="icon" type="image/png" href="images/icon.png" />
 
-  <!-- Authentic Quranic & UI Fonts -->
+  <!-- Authentic Quranic & Modern UI Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,41 +20,46 @@
       theme: {
         extend: {
           colors: {
-            bg: '#070B11',
-            bgSoft: '#0C131D',
-            panel: '#101925',
-            elevated: '#162334',
-            border: '#233346',
-            borderBright: '#36506E',
-            cyan: '#62BCEB',
-            emerald: '#79C6A5',
-            amber: '#FFC66D',
-            rose: '#FF8A80',
-            textMain: '#EEF3F8',
-            muted: '#98A9BA',
+            void: '#04060A',
+            surface: '#0A0E16',
+            card: '#0F1521',
+            cardHover: '#141D2D',
+            stroke: '#1E293B',
+            strokeBright: '#334155',
+            skyAccent: '#38BDF8',
+            mint: '#34D399',
+            gold: '#FBBF24',
+            coral: '#FB7185',
+            ink: '#F8FAFC',
+            dim: '#94A3B8',
           },
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
-            quran: ['"Amiri Quran"', '"Amiri"', '"Traditional Arabic"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            quran: ['"Amiri Quran"', '"Amiri"', 'serif'],
           },
           keyframes: {
-            floatPhone: {
+            floatSlow: {
               '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-10px)' },
+              '50%': { transform: 'translateY(-8px)' },
             },
-            gradientShift: {
-              '0%, 100%': { backgroundPosition: '0% 50%' },
-              '50%': { backgroundPosition: '100% 50%' },
+            radarPing: {
+              '0%': { transform: 'scale(0.85)', opacity: '0.75' },
+              '100%': { transform: 'scale(2.1)', opacity: '0' },
             },
-            shieldSweep: {
+            shimmer: {
               '0%': { transform: 'translateX(-140%) skewX(-20deg)' },
               '100%': { transform: 'translateX(320%) skewX(-20deg)' },
             },
+            waveBar: {
+              '0%, 100%': { transform: 'scaleY(0.35)' },
+              '50%': { transform: 'scaleY(1)' },
+            },
           },
           animation: {
-            floatPhone: 'floatPhone 6s ease-in-out infinite',
-            gradientShift: 'gradientShift 6s linear infinite',
-            shieldSweep: 'shieldSweep 3.8s ease-in-out infinite',
+            floatSlow: 'floatSlow 5.5s ease-in-out infinite',
+            radarPing: 'radarPing 2.6s cubic-bezier(0, 0, 0.2, 1) infinite',
+            shimmer: 'shimmer 3.6s ease-in-out infinite',
+            waveBar: 'waveBar 1.4s ease-in-out infinite',
           },
         },
       },
@@ -63,19 +68,27 @@
 
   <style type="text/tailwindcss">
     @layer utilities {
-      .ambient-bg {
+      .hero-mesh {
         background-image:
-          radial-gradient(ellipse 75% 45% at 50% -5%, rgba(98, 188, 235, 0.18), transparent 70%),
-          radial-gradient(ellipse 50% 35% at 88% 18%, rgba(121, 198, 165, 0.1), transparent 65%),
-          linear-gradient(rgba(35, 51, 70, 0.18) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(35, 51, 70, 0.18) 1px, transparent 1px);
-        background-size: 100% 100%, 100% 100%, 44px 44px, 44px 44px;
+          radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.16), transparent 55%),
+          radial-gradient(circle at 85% 25%, rgba(52, 211, 153, 0.09), transparent 45%),
+          linear-gradient(to right, rgba(30, 41, 59, 0.25) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(30, 41, 59, 0.25) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+      }
+
+      .bento-card {
+        @apply bg-card/90 border border-stroke rounded-3xl backdrop-blur-md transition-all duration-300;
+      }
+
+      .bento-card:hover {
+        @apply border-strokeBright bg-cardHover/95 -translate-y-1 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)];
       }
 
       .reveal {
         opacity: 0;
-        transform: translateY(26px);
-        transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(20px);
+        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       .reveal.in-view {
@@ -85,517 +98,596 @@
     }
   </style>
 </head>
-<body class="bg-bg text-textMain font-sans antialiased overflow-x-hidden leading-relaxed">
+<body class="bg-void text-ink font-sans antialiased selection:bg-skyAccent/30 selection:text-skyAccent overflow-x-hidden">
 
-  <!-- Sticky Navbar -->
-  <nav class="sticky top-0 z-50 border-b border-border/85 bg-bg/85 backdrop-blur-xl">
-    <div class="max-w-[1140px] mx-auto px-5 min-h-[68px] flex items-center justify-between gap-3">
-      <a href="#" class="flex items-center gap-2.5 font-extrabold text-lg tracking-tight shrink-0">
-        <img src="images/icon.png" alt="FocusGuard Icon" class="w-9 h-9 rounded-[10px] border border-borderBright shadow-[0_4px_14px_rgba(98,188,235,0.2)]" />
-        <span>FocusGuard</span>
-        <span class="inline-flex items-center text-[11px] sm:text-xs font-bold tracking-wider whitespace-nowrap text-cyan bg-elevated border border-border px-2 py-0.5 rounded-md">
-          by Quasim.™
-        </span>
+  <!-- Floating Glass Pill Navigation (Mobile-First) -->
+  <header class="sticky top-0 z-40 px-3 sm:px-5 pt-3">
+    <nav class="max-w-5xl mx-auto h-14 px-3.5 sm:px-5 rounded-2xl bg-surface/80 border border-stroke/90 backdrop-blur-xl flex items-center justify-between gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+      <a href="#" class="flex items-center gap-2.5 shrink-0">
+        <img src="images/icon.png" alt="FocusGuard" class="w-8 h-8 rounded-xl border border-strokeBright" />
+        <div class="flex items-center gap-1.5">
+          <span class="font-extrabold text-sm sm:text-base tracking-tight">FocusGuard</span>
+          <span class="text-[10px] font-bold tracking-wider text-skyAccent bg-skyAccent/10 border border-skyAccent/25 px-1.5 py-0.5 rounded-md">
+            by Quasim.™
+          </span>
+        </div>
       </a>
 
-      <div class="flex items-center gap-5 text-sm font-medium text-muted">
-        <a href="#why" class="hidden md:inline hover:text-textMain transition-colors">Why FocusGuard</a>
-        <a href="#features" class="hidden md:inline hover:text-textMain transition-colors">Features</a>
-        <a href="#preview" class="hidden md:inline hover:text-textMain transition-colors">Screens</a>
-        <a href="#setup" class="hidden md:inline hover:text-textMain transition-colors">Setup</a>
-        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener" class="hidden sm:inline hover:text-textMain transition-colors">Wiki</a>
-        <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" download class="js-direct-apk inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-gradient-to-br from-cyan to-[#49A6D6] text-[#051B26] font-extrabold text-xs sm:text-[13px] shadow-[0_4px_18px_rgba(98,188,235,0.28)] hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(98,188,235,0.42)] transition-all">
-          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          <span>Download</span>
-        </a>
+      <div class="hidden md:flex items-center gap-6 text-xs font-semibold text-dim">
+        <a href="#studies" class="hover:text-ink transition-colors">Research</a>
+        <a href="#engine" class="hover:text-ink transition-colors">Engine</a>
+        <a href="#screens" class="hover:text-ink transition-colors">Interface</a>
+        <a href="#setup" class="hover:text-ink transition-colors">Setup</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener" class="hover:text-ink transition-colors">Wiki</a>
       </div>
-    </div>
-  </nav>
 
-  <!-- Ambient Top Section -->
-  <div class="ambient-bg relative">
-    <!-- Hero -->
-    <header class="py-12 md:py-16">
-      <div class="max-w-[1140px] mx-auto px-5 grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-11 items-center text-center lg:text-left">
-        <div class="reveal">
-          <div class="inline-flex items-center gap-2 bg-emerald/15 border border-emerald/40 text-emerald text-xs font-extrabold tracking-wider px-3.5 py-1.5 rounded-full mb-5">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald"></span>
-            </span>
-            FREE FOREVER · ZERO ADS · 100% ON-DEVICE
-          </div>
+      <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" download class="js-direct-apk inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-skyAccent text-void font-extrabold text-xs shadow-[0_0_20px_rgba(56,189,248,0.35)] hover:brightness-110 active:scale-95 transition-all shrink-0">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>Get APK</span>
+      </a>
+    </nav>
+  </header>
 
-          <h1 class="text-4xl sm:text-5xl lg:text-[3.35rem] font-extrabold tracking-tight leading-[1.12] mb-4">
-            Guard Your Gaze, Your Time, and
-            <span class="bg-gradient-to-r from-cyan via-emerald to-cyan bg-[length:200%_auto] bg-clip-text text-transparent animate-gradientShift">
-              Your Future.
-            </span>
-          </h1>
-
-          <p class="text-muted text-base sm:text-[1.06rem] mb-7 max-w-[580px] mx-auto lg:mx-0">
-            Algorithmic feeds are engineered to hijack attention and weaken willpower. FocusGuard is a zero-bloat native Android shield that blocks YouTube Shorts, Instagram Reels, distracting apps, and 130,000+ adult domains—entirely offline on your device.
-          </p>
-
-          <!-- Download CTA Group -->
-          <div class="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-2.5 mb-3.5">
-            <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" download class="js-direct-apk relative overflow-hidden inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-gradient-to-br from-cyan to-[#4CA8D8] text-[#061D29] font-bold text-sm shadow-[0_8px_24px_rgba(98,188,235,0.28)] hover:-translate-y-0.5 transition-transform">
-              <span class="pointer-events-none absolute inset-y-0 left-0 w-2/5 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shieldSweep"></span>
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              <span id="hero-apk-label">Download Direct APK</span>
-            </a>
-
-            <a href="https://indusapp.store/9o4g51w8" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-panel border border-border text-textMain font-bold text-sm hover:border-cyan hover:bg-elevated hover:-translate-y-0.5 transition-all">
-              Indus Appstore (PhonePe)
-            </a>
-
-            <a href="https://apkpure.com/p/com.focusguard.app" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-panel border border-border text-textMain font-bold text-sm hover:border-cyan hover:bg-elevated hover:-translate-y-0.5 transition-all">
-              APKPure
-            </a>
-
-            <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-panel border border-border text-textMain font-bold text-sm hover:border-cyan hover:bg-elevated hover:-translate-y-0.5 transition-all">
-              Obtainium Auto-Update
-            </a>
-          </div>
-
-          <div id="release-status" class="text-xs text-muted mb-6 flex items-center justify-center lg:justify-start gap-2">
-            Resolving direct signed APK from GitHub...
-          </div>
-
-          <!-- Trust Strip -->
-          <div class="flex flex-wrap justify-center lg:justify-start gap-2.5">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
-              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              No Ads or Paywalls
-            </div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
-              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              Zero Data Collection
-            </div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
-              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              No External VPN Servers
-            </div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-panel border border-border text-xs font-semibold text-textMain">
-              <svg class="w-3.5 h-3.5 text-emerald shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              MIT Open Source
-            </div>
-          </div>
+  <!-- Hero Section -->
+  <section class="hero-mesh pt-8 pb-14 sm:pt-14 sm:pb-20 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <!-- Left Copy & Actions -->
+      <div class="lg:col-span-7 text-center lg:text-left reveal">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-mint/10 border border-mint/30 text-mint text-[11px] font-extrabold tracking-wider uppercase mb-5">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-mint"></span>
+          </span>
+          Free Forever · Zero Ads · 100% Offline
         </div>
 
-        <!-- Hero Device Frame -->
-        <div class="reveal relative flex justify-center">
-          <div class="absolute w-80 h-80 rounded-full bg-cyan/20 blur-2xl pointer-events-none"></div>
-          <div class="relative z-10 w-full max-w-[310px] rounded-[32px] p-2.5 bg-gradient-to-br from-borderBright to-panel shadow-[0_26px_64px_rgba(0,0,0,0.72),0_0_42px_rgba(98,188,235,0.18)] animate-floatPhone">
-            <img src="images/1.png" alt="FocusGuard Android Dashboard" class="w-full rounded-[24px] border border-border" />
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 lg:left-[-22px] lg:translate-x-0 w-[90%] lg:w-auto max-w-[255px] bg-panel/95 border border-borderBright backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2.5 text-left">
-              <img src="images/icon.png" alt="Shield Active" class="w-8 h-8 rounded-[9px] shrink-0" />
-              <div>
-                <strong class="block text-xs text-textMain">100% Local Enforcement</strong>
-                <span class="text-[11px] text-emerald font-semibold">Shorts, Reels & DNS Guard Active</span>
+        <h1 class="text-3xl sm:text-5xl lg:text-[3.4rem] font-extrabold tracking-tight leading-[1.08] mb-4">
+          Surgical Protection Against
+          <span class="bg-gradient-to-r from-skyAccent via-mint to-skyAccent bg-clip-text text-transparent">
+            Digital Addiction.
+          </span>
+        </h1>
+
+        <p class="text-dim text-sm sm:text-base max-w-xl mx-auto lg:mx-0 mb-6 leading-relaxed">
+          Block YouTube Shorts, Instagram Reels, distracting apps, and 130,000+ adult domains—entirely on-device with zero servers, zero tracking, and zero battery drain.
+        </p>
+
+        <!-- Primary & Store Downloads -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-xl mx-auto lg:mx-0 mb-3">
+          <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" download class="js-direct-apk sm:col-span-2 relative overflow-hidden inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-skyAccent to-mint text-void font-extrabold text-sm shadow-[0_10px_30px_rgba(56,189,248,0.28)] hover:brightness-105 active:scale-[0.99] transition-all">
+            <span class="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/45 to-transparent animate-shimmer"></span>
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span id="hero-apk-label">Download Direct APK</span>
+          </a>
+
+          <a href="https://indusapp.store/9o4g51w8" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-card border border-stroke text-xs sm:text-sm font-bold text-ink hover:border-skyAccent transition-colors">
+            <span class="w-2 h-2 rounded-full bg-skyAccent"></span>
+            Indus Appstore (PhonePe)
+          </a>
+
+          <a href="https://apkpure.com/p/com.focusguard.app" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-card border border-stroke text-xs sm:text-sm font-bold text-ink hover:border-mint transition-colors">
+            <span class="w-2 h-2 rounded-full bg-mint"></span>
+            APKPure
+          </a>
+
+          <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="sm:col-span-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-surface border border-stroke/80 text-xs font-semibold text-dim hover:text-ink hover:border-strokeBright transition-colors">
+            <svg class="w-3.5 h-3.5 text-skyAccent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Add to Obtainium for Auto-Updates
+          </a>
+        </div>
+
+        <div id="release-status" class="text-[11px] text-dim mb-6">
+          Resolving verified release binary from GitHub...
+        </div>
+
+        <!-- Compact Metric Chips -->
+        <div class="grid grid-cols-3 gap-2 max-w-md mx-auto lg:mx-0">
+          <div class="bg-card/80 border border-stroke rounded-2xl p-2.5 text-center">
+            <div class="text-base sm:text-lg font-extrabold text-mint">0 Bytes</div>
+            <div class="text-[10px] text-dim font-medium">Data Tracked</div>
+          </div>
+          <div class="bg-card/80 border border-stroke rounded-2xl p-2.5 text-center">
+            <div class="text-base sm:text-lg font-extrabold text-skyAccent">130k+</div>
+            <div class="text-[10px] text-dim font-medium">Domains Blocked</div>
+          </div>
+          <div class="bg-card/80 border border-stroke rounded-2xl p-2.5 text-center">
+            <div class="text-base sm:text-lg font-extrabold text-gold">100%</div>
+            <div class="text-[10px] text-dim font-medium">On-Device VPN</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Interactive Device Mockup -->
+      <div class="lg:col-span-5 flex justify-center reveal">
+        <div class="relative w-full max-w-[285px] sm:max-w-[305px]">
+          <!-- Radar Pulse Ring -->
+          <div class="absolute inset-0 m-auto w-64 h-64 rounded-full border border-skyAccent/30 animate-radarPing pointer-events-none"></div>
+          <div class="absolute -inset-4 bg-gradient-to-tr from-skyAccent/20 via-transparent to-mint/20 rounded-[40px] blur-2xl pointer-events-none"></div>
+
+          <div class="relative z-10 rounded-[34px] p-2.5 bg-gradient-to-b from-strokeBright to-surface border border-strokeBright/80 shadow-[0_30px_70px_rgba(0,0,0,0.85)] animate-floatSlow">
+            <img src="images/1.png" alt="FocusGuard Shield Dashboard" class="w-full rounded-[26px] border border-stroke" />
+
+            <!-- Floating Live Status Pill -->
+            <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[92%] bg-surface/95 border border-strokeBright backdrop-blur-xl px-3.5 py-2.5 rounded-2xl shadow-2xl flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <img src="images/icon.png" alt="Shield" class="w-8 h-8 rounded-lg" />
+                <div>
+                  <div class="text-xs font-extrabold text-ink">Shields Active</div>
+                  <div class="text-[10px] font-semibold text-mint">Shorts · Reels · Adult DNS</div>
+                </div>
+              </div>
+              <!-- Animated Equalizer Graphic -->
+              <div class="flex items-end gap-0.5 h-4">
+                <span class="w-1 h-full bg-mint rounded-full animate-waveBar"></span>
+                <span class="w-1 h-3 bg-skyAccent rounded-full animate-waveBar [animation-delay:0.2s]"></span>
+                <span class="w-1 h-4 bg-mint rounded-full animate-waveBar [animation-delay:0.4s]"></span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </header>
-
-    <!-- Hadith Reflection #1 -->
-    <div class="max-w-[1140px] mx-auto px-5 pb-6 reveal">
-      <div class="bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-amber rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)]">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span class="text-xs font-extrabold tracking-widest uppercase text-amber">Stewardship of Time & Health</span>
-          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Sahih al-Bukhari 6412</span>
-        </div>
-        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
-          نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ الصِّحَّةُ وَالْفَرَاغُ
-        </p>
-        <p class="text-base font-semibold text-textMain mb-1.5">
-          “There are two blessings which many people lose out on: good health and free time.”
-        </p>
-        <p class="text-xs sm:text-sm text-muted">
-          Narrated by Ibn Abbas (رضي الله عنهما) — Protecting your hours from mindless scrolling preserves the prime years of your life.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Why Shorts & Reels Harm Youth Section -->
-  <section id="why" class="py-14">
-    <div class="max-w-[1140px] mx-auto px-5">
-      <div class="reveal">
-        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">The Hidden Cost of Infinite Feeds</div>
-        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Why Shorts, Reels & Toxic Feeds Are Hollowing Out a Generation</h2>
-        <p class="text-muted text-base max-w-[700px] mb-8">
-          Modern platforms do not profit when you learn, pray, build, or rest—they profit when you cannot look away. Short-form vertical video and explicit corners of the web exploit brain chemistry at the expense of a young person's focus and character.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 reveal">
-        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-2">Fragmented Attention Span</h3>
-          <p class="text-sm text-muted">Rapid 15-second dopamine hits train the brain to reject deep reading, exam preparation, Quranic reflection, and sustained problem-solving.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-2">Subconscious Impulse Loops</h3>
-          <p class="text-sm text-muted">Auto-playing Reels and Shorts bypass conscious choice. You open an app to check one message and emerge an hour later drained and regretful.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-2">Corrupted Gaze & Spiritual Numbness</h3>
-          <p class="text-sm text-muted">Unfiltered algorithms push immodesty, outrage, and explicit content directly onto young screens—eroding modesty (<em>Haya</em>), sleep, and peace of heart.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-2xl p-5 hover:-translate-y-1 hover:border-rose/45 transition-all">
-          <div class="w-10 h-10 rounded-xl bg-rose/10 border border-rose/30 text-rose flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </div>
-          <h3 class="text-base font-bold mb-2">Stolen Youth & Ambition</h3>
-          <p class="text-sm text-muted">Hours lost every evening compound into lost years. Youth is the prime season to master skills, seek beneficial knowledge, and build meaningful work.</p>
-        </div>
-      </div>
-
-      <!-- Mission Box -->
-      <div class="bg-panel border border-borderBright rounded-[20px] p-6 sm:p-7 grid grid-cols-1 lg:grid-cols-[1.25fr_0.75fr] gap-7 items-center mb-6 reveal">
-        <div>
-          <h3 class="text-xl font-bold text-cyan mb-2.5">The Purpose of FocusGuard</h3>
-          <p class="text-muted text-sm sm:text-[0.95rem] mb-3">
-            You shouldn't have to throw away your smartphone—or sacrifice useful lectures on YouTube and messages on Instagram—just to escape algorithmic addiction.
-          </p>
-          <p class="text-muted text-sm sm:text-[0.95rem]">
-            <strong class="text-textMain">FocusGuard</strong> was built to restore human agency: surgically removing the addictive hooks (Shorts, Reels, adult sites, and impulsive app launches) while leaving your phone's productive tools intact.
-          </p>
-        </div>
-        <div>
-          <img src="images/hotspot.png" alt="FocusGuard Surgical Protection Overview" class="w-full rounded-2xl border border-border bg-bgSoft" />
-        </div>
-      </div>
-
-      <!-- Quranic Reflection #2 -->
-      <div class="bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-cyan rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)] reveal">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span class="text-xs font-extrabold tracking-widest uppercase text-cyan">Accountability of Sight, Hearing & Mind</span>
-          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Surah Al-Isra (17:36)</span>
-        </div>
-        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
-          إِنَّ السَّمْعَ وَالْبَصَرَ وَالْفُؤَادَ كُلُّ أُولَٰئِكَ كَانَ عَنْهُ مَسْئُولًا
-        </p>
-        <p class="text-base font-semibold text-textMain mb-1.5">
-          “Indeed, the hearing, the sight, and the heart — about all of those one will be questioned.”
-        </p>
-        <p class="text-xs sm:text-sm text-muted">
-          Al-Qur'an 17:36 — Every feed we scroll and every clip we watch leaves an imprint on the heart.
-        </p>
-      </div>
     </div>
   </section>
 
-  <!-- Zero Ads / Zero Data Guarantee -->
-  <section class="pt-3 pb-14">
-    <div class="max-w-[1140px] mx-auto px-5">
-      <div class="reveal">
-        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Uncompromising Privacy</div>
-        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">No Ads. No Subscriptions. No Data Leaving Your Phone.</h2>
-        <p class="text-muted text-base max-w-[700px] mb-8">Your struggle with distraction is not a business model. FocusGuard has zero backend servers and zero tracking SDKs.</p>
+  <!-- Interactive Clinical & Neuroscience Studies Section (Click to Open Modals) -->
+  <section id="studies" class="py-12 sm:py-16 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7 reveal">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-widest text-coral">Evidence & Impact</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">What Infinite Feeds & Phone Overuse Do to You</h2>
+        </div>
+        <span class="text-xs text-dim">Tap any card to read the scientific study →</span>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 reveal">
-        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
-          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">0 Ads</div>
-          <h4 class="text-base font-bold mb-1">Clean & Distraction-Free</h4>
-          <p class="text-xs sm:text-sm text-muted">Never shows banners, pop-ups, or sponsored upsells while you are trying to focus.</p>
+        <!-- Study Card 1 -->
+        <button type="button" onclick="openStudyModal('dopamine')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-coral/15 border border-coral/30 text-coral flex items-center justify-center">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-coral/10 text-coral border border-coral/20">Study 01</span>
+          </div>
+          <div class="text-2xl font-extrabold text-ink mb-1">15-Sec Loops</div>
+          <h3 class="text-sm font-bold text-ink mb-1.5">Dopamine & Reward Hijack</h3>
+          <p class="text-xs text-dim mb-4">How variable-ratio short videos rewire neural reward pathways.</p>
+          <span class="inline-flex items-center gap-1 text-xs font-bold text-coral group-hover:translate-x-1 transition-transform">
+            Read Clinical Findings →
+          </span>
+        </button>
+
+        <!-- Study Card 2 -->
+        <button type="button" onclick="openStudyModal('attention')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-skyAccent/15 border border-skyAccent/30 text-skyAccent flex items-center justify-center">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-skyAccent/10 text-skyAccent border border-skyAccent/20">Study 02</span>
+          </div>
+          <div class="text-2xl font-extrabold text-ink mb-1">-40% Focus</div>
+          <h3 class="text-sm font-bold text-ink mb-1.5">Prefrontal Cortex & Memory</h3>
+          <p class="text-xs text-dim mb-4">Rapid context-switching erodes working memory and deep study stamina.</p>
+          <span class="inline-flex items-center gap-1 text-xs font-bold text-skyAccent group-hover:translate-x-1 transition-transform">
+            Read Clinical Findings →
+          </span>
+        </button>
+
+        <!-- Study Card 3 -->
+        <button type="button" onclick="openStudyModal('mental')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-gold/15 border border-gold/30 text-gold flex items-center justify-center">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold/10 text-gold border border-gold/20">Study 03</span>
+          </div>
+          <div class="text-2xl font-extrabold text-ink mb-1">2× Anxiety</div>
+          <h3 class="text-sm font-bold text-ink mb-1.5">Youth Mental Health & Gaze</h3>
+          <p class="text-xs text-dim mb-4">3+ hours of daily feeds doubles risk of anxiety, low mood, and comparison.</p>
+          <span class="inline-flex items-center gap-1 text-xs font-bold text-gold group-hover:translate-x-1 transition-transform">
+            Read Clinical Findings →
+          </span>
+        </button>
+
+        <!-- Study Card 4 -->
+        <button type="button" onclick="openStudyModal('physical')" class="bento-card p-5 text-left group cursor-pointer relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-mint/15 border border-mint/30 text-mint flex items-center justify-center">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-mint/10 text-mint border border-mint/20">Study 04</span>
+          </div>
+          <div class="text-2xl font-extrabold text-ink mb-1">Melatonin Drop</div>
+          <h3 class="text-sm font-bold text-ink mb-1.5">Sleep, Eyes & Posture Strain</h3>
+          <p class="text-xs text-dim mb-4">Late-night scrolling suppresses REM sleep, strains vision, and fatigues the body.</p>
+          <span class="inline-flex items-center gap-1 text-xs font-bold text-mint group-hover:translate-x-1 transition-transform">
+            Read Clinical Findings →
+          </span>
+        </button>
+      </div>
+
+      <!-- Compact Quranic & Hadith Wisdom Strip -->
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3.5 reveal">
+        <div class="bg-gradient-to-br from-card to-surface border border-stroke border-l-4 border-l-gold rounded-2xl p-5">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-gold">Blessing of Time & Health</span>
+            <span class="text-[10px] font-semibold text-dim bg-void/60 px-2 py-0.5 rounded-full border border-stroke">Sahih al-Bukhari 6412</span>
+          </div>
+          <p dir="rtl" class="font-quran text-xl sm:text-2xl leading-[2.05] text-slate-100 text-right mb-2">
+            نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ الصِّحَّةُ وَالْفَرَاغُ
+          </p>
+          <p class="text-xs sm:text-sm font-semibold text-ink">“Two blessings many people lose out on: good health and free time.”</p>
         </div>
 
-        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
-          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">0 Bytes</div>
-          <h4 class="text-base font-bold mb-1">Personal Data Collected</h4>
-          <p class="text-xs sm:text-sm text-muted">No accounts, no email sign-up, no analytics, and no usage logs uploaded anywhere.</p>
-        </div>
-
-        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
-          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">100%</div>
-          <h4 class="text-base font-bold mb-1">Local On-Device DNS</h4>
-          <p class="text-xs sm:text-sm text-muted">Web filtering runs inside local device memory—your browsing traffic never touches a third-party server.</p>
-        </div>
-
-        <div class="bg-gradient-to-b from-panel to-bgSoft border border-border rounded-2xl p-5 text-center hover:border-emerald hover:-translate-y-0.5 transition-all">
-          <div class="text-3xl font-extrabold text-emerald leading-tight mb-1.5">Free</div>
-          <h4 class="text-base font-bold mb-1">Forever & Open Source</h4>
-          <p class="text-xs sm:text-sm text-muted">Every feature—Strict Lock, 130k+ domain shield, and Study OS—is unlocked for everyone under MIT.</p>
+        <div class="bg-gradient-to-br from-card to-surface border border-stroke border-l-4 border-l-mint rounded-2xl p-5">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-mint">Guarding Sight & Sincerity</span>
+            <span class="text-[10px] font-semibold text-dim bg-void/60 px-2 py-0.5 rounded-full border border-stroke">Surah An-Nur (24:30)</span>
+          </div>
+          <p dir="rtl" class="font-quran text-xl sm:text-2xl leading-[2.05] text-slate-100 text-right mb-2">
+            قُل لِّلْمُؤْمِنِينَ يَغُضُّوا مِنْ أَبْصَارِهِمْ وَيَحْفَظُوا فُرُوجَهُمْ ۚ ذَٰلِكَ أَزْكَىٰ لَهُمْ
+          </p>
+          <p class="text-xs sm:text-sm font-semibold text-ink">“Tell the believing men to lower their gaze and guard their modesty. That is purer for them.”</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Core Features -->
-  <section id="features" class="py-14">
-    <div class="max-w-[1140px] mx-auto px-5">
-      <div class="reveal">
-        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Precision Engineering</div>
-        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Built for Deep, Uninterrupted Focus</h2>
-        <p class="text-muted text-base max-w-[700px] mb-8">Every shield runs natively in Kotlin & Jetpack Compose with near-zero battery impact.</p>
+  <!-- Bento Architecture: Core Protection Engine -->
+  <section id="engine" class="py-12 sm:py-16 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="mb-7 reveal">
+        <span class="text-[11px] font-extrabold uppercase tracking-widest text-skyAccent">Zero-Bloat Architecture</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">Six Precision Shields. Zero Compromise.</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 reveal">
-        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
-          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-4 reveal">
+        <!-- Feature 1 (Wide Visual Bento) -->
+        <div class="bento-card md:col-span-4 p-6 flex flex-col justify-between">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-skyAccent">Surgical Feed Blocker</span>
+              <h3 class="text-lg sm:text-xl font-extrabold mt-1">Kill Shorts & Reels — Keep Lectures & DMs</h3>
+              <p class="text-xs sm:text-sm text-dim mt-1">Exits YouTube Shorts & Instagram Reels instantly without breaking search, subscriptions, or chats.</p>
+            </div>
+            <!-- Conceptual Vector Diagram -->
+            <div class="shrink-0 bg-surface border border-stroke rounded-2xl p-3 flex items-center gap-3">
+              <div class="text-center">
+                <div class="w-9 h-9 rounded-xl bg-coral/15 border border-coral/40 text-coral flex items-center justify-center mx-auto font-extrabold text-xs">✕</div>
+                <span class="text-[10px] text-coral font-bold mt-1 block">Shorts</span>
+              </div>
+              <div class="h-8 w-px bg-stroke"></div>
+              <div class="text-center">
+                <div class="w-9 h-9 rounded-xl bg-mint/15 border border-mint/40 text-mint flex items-center justify-center mx-auto font-extrabold text-xs">✓</div>
+                <span class="text-[10px] text-mint font-bold mt-1 block">Videos</span>
+              </div>
+            </div>
           </div>
-          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Surgical Filter</span>
-          <h3 class="text-lg font-bold mb-2">Block Shorts & Reels Only</h3>
-          <p class="text-sm text-muted">Automatically exits YouTube Shorts and Instagram Reels the moment they open, while keeping long-form lectures, search, and DMs working normally.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
-          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-dim">
+            <span class="px-2.5 py-1 rounded-lg bg-surface border border-stroke">YouTube Shorts</span>
+            <span class="px-2.5 py-1 rounded-lg bg-surface border border-stroke">Instagram Reels</span>
+            <span class="px-2.5 py-1 rounded-lg bg-surface border border-stroke">Instant Auto-Exit</span>
           </div>
-          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Mindful Friction</span>
-          <h3 class="text-lg font-bold mb-2">3-Mode App Control</h3>
-          <p class="text-sm text-muted">Assign any installed app to <strong class="text-textMain">Open</strong>, <strong class="text-textMain">15s Pause</strong> (a breathing prompt before a 5-minute pass), or <strong class="text-textMain">Block</strong>.</p>
         </div>
 
-        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
-          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Local Loopback VPN</span>
-          <h3 class="text-lg font-bold mb-2">130,000+ Domain Web Shield</h3>
-          <p class="text-sm text-muted">Blocks adult sites, rotating mirror domains, and custom <code class="text-cyan">*wildcard*</code> rules across Chrome, Brave, Firefox, and Incognito tabs.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
-          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          </div>
-          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Study OS</span>
-          <h3 class="text-lg font-bold mb-2">Pomodoro & Daily Auto-Lock</h3>
-          <p class="text-sm text-muted">Run 25m / 50m / 90m focus blocks or schedule recurring daily auto-lock windows with add-only app protection while active.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
-          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </div>
-          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Anti-Impulse Armor</span>
-          <h3 class="text-lg font-bold mb-2">Strict Lock & Clock Guard</h3>
-          <p class="text-sm text-muted">Cooldown timers (15m to 7d) anchored to Android's monotonic uptime clock so changing phone time cannot bypass active locks.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-2xl p-6 hover:border-cyan hover:-translate-y-1 transition-all">
-          <div class="w-10 h-10 rounded-[10px] bg-cyan/15 border border-cyan/30 text-cyan flex items-center justify-center mb-3.5">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          </div>
-          <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-cyan mb-1.5">Seamless Maintenance</span>
-          <h3 class="text-lg font-bold mb-2">In-App Release Updater</h3>
-          <p class="text-sm text-muted">Checks GitHub Releases every 24 hours so you can install signed updates in place without losing your blocklists or schedules.</p>
-        </div>
-      </div>
-
-      <!-- Hadith Reflection #3 -->
-      <div class="mt-7 bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-amber rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)] reveal">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span class="text-xs font-extrabold tracking-widest uppercase text-amber">Excellence in Focus & Purpose</span>
-          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Jami' at-Tirmidhi 2317</span>
-        </div>
-        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
-          مِنْ حُسْنِ إِسْلَامِ الْمَرْءِ تَرْكُهُ مَا لَا يَعْنِيهِ
-        </p>
-        <p class="text-base font-semibold text-textMain mb-1.5">
-          “Part of the perfection of a person’s Islam is leaving alone that which does not concern them.”
-        </p>
-        <p class="text-xs sm:text-sm text-muted">
-          Narrated by Abu Hurairah (رضي الله عنه) — Clarity of mind begins when you cut away digital noise that adds no value to your Deen or Dunya.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- App Screenshots Showcase -->
-  <section id="preview" class="py-14">
-    <div class="max-w-[1140px] mx-auto px-5">
-      <div class="reveal">
-        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Inside FocusGuard</div>
-        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Calm, Dark-Mode Interface Designed for Clarity</h2>
-        <p class="text-muted text-base max-w-[700px] mb-8">High-contrast controls that stay out of your way until you need them.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 reveal">
-        <div class="bg-panel border border-border rounded-[20px] p-3.5 text-center hover:-translate-y-1 hover:border-borderBright transition-all">
-          <img src="images/1.png" alt="FocusGuard Shield Dashboard" loading="lazy" class="w-full rounded-[14px] border border-border mb-3" />
-          <h4 class="text-base font-bold mb-1">Command Dashboard</h4>
-          <p class="text-xs sm:text-sm text-muted">One-tap master shield status, live lock countdowns, and instant system health visibility.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-[20px] p-3.5 text-center hover:-translate-y-1 hover:border-borderBright transition-all">
-          <img src="images/2.png" alt="Apps and Shorts Control" loading="lazy" class="w-full rounded-[14px] border border-border mb-3" />
-          <h4 class="text-base font-bold mb-1">Apps & Shorts Control</h4>
-          <p class="text-xs sm:text-sm text-muted">Toggle Shorts/Reels filtering and assign Open, 15s Pause, or Block rules per app.</p>
-        </div>
-
-        <div class="bg-panel border border-border rounded-[20px] p-3.5 text-center hover:-translate-y-1 hover:border-borderBright transition-all">
-          <img src="images/3.png" alt="Study OS and Strict Lock" loading="lazy" class="w-full rounded-[14px] border border-border mb-3" />
-          <h4 class="text-base font-bold mb-1">Study OS & Armor</h4>
-          <p class="text-xs sm:text-sm text-muted">Deep-work Pomodoro sessions, Daily Auto-Lock schedules, and tamper-resistant cooldowns.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Visual 4-Step Setup Guide -->
-  <section id="setup" class="py-14">
-    <div class="max-w-[1140px] mx-auto px-5">
-      <div class="reveal">
-        <div class="text-xs font-extrabold tracking-widest uppercase text-cyan mb-1.5">Visual Onboarding</div>
-        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2.5">Easy 4-Step First-Time Setup</h2>
-        <p class="text-muted text-base max-w-[700px] mb-8">Follow these four visual cards once after installing so Android lets FocusGuard protect you reliably.</p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5 reveal">
-        <!-- Step 1 -->
-        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
+        <!-- Feature 2 -->
+        <div class="bento-card md:col-span-2 p-6 flex flex-col justify-between">
           <div>
-            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
-              <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
-                <rect x="24" y="14" width="172" height="56" rx="12" fill="#111B26" stroke="#36506E" stroke-width="1.5"/>
-                <rect x="38" y="26" width="32" height="32" rx="8" fill="#172433" stroke="#62BCEB" stroke-width="1.5"/>
-                <path d="M54 34v12m0 0l-4-4m4 4l4-4" stroke="#62BCEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <text x="82" y="40" fill="#EEF3F8" font-family="sans-serif" font-size="11" font-weight="700">FocusGuard.apk</text>
-                <rect x="82" y="47" width="66" height="14" rx="7" fill="#79C6A5" fill-opacity="0.2"/>
-                <text x="115" y="57" text-anchor="middle" fill="#79C6A5" font-family="sans-serif" font-size="8.5" font-weight="700">TAP INSTALL</text>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-mint">Local Loopback VPN</span>
+            <h3 class="text-lg font-extrabold mt-1">130k+ Domain Firewall</h3>
+            <p class="text-xs text-dim mt-1.5">Blocks adult domains, mirrors, and <code class="text-skyAccent">*wildcards*</code> inside device RAM across all browsers & Incognito.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stroke flex items-center justify-between text-xs font-bold text-mint">
+            <span>Zero Cloud Servers</span>
+            <span>100% Private</span>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bento-card md:col-span-2 p-6">
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-gold">Mindful Friction</span>
+          <h3 class="text-lg font-extrabold mt-1">3-Mode App Control</h3>
+          <p class="text-xs text-dim mt-1.5 mb-4">Set any app to <strong>Open</strong>, <strong>15s Pause</strong> (breathing prompt), or <strong>Block</strong>.</p>
+          <div class="grid grid-cols-3 gap-1.5 text-center text-[10px] font-extrabold">
+            <span class="py-1.5 rounded-lg bg-mint/10 text-mint border border-mint/25">OPEN</span>
+            <span class="py-1.5 rounded-lg bg-gold/10 text-gold border border-gold/25">15s PAUSE</span>
+            <span class="py-1.5 rounded-lg bg-coral/10 text-coral border border-coral/25">BLOCK</span>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="bento-card md:col-span-2 p-6">
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-skyAccent">Study OS</span>
+          <h3 class="text-lg font-extrabold mt-1">Pomodoro & Auto-Lock</h3>
+          <p class="text-xs text-dim mt-1.5 mb-4">Run 25m / 50m / 90m focus blocks or daily scheduled lock windows.</p>
+          <div class="flex items-center gap-1.5 text-[11px] font-extrabold text-ink">
+            <span class="px-2.5 py-1 rounded-lg bg-surface border border-stroke">25m</span>
+            <span class="px-2.5 py-1 rounded-lg bg-skyAccent/15 border border-skyAccent/40 text-skyAccent">50m</span>
+            <span class="px-2.5 py-1 rounded-lg bg-surface border border-stroke">90m</span>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="bento-card md:col-span-2 p-6">
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-coral">Anti-Impulse Armor</span>
+          <h3 class="text-lg font-extrabold mt-1">Strict Lock & Clock Guard</h3>
+          <p class="text-xs text-dim mt-1.5 mb-4">Anchored to Android's monotonic uptime clock—changing system time cannot bypass locks.</p>
+          <div class="inline-flex items-center gap-1.5 text-[11px] font-bold text-coral bg-coral/10 border border-coral/25 px-2.5 py-1 rounded-lg">
+            15m → 7d Cooldowns
+          </div>
+        </div>
+      </div>
+
+      <!-- Accountability Reflection Strip -->
+      <div class="mt-5 bg-card/80 border border-stroke rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 reveal">
+        <div class="sm:max-w-lg">
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-skyAccent">Surah Al-Isra (17:36) · Jami' at-Tirmidhi 2317</span>
+          <p class="text-xs sm:text-sm font-semibold text-ink mt-1">
+            “Indeed, the hearing, the sight, and the heart — about all of those one will be questioned.”
+          </p>
+        </div>
+        <p dir="rtl" class="font-quran text-xl sm:text-2xl text-slate-100 text-right shrink-0">
+          إِنَّ السَّمْعَ وَالْبَصَرَ وَالْفُؤَادَ كُلُّ أُولَٰئِكَ كَانَ عَنْهُ مَسْئُولًا
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Screens Showcase -->
+  <section id="screens" class="py-12 sm:py-16 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="mb-7 reveal">
+        <span class="text-[11px] font-extrabold uppercase tracking-widest text-mint">Native Kotlin & Compose</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">Dark-Mode Interface Designed for Clarity</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 reveal">
+        <div class="bento-card p-3.5 text-center">
+          <img src="images/1.png" alt="Command Dashboard" loading="lazy" class="w-full rounded-2xl border border-stroke mb-3" />
+          <h4 class="text-sm font-extrabold">Command Dashboard</h4>
+          <p class="text-xs text-dim mt-0.5">Live shield health & lock timers</p>
+        </div>
+        <div class="bento-card p-3.5 text-center">
+          <img src="images/2.png" alt="Apps & Shorts Control" loading="lazy" class="w-full rounded-2xl border border-stroke mb-3" />
+          <h4 class="text-sm font-extrabold">Apps & Shorts Filter</h4>
+          <p class="text-xs text-dim mt-0.5">Per-app Open, Pause, or Block rules</p>
+        </div>
+        <div class="bento-card p-3.5 text-center">
+          <img src="images/3.png" alt="Study OS & Strict Lock" loading="lazy" class="w-full rounded-2xl border border-stroke mb-3" />
+          <h4 class="text-sm font-extrabold">Study OS & Armor</h4>
+          <p class="text-xs text-dim mt-0.5">Pomodoro & tamper-proof cooldowns</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visual 4-Step First-Time Setup -->
+  <section id="setup" class="py-12 sm:py-16 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="mb-7 reveal">
+        <span class="text-[11px] font-extrabold uppercase tracking-widest text-skyAccent">3-Minute Onboarding</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">First-Time Setup Guide</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
+        <!-- Step 1 -->
+        <div class="bento-card p-4 flex flex-col justify-between">
+          <div>
+            <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
+              <svg width="190" height="72" viewBox="0 0 190 72" fill="none">
+                <rect x="15" y="10" width="160" height="52" rx="12" fill="#0F1521" stroke="#334155" stroke-width="1.5"/>
+                <rect x="28" y="21" width="30" height="30" rx="8" fill="#141D2D" stroke="#38BDF8" stroke-width="1.5"/>
+                <path d="M43 29v12m0 0l-4-4m4 4l4-4" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="68" y="34" fill="#F8FAFC" font-family="sans-serif" font-size="10.5" font-weight="700">FocusGuard.apk</text>
+                <rect x="68" y="40" width="64" height="14" rx="7" fill="#34D399" fill-opacity="0.18"/>
+                <text x="100" y="50" text-anchor="middle" fill="#34D399" font-family="sans-serif" font-size="8" font-weight="800">INSTALL APK</text>
               </svg>
             </div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 01 · Download</div>
-            <h4 class="text-base font-bold mb-2">Install the Signed APK</h4>
-            <p class="text-sm text-muted mb-3">Tap <strong class="text-textMain">Download Direct APK</strong> above (or install via Indus Appstore / APKPure), open the file, and allow <strong class="text-textMain">Install unknown apps</strong> if prompted.</p>
-          </div>
-          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
-            <strong>Fastest Method:</strong> Direct APK installs in 5 seconds with zero store sign-in required.
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-skyAccent">Step 01</span>
+            <h4 class="text-sm font-extrabold mt-0.5 mb-1">Install Signed APK</h4>
+            <p class="text-xs text-dim">Download above and allow <strong>Install unknown apps</strong> when prompted.</p>
           </div>
         </div>
 
         <!-- Step 2 -->
-        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
+        <div class="bento-card p-4 flex flex-col justify-between">
           <div>
-            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
-              <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
-                <rect x="16" y="14" width="84" height="56" rx="10" fill="#111B26" stroke="#36506E" stroke-width="1.5"/>
-                <circle cx="84" cy="26" r="2.2" fill="#FFC66D"/>
-                <circle cx="84" cy="32" r="2.2" fill="#FFC66D"/>
-                <circle cx="84" cy="38" r="2.2" fill="#FFC66D"/>
-                <rect x="24" y="46" width="68" height="16" rx="5" fill="#FFC66D" fill-opacity="0.18"/>
-                <text x="58" y="57" text-anchor="middle" fill="#FFC66D" font-family="sans-serif" font-size="7.5" font-weight="700">⋮ Allow Restricted</text>
-                <path d="M105 42h12m0 0l-4-4m4 4l-4 4" stroke="#62BCEB" stroke-width="2" stroke-linecap="round"/>
-                <rect x="122" y="14" width="84" height="56" rx="10" fill="#111B26" stroke="#79C6A5" stroke-width="1.5"/>
-                <text x="164" y="34" text-anchor="middle" fill="#EEF3F8" font-family="sans-serif" font-size="8.5" font-weight="700">Accessibility</text>
-                <rect x="144" y="43" width="40" height="18" rx="9" fill="#79C6A5"/>
-                <circle cx="175" cy="52" r="6" fill="#070B11"/>
+            <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
+              <svg width="190" height="72" viewBox="0 0 190 72" fill="none">
+                <rect x="10" y="10" width="76" height="52" rx="10" fill="#0F1521" stroke="#334155" stroke-width="1.5"/>
+                <circle cx="74" cy="21" r="2" fill="#FBBF24"/>
+                <circle cx="74" cy="26" r="2" fill="#FBBF24"/>
+                <circle cx="74" cy="31" r="2" fill="#FBBF24"/>
+                <rect x="16" y="40" width="64" height="15" rx="5" fill="#FBBF24" fill-opacity="0.16"/>
+                <text x="48" y="50" text-anchor="middle" fill="#FBBF24" font-family="sans-serif" font-size="7" font-weight="800">⋮ Allow Restricted</text>
+                <path d="M90 36h10m0 0l-3.5-3.5M100 36l-3.5 3.5" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>
+                <rect x="104" y="10" width="76" height="52" rx="10" fill="#0F1521" stroke="#34D399" stroke-width="1.5"/>
+                <text x="142" y="29" text-anchor="middle" fill="#F8FAFC" font-family="sans-serif" font-size="8" font-weight="700">Accessibility</text>
+                <rect x="124" y="37" width="36" height="16" rx="8" fill="#34D399"/>
+                <circle cx="152" cy="45" r="5.5" fill="#04060A"/>
               </svg>
             </div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 02 · Core Engine</div>
-            <h4 class="text-base font-bold mb-2">Enable Accessibility</h4>
-            <p class="text-sm text-muted mb-3">Tap <strong class="text-textMain">Open Accessibility settings</strong> in FocusGuard → select <strong class="text-textMain">FocusGuard</strong> and switch it <strong class="text-textMain">ON</strong>.</p>
-          </div>
-          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
-            <strong>Android 13–16 Greyed Out?</strong> Open <em>Settings → Apps → FocusGuard → tap ⋮ (top right) → Allow restricted settings</em> first.
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-skyAccent">Step 02</span>
+            <h4 class="text-sm font-extrabold mt-0.5 mb-1">Enable Accessibility</h4>
+            <p class="text-xs text-dim">Switch <strong>FocusGuard ON</strong>. On Android 13–16, tap <em>App Info → ⋮ → Allow restricted settings</em> first.</p>
           </div>
         </div>
 
         <!-- Step 3 -->
-        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
+        <div class="bento-card p-4 flex flex-col justify-between">
           <div>
-            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
-              <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
-                <rect x="28" y="16" width="164" height="52" rx="12" fill="#111B26" stroke="#36506E" stroke-width="1.5"/>
-                <rect x="44" y="31" width="34" height="20" rx="4" stroke="#79C6A5" stroke-width="2"/>
-                <rect x="48" y="35" width="26" height="12" rx="2" fill="#79C6A5"/>
-                <rect x="79" y="37" width="3" height="8" rx="1" fill="#79C6A5"/>
-                <text x="92" y="40" fill="#EEF3F8" font-family="sans-serif" font-size="10" font-weight="700">Battery: Unrestricted</text>
-                <text x="92" y="53" fill="#79C6A5" font-family="sans-serif" font-size="8.5" font-weight="600">+ Autostart Enabled</text>
+            <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
+              <svg width="190" height="72" viewBox="0 0 190 72" fill="none">
+                <rect x="15" y="12" width="160" height="48" rx="12" fill="#0F1521" stroke="#334155" stroke-width="1.5"/>
+                <rect x="28" y="26" width="32" height="18" rx="4" stroke="#34D399" stroke-width="2"/>
+                <rect x="32" y="30" width="24" height="10" rx="2" fill="#34D399"/>
+                <rect x="61" y="32" width="3" height="6" rx="1" fill="#34D399"/>
+                <text x="74" y="34" fill="#F8FAFC" font-family="sans-serif" font-size="9.5" font-weight="700">Unrestricted Battery</text>
+                <text x="74" y="46" fill="#34D399" font-family="sans-serif" font-size="8" font-weight="600">+ Autostart ON</text>
               </svg>
             </div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 03 · 24/7 Reliability</div>
-            <h4 class="text-base font-bold mb-2">Set Battery to Unrestricted</h4>
-            <p class="text-sm text-muted mb-3">Long-press FocusGuard → <strong class="text-textMain">App info → Battery → Unrestricted</strong>. On Xiaomi, POCO, Realme, Vivo, or Oppo, also enable <strong class="text-textMain">Autostart</strong>.</p>
-          </div>
-          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
-            Prevents aggressive phone battery savers from pausing your shield overnight.
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-skyAccent">Step 03</span>
+            <h4 class="text-sm font-extrabold mt-0.5 mb-1">Unrestricted Battery</h4>
+            <p class="text-xs text-dim">Set <strong>Battery → Unrestricted</strong> (and <strong>Autostart</strong> on Xiaomi, POCO, Realme, Vivo, Oppo).</p>
           </div>
         </div>
 
         <!-- Step 4 -->
-        <div class="bg-panel border border-border rounded-[18px] p-5 flex flex-col justify-between hover:border-cyan hover:-translate-y-0.5 transition-all">
+        <div class="bento-card p-4 flex flex-col justify-between">
           <div>
-            <div class="w-full h-28 rounded-xl bg-bgSoft border border-border mb-4 flex items-center justify-center overflow-hidden">
-              <svg width="220" height="84" viewBox="0 0 220 84" fill="none">
-                <rect x="28" y="16" width="164" height="52" rx="12" fill="#111B26" stroke="#62BCEB" stroke-width="1.5"/>
-                <path d="M58 26l14 6v10c0 9-6 16-14 19-8-3-14-10-14-19V32l14-6z" fill="#62BCEB" fill-opacity="0.2" stroke="#62BCEB" stroke-width="2"/>
-                <path d="M53 43l3.5 3.5 7-7" stroke="#79C6A5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <text x="84" y="40" fill="#EEF3F8" font-family="sans-serif" font-size="10" font-weight="700">Local DNS Shield</text>
-                <text x="84" y="53" fill="#62BCEB" font-family="sans-serif" font-size="8.5" font-weight="600">130k+ Domains Blocked</text>
+            <div class="h-24 rounded-2xl bg-surface border border-stroke mb-3.5 flex items-center justify-center">
+              <svg width="190" height="72" viewBox="0 0 190 72" fill="none">
+                <rect x="15" y="12" width="160" height="48" rx="12" fill="#0F1521" stroke="#38BDF8" stroke-width="1.5"/>
+                <path d="M44 21l12 5v9c0 8-5 14-12 17-7-3-12-9-12-17v-9l12-5z" fill="#38BDF8" fill-opacity="0.2" stroke="#38BDF8" stroke-width="2"/>
+                <path d="M40 36l3 3 6-6" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="68" y="34" fill="#F8FAFC" font-family="sans-serif" font-size="9.5" font-weight="700">Local DNS Guard</text>
+                <text x="68" y="46" fill="#38BDF8" font-family="sans-serif" font-size="8" font-weight="600">130k+ Domains ON</text>
               </svg>
             </div>
-            <div class="text-xs font-extrabold uppercase tracking-wider text-cyan mb-1.5">Step 04 · Web & Study OS</div>
-            <h4 class="text-base font-bold mb-2">Activate Local DNS Shield</h4>
-            <p class="text-sm text-muted mb-3">Open the <strong class="text-textMain">Web</strong> tab → toggle <strong class="text-textMain">Block Adult Contents</strong> ON and tap <strong class="text-textMain">OK</strong> on Android's local VPN dialog.</p>
-          </div>
-          <div class="mt-auto p-2.5 rounded-[10px] bg-amber/10 border border-amber/30 text-[#FDE68A] text-xs leading-snug">
-            <strong>Chrome Tip:</strong> Turn <em>Off</em> Chrome → Settings → Privacy & security → <em>Use secure DNS</em>.
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-skyAccent">Step 04</span>
+            <h4 class="text-sm font-extrabold mt-0.5 mb-1">Activate Web Shield</h4>
+            <p class="text-xs text-dim">Toggle <strong>Block Adult Contents ON</strong> in the Web tab (disable Chrome <em>Secure DNS</em> for full filtering).</p>
           </div>
         </div>
-      </div>
-
-      <!-- Quranic Reflection #4 -->
-      <div class="mt-8 bg-gradient-to-br from-[#101A27] to-[#0B131D] border border-borderBright border-l-4 border-l-emerald rounded-[20px] p-5 sm:p-7 shadow-[0_14px_36px_rgba(0,0,0,0.35)] reveal">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span class="text-xs font-extrabold tracking-widest uppercase text-emerald">Guarding the Gaze & Purity of Heart</span>
-          <span class="text-xs font-semibold text-muted bg-elevated border border-border px-2.5 py-0.5 rounded-full">Surah An-Nur (24:30)</span>
-        </div>
-        <p dir="rtl" class="font-quran text-2xl sm:text-[1.85rem] leading-[2.15] text-slate-50 text-right mb-3 drop-shadow">
-          قُل لِّلْمُؤْمِنِينَ يَغُضُّوا مِنْ أَبْصَارِهِمْ وَيَحْفَظُوا فُرُوجَهُمْ ۚ ذَٰلِكَ أَزْكَىٰ لَهُمْ ۗ إِنَّ اللَّهَ خَبِيرٌ بِمَا يَصْنَعُونَ
-        </p>
-        <p class="text-base font-semibold text-textMain mb-1.5">
-          “Tell the believing men to lower their gaze and guard their modesty. That is purer for them. Indeed, Allah is All-Aware of what they do.”
-        </p>
-        <p class="text-xs sm:text-sm text-muted">
-          Al-Qur'an 24:30 — Technology should strengthen your character and modesty, never compromise them.
-        </p>
       </div>
     </div>
   </section>
 
-  <!-- Minimal, Centered & Premium Footer -->
-  <footer class="border-t border-border/80 bg-bgSoft/70 py-10 mt-8">
-    <div class="max-w-[1140px] mx-auto px-5 flex flex-col items-center justify-center text-center gap-2.5">
+  <!-- Centered, Low-Opacity Minimal Footer with All Restored Links -->
+  <footer class="border-t border-stroke/60 py-12 px-4 sm:px-6 mt-6">
+    <div class="max-w-4xl mx-auto flex flex-col items-center justify-center text-center gap-4 opacity-60 hover:opacity-95 transition-opacity duration-300">
       <div class="inline-flex items-center gap-2">
-        <img src="images/icon.png" alt="FocusGuard" class="w-5 h-5 rounded-md border border-borderBright" />
-        <span class="text-xs font-bold tracking-wider uppercase text-cyan" id="footer-version">v1.5.2</span>
+        <img src="images/icon.png" alt="FocusGuard" class="w-5 h-5 rounded-md border border-strokeBright" />
+        <span class="text-xs font-extrabold tracking-tight text-ink">FocusGuard</span>
+        <span class="text-[11px] font-bold text-skyAccent" id="footer-version">v1.5.2</span>
       </div>
-      <p class="text-sm text-muted">
-        Developed by
-        <a href="https://linkedin.com/in/quasimkhan" target="_blank" rel="noopener" class="font-bold text-textMain hover:text-cyan underline decoration-borderBright underline-offset-4 transition-colors">
+
+      <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium text-dim">
+        <a href="https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="hover:text-skyAccent transition-colors">GitHub Repo</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener" class="hover:text-skyAccent transition-colors">Documentation Wiki</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/blob/main/PRIVACY.md" target="_blank" rel="noopener" class="hover:text-skyAccent transition-colors">Privacy Policy</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/issues" target="_blank" rel="noopener" class="hover:text-skyAccent transition-colors">Report Bug</a>
+        <a href="mailto:quasimdotdev@gmail.com" class="hover:text-skyAccent transition-colors">Email</a>
+      </div>
+
+      <p class="text-xs text-dim">
+        MIT License · Developed by
+        <a href="https://linkedin.com/in/quasimkhan" target="_blank" rel="noopener" class="font-bold text-ink hover:text-skyAccent underline decoration-strokeBright underline-offset-4 transition-colors">
           Quasim
         </a>
       </p>
     </div>
   </footer>
 
+  <!-- Interactive Clinical Study Modal -->
+  <div id="study-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-void/80 backdrop-blur-xl" onclick="if(event.target===this) closeStudyModal()">
+    <div class="w-full max-w-lg bg-card border border-strokeBright rounded-3xl p-6 sm:p-7 shadow-[0_25px_70px_rgba(0,0,0,0.9)] relative animate-[floatSlow_0.25s_ease-out]">
+      <button type="button" onclick="closeStudyModal()" aria-label="Close modal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-surface border border-stroke text-dim hover:text-ink flex items-center justify-center transition-colors">
+        ✕
+      </button>
+
+      <div id="modal-badge" class="inline-block text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3"></div>
+      <h3 id="modal-title" class="text-xl sm:text-2xl font-extrabold text-ink leading-snug mb-2"></h3>
+      <div id="modal-stat" class="text-xs font-bold text-dim mb-4 pb-4 border-b border-stroke"></div>
+
+      <div id="modal-body" class="space-y-3 text-xs sm:text-sm text-dim leading-relaxed mb-5"></div>
+
+      <div class="bg-surface border border-stroke rounded-2xl p-3.5 mb-5">
+        <div class="text-[10px] font-extrabold uppercase tracking-wider text-mint mb-1">Peer-Reviewed Source</div>
+        <div id="modal-citation" class="text-xs text-ink font-medium"></div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3">
+        <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" download class="js-direct-apk inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-skyAccent text-void font-extrabold text-xs hover:brightness-110 transition-all">
+          Block This Habit with FocusGuard
+        </a>
+        <button type="button" onclick="closeStudyModal()" class="px-4 py-2.5 rounded-xl bg-surface border border-stroke text-xs font-bold text-dim hover:text-ink transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // 1. Scroll-reveal animations
+    // 1. Clinical & Neuroscience Studies Data for Modals
+    const STUDIES = {
+      dopamine: {
+        badge: "Neurobiology · Reward Pathway",
+        badgeClass: "bg-coral/15 text-coral border border-coral/30",
+        title: "Variable-Ratio Dopamine Loops in Short-Form Video",
+        stat: "Key Mechanism: Ventral Tegmental Area (VTA) Hyper-Stimulation",
+        paragraphs: [
+          "Short-form vertical feeds (Shorts, Reels, TikTok) operate on an unpredictable variable-ratio reward schedule—the exact reinforcement mechanism behind slot machines. Every swipe delivers an instant, novel audio-visual spike within 15 seconds.",
+          "Neuroimaging studies show that rapid cue-reactivity suppresses top-down inhibitory control in the prefrontal cortex while downregulating baseline dopamine receptors, leaving normal activities like reading, studying, or prayer feeling artificially dull."
+        ],
+        citation: "Su et al. (2021), NeuroImage — 'Viewing personalized short-form videos activates the ventral tegmental area and disrupts default-mode self-control networks.'"
+      },
+      attention: {
+        badge: "Cognitive Science · Working Memory",
+        badgeClass: "bg-skyAccent/15 text-skyAccent border border-skyAccent/30",
+        title: "Attention Residue & Prefrontal Fragmentation",
+        stat: "Key Finding: Up to 40% Drop in Sustained Task Efficiency",
+        paragraphs: [
+          "Switching between rapid 15–30 second clips forces the brain into continuous task-switching. Cognitive psychologists term the lingering cognitive load 'attention residue'—reducing working memory capacity even after you lock your phone.",
+          "Even the mere presence of a smartphone within reach measurably drains available cognitive capacity during complex reasoning and exam preparation."
+        ],
+        citation: "Ward et al. (2017), Journal of the Association for Consumer Research — 'Brain Drain: The Mere Presence of One's Own Smartphone Reduces Available Cognitive Capacity' & APA Multitasking Meta-Analyses."
+      },
+      mental: {
+        badge: "Public Health · Adolescent & Youth Well-Being",
+        badgeClass: "bg-gold/15 text-gold border border-gold/30",
+        title: "Excessive Social Media, Gaze Corruption & Anxiety",
+        stat: "Key Finding: >3 Hours/Day Doubles Risk of Internalizing Distress",
+        paragraphs: [
+          "Longitudinal cohort data tracked by JAMA Psychiatry found that youth spending more than 3 hours daily on social media platforms face more than double the risk of experiencing anxiety, depressive symptoms, and body-image distress.",
+          "Algorithmic feeds disproportionately amplify outrage, immodesty, and hyper-curated social comparison—eroding inner stillness (Sakinah) and emotional resilience."
+        ],
+        citation: "Riehm et al. (2019), JAMA Psychiatry — 'Associations Between Time Spent Using Social Media and Internalizing and Externalizing Problems Among US Youth.'"
+      },
+      physical: {
+        badge: "Sleep Medicine & Ergonomics · Physical Health",
+        badgeClass: "bg-mint/15 text-mint border border-mint/30",
+        title: "Circadian Disruption, Eye Strain & Cervical Load",
+        stat: "Key Finding: ~50% Melatonin Suppression & Delayed REM Sleep",
+        paragraphs: [
+          "Evening screen exposure emits short-wavelength blue light (460–480 nm) that stimulates intrinsically photosensitive retinal ganglion cells, suppressing evening melatonin secretion by ~50% and shifting circadian rhythms later.",
+          "Physically, prolonged downward smartphone posture places up to 27 kg (60 lbs) of mechanical stress on the cervical spine ('tech neck') while reducing blink rates by 60%, driving digital eye fatigue."
+        ],
+        citation: "Chang et al. (2015), Proceedings of the National Academy of Sciences (PNAS) — 'Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness.'"
+      }
+    };
+
+    const modalEl = document.getElementById("study-modal");
+    function openStudyModal(key) {
+      const s = STUDIES[key];
+      if (!s) return;
+      const badge = document.getElementById("modal-badge");
+      badge.className = `inline-block text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3 ${s.badgeClass}`;
+      badge.textContent = s.badge;
+      document.getElementById("modal-title").textContent = s.title;
+      document.getElementById("modal-stat").textContent = s.stat;
+      document.getElementById("modal-body").innerHTML = s.paragraphs.map(p => `<p>${p}</p>`).join("");
+      document.getElementById("modal-citation").textContent = s.citation;
+      modalEl.classList.remove("hidden");
+      modalEl.classList.add("flex");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeStudyModal() {
+      modalEl.classList.add("hidden");
+      modalEl.classList.remove("flex");
+      document.body.style.overflow = "";
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeStudyModal();
+    });
+
+    // 2. Scroll-Reveal Animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -603,11 +695,11 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
-    // 2. Direct APK download resolver & live latest release version sync
+    // 3. Direct APK Download Resolver & Live Release Version Sync
     const apkButtons = document.querySelectorAll(".js-direct-apk");
     const heroLabel = document.getElementById("hero-apk-label");
     const releaseMeta = document.getElementById("release-status");
