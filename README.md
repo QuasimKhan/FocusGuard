@@ -2,16 +2,16 @@
 
 <div align="center">
 
-<img width="100%" src="assets/banner.svg" alt="FocusGuard by Quasim.™ Banner" />
+<img width="100%" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' width='1200' height='320'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%230B1118'/><stop offset='50%25' stop-color='%23111B25'/><stop offset='100%25' stop-color='%230B1118'/></linearGradient><radialGradient id='glow' cx='50%25' cy='45%25' r='55%25'><stop offset='0%25' stop-color='%2362BCEB' stop-opacity='0.22'/><stop offset='100%25' stop-color='%230B1118' stop-opacity='0'/></radialGradient><linearGradient id='shieldGrad' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%2362BCEB'/><stop offset='100%25' stop-color='%2379C6A5'/></linearGradient></defs><rect width='1200' height='320' rx='24' fill='url(%23bg)'/><rect width='1200' height='320' rx='24' fill='url(%23glow)'/><rect x='1' y='1' width='1198' height='318' rx='23' fill='none' stroke='%232C3B49' stroke-width='2'/><g transform='translate(544, 34)'><rect x='0' y='0' width='112' height='112' rx='28' fill='%23192633' stroke='%232C3B49' stroke-width='2'/><path d='M56 20 L86 33 V57 C86 76 73 91 56 96 C39 91 26 76 26 57 V33 Z' fill='none' stroke='url(%23shieldGrad)' stroke-width='5.5' stroke-linejoin='round'/><path d='M44 58 L52 66 L69 48' fill='none' stroke='%2379C6A5' stroke-width='5.5' stroke-linecap='round' stroke-linejoin='round'/></g><text x='600' y='198' text-anchor='middle' fill='%23E9EFF5' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='48' font-weight='800' letter-spacing='-1'>FocusGuard</text><text x='600' y='236' text-anchor='middle' fill='%2362BCEB' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='18' font-weight='700' letter-spacing='2'>BY QUASIM.™ · 100% ON-DEVICE ANDROID FOCUS ENGINE</text><text x='600' y='274' text-anchor='middle' fill='%239FB0C0' font-family='system-ui, -apple-system, Segoe UI, Roboto, sans-serif' font-size='15' font-weight='500'>Zero Bloat · No Ads · No Cloud Tracking · Native Kotlin &amp; Jetpack Compose</text></svg>" alt="FocusGuard by Quasim.™ Banner" />
 
-<br />
+<br/><br/>
 
-[![Latest Release](https://img.shields.io/github/v/release/quasimkhan/FocusGuard?style=for-the-badge&color=62BCEB&labelColor=111B25&label=Release](https://github.com/quasimkhan/FocusGuard/releases/latest)
-[![Total Downloads](https://img.shields.io/github/downloads/quasimkhan/FocusGuard/total?style=for-the-badge&color=79C6A5&labelColor=111B25&label=Downloads](https://github.com/quasimkhan/FocusGuard/releases/latest)
-[![Platform](https://img.shields.io/badge/Android-10%2B%20(API%2029--36)-FFC66D?style=for-the-badge&labelColor=111B25](https://github.com/quasimkhan/FocusGuard/releases/latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-E9EFF5?style=for-the-badge&labelColor=111B25](LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/quasimkhan/FocusGuard?style=for-the-badge&color=62BCEB&labelColor=111B25&label=Release)](https://github.com/quasimkhan/FocusGuard/releases/latest)
+[![Total Downloads](https://img.shields.io/github/downloads/quasimkhan/FocusGuard/total?style=for-the-badge&color=79C6A5&labelColor=111B25&label=Downloads)](https://github.com/quasimkhan/FocusGuard/releases/latest)
+[![Platform](https://img.shields.io/badge/Android-10%2B%20(API%2029--36)-FFC66D?style=for-the-badge&labelColor=111B25)](https://github.com/quasimkhan/FocusGuard/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-E9EFF5?style=for-the-badge&labelColor=111B25)](LICENSE)
 
-<br />
+<br/>
 
 **A zero-bloat, 100% on-device Android distraction blocker, short-form video filter, local DNS adult firewall, and focus study lock with best-effort tamper friction.**
 
