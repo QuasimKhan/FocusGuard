@@ -1,8 +1,8 @@
-# FocusGuard
 
 <div align="center">
 
-<img src="images/icon.png" alt="FocusGuard Logo" width="112" height="112" /> **FocusGuard by [Quasim.](https://linkedin.com/in/quasimkhan)**
+# FocusGuard by [Quasim.](https://linkedin.com/in/quasimkhan)
+<img src="images/icon.png" alt="FocusGuard Logo" width="112" height="112" />
 
 <br/><br/>
 
