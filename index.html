@@ -3,327 +3,999 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FocusGuard by Quasim.™ — 100% On-Device Android Focus & Blocker</title>
-  <meta name="description" content="Zero-bloat, 100% on-device Android distraction blocker, YouTube Shorts & Instagram Reels filter, local DNS adult firewall, and Deep-Work Study OS." />
+  <title>FocusGuard by Quasim.™ — Reclaim Your Time, Focus & Discipline</title>
+  <meta name="description" content="Zero-bloat, 100% on-device Android distraction blocker, YouTube Shorts & Instagram Reels filter, local DNS adult firewall, and Deep-Work Study OS. Free forever, no ads, no data tracking." />
+  <link rel="icon" type="image/png" href="images/icon.png" />
   <style>
     :root {
-      --bg: #0B1118;
-      --panel: #111B25;
-      --elevated: #192633;
-      --border: #2C3B49;
+      --bg: #080D13;
+      --bg-soft: #0D151F;
+      --panel: #111B26;
+      --elevated: #172433;
+      --border: #253445;
+      --border-bright: #374D66;
       --cyan: #62BCEB;
+      --cyan-glow: rgba(98, 188, 235, 0.16);
       --emerald: #79C6A5;
+      --emerald-glow: rgba(121, 198, 165, 0.14);
       --amber: #FFC66D;
-      --text: #E9EFF5;
-      --muted: #9FB0C0;
+      --rose: #FF8A80;
+      --text: #EDF2F7;
+      --muted: #98A9BA;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    a { color: inherit; text-decoration: none; }
-    .container { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Ambient Top Glow */
+    .ambient-bg {
+      position: relative;
+      background:
+        radial-gradient(ellipse 75% 45% at 50% -5%, rgba(98, 188, 235, 0.16), transparent 70%),
+        radial-gradient(ellipse 50% 35% at 85% 15%, rgba(121, 198, 165, 0.08), transparent 65%);
+    }
 
     /* Navbar */
     nav {
-      border-bottom: 1px solid var(--border);
-      background: rgba(11, 17, 24, 0.85);
-      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 100;
+      border-bottom: 1px solid rgba(37, 52, 69, 0.8);
+      background: rgba(8, 13, 19, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
+
     .nav-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 64px;
+      min-height: 66px;
+      gap: 12px;
     }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      border: 1px solid var(--border-bright);
+    }
+
     .brand-badge {
-      font-size: 0.72rem;
-      font-weight: 600;
+      font-size: 0.7rem;
+      font-weight: 700;
       color: var(--cyan);
       background: var(--elevated);
       border: 1px solid var(--border);
       padding: 2px 8px;
       border-radius: 6px;
     }
-    .nav-links { display: flex; gap: 20px; font-size: 0.9rem; color: var(--muted); }
-    .nav-links a:hover { color: var(--text); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      padding: 7px 14px;
+      border-radius: 9px;
+      background: var(--elevated);
+      border: 1px solid var(--border-bright);
+      color: var(--cyan) !important;
+      font-weight: 700;
+      font-size: 0.84rem;
+    }
 
     /* Hero */
     .hero {
-      padding: 72px 0 56px;
-      text-align: center;
-      background: radial-gradient(circle at 50% 0%, rgba(98, 188, 235, 0.12), transparent 60%);
+      padding: 64px 0 56px;
     }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 44px;
+      align-items: center;
+    }
+
     .pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(121, 198, 165, 0.12);
+      background: var(--emerald-glow);
       border: 1px solid rgba(121, 198, 165, 0.35);
       color: var(--emerald);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
-      padding: 5px 14px;
+      letter-spacing: 0.05em;
+      padding: 6px 14px;
       border-radius: 999px;
       margin-bottom: 20px;
     }
-    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+    }
+
     h1 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-size: clamp(2.1rem, 4.4vw, 3.35rem);
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.12;
-      max-width: 780px;
-      margin: 0 auto 18px;
-    }
-    h1 span { color: var(--cyan); }
-    .hero p {
-      color: var(--muted);
-      font-size: 1.1rem;
-      max-width: 640px;
-      margin: 0 auto 32px;
+      margin-bottom: 18px;
     }
 
-    /* Download Grid */
+    h1 span {
+      background: linear-gradient(135deg, var(--cyan), var(--emerald));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-lead {
+      color: var(--muted);
+      font-size: 1.06rem;
+      margin-bottom: 28px;
+      max-width: 580px;
+    }
+
     .cta-group {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 11px;
+      margin-bottom: 14px;
     }
+
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 13px 22px;
+      padding: 13px 20px;
       border-radius: 12px;
       font-weight: 700;
-      font-size: 0.95rem;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      font-size: 0.92rem;
+      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
     }
-    .btn:hover { transform: translateY(-1px); }
-    .btn-primary { background: var(--cyan); color: #082433; }
-    .btn-secondary { background: var(--panel); border: 1px solid var(--border); color: var(--text); }
-    .btn-secondary:hover { border-color: var(--cyan); }
-    .release-meta { font-size: 0.82rem; color: var(--muted); }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), #4CA8D8);
+      color: #061D29;
+      box-shadow: 0 8px 24px rgba(98, 188, 235, 0.25);
+    }
+
+    .btn-secondary {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--cyan);
+      background: var(--elevated);
+    }
+
+    .release-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    /* Trust Strip */
+    .trust-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .trust-badge svg {
+      width: 15px;
+      height: 15px;
+      color: var(--emerald);
+      flex-shrink: 0;
+    }
+
+    /* Hero Device Frame */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone-frame {
+      position: relative;
+      width: 100%;
+      max-width: 310px;
+      border-radius: 32px;
+      padding: 10px;
+      background: linear-gradient(160deg, var(--border-bright), var(--panel));
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px var(--cyan-glow);
+    }
+
+    .phone-frame img {
+      width: 100%;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .floating-chip {
+      position: absolute;
+      bottom: 22px;
+      left: -18px;
+      background: rgba(17, 27, 38, 0.94);
+      border: 1px solid var(--border-bright);
+      backdrop-filter: blur(10px);
+      padding: 10px 14px;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 245px;
+    }
+
+    .floating-chip img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .floating-chip strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+
+    .floating-chip span {
+      font-size: 0.74rem;
+      color: var(--emerald);
+      font-weight: 600;
+    }
+
+    /* Scripture / Wisdom Banner */
+    .wisdom-card {
+      background: linear-gradient(145deg, var(--panel), #0E1824);
+      border: 1px solid var(--border-bright);
+      border-left: 4px solid var(--amber);
+      border-radius: 18px;
+      padding: 26px 28px;
+      margin: 12px 0 28px;
+      position: relative;
+    }
+
+    .wisdom-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+
+    .wisdom-arabic {
+      font-size: 1.35rem;
+      color: var(--text);
+      margin-bottom: 8px;
+      font-weight: 600;
+      direction: rtl;
+      text-align: right;
+    }
+
+    .wisdom-quote {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .wisdom-ref {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
 
     /* Sections */
-    section { padding: 48px 0; }
-    .section-title { font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .section-sub { color: var(--muted); margin-bottom: 28px; font-size: 0.98rem; }
-
-    /* Feature Cards */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 16px;
+    section {
+      padding: 56px 0;
     }
-    .card {
+
+    .section-eyebrow {
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: clamp(1.55rem, 3vw, 2.1rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 10px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-size: 1rem;
+      max-width: 680px;
+    }
+
+    /* Why Shorts & Reels Harm Youth Section */
+    .crisis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .crisis-card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 22px;
     }
+
+    .crisis-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255, 138, 128, 0.12);
+      border: 1px solid rgba(255, 138, 128, 0.3);
+      color: var(--rose);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .crisis-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .crisis-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .mission-box {
+      background: var(--panel);
+      border: 1px solid var(--border-bright);
+      border-radius: 18px;
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .mission-box h3 {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      color: var(--cyan);
+    }
+
+    .mission-box p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .mission-box img {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+    }
+
+    /* Privacy Guarantee Matrix */
+    .zero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .zero-card {
+      background: linear-gradient(180deg, var(--panel), var(--bg-soft));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .zero-num {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--emerald);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .zero-card h4 {
+      font-size: 0.98rem;
+      margin-bottom: 4px;
+    }
+
+    .zero-card p {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    /* Feature Cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-bright);
+      transform: translateY(-2px);
+    }
+
     .card-tag {
       display: inline-block;
       font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: var(--cyan);
       margin-bottom: 8px;
     }
-    .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
-    .card p { color: var(--muted); font-size: 0.92rem; }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* App Screenshots Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .shot-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .shot-card img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .shot-card h4 {
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+    }
+
+    .shot-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
 
     /* Setup Steps */
-    .steps { display: grid; gap: 14px; }
+    .steps {
+      display: grid;
+      gap: 14px;
+    }
+
     .step {
       display: flex;
       gap: 16px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 20px;
+      border-radius: 16px;
+      padding: 20px;
       align-items: flex-start;
     }
+
     .step-num {
       flex-shrink: 0;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
       background: var(--elevated);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-bright);
       color: var(--cyan);
       font-weight: 800;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .step h4 { font-size: 1rem; margin-bottom: 4px; }
-    .step p { color: var(--muted); font-size: 0.9rem; }
+
+    .step h4 {
+      font-size: 1.02rem;
+      margin-bottom: 4px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
     .tip {
-      margin-top: 8px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      background: rgba(255, 198, 109, 0.1);
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255, 198, 109, 0.09);
       border: 1px solid rgba(255, 198, 109, 0.3);
       color: #FDE68A;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
     }
 
     /* Footer */
     footer {
       border-top: 1px solid var(--border);
-      padding: 36px 0;
-      margin-top: 40px;
+      padding: 40px 0;
+      margin-top: 32px;
+      background: var(--bg-soft);
       color: var(--muted);
       font-size: 0.88rem;
     }
+
     .footer-inner {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      gap: 16px;
+      align-items: center;
+      gap: 18px;
     }
-    .footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
-    .footer-links a:hover { color: var(--cyan); }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a:hover {
+      color: var(--cyan);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .mission-box {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 44px 0 40px;
+        text-align: center;
+      }
+
+      .hero-lead {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-group,
+      .trust-strip {
+        justify-content: center;
+      }
+
+      .floating-chip {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 14px;
+        width: 90%;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .nav-links a:not(.nav-cta) {
+        display: none;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .wisdom-card,
+      .step {
+        padding: 16px;
+      }
+    }
   </style>
 </head>
 <body>
   <nav>
     <div class="container nav-inner">
-      <div class="brand">
+      <a href="#" class="brand">
+        <img src="images/icon.png" alt="FocusGuard Icon" />
         <span>FocusGuard</span>
         <span class="brand-badge">by Quasim.™</span>
-      </div>
+      </a>
       <div class="nav-links">
+        <a href="#why">Why FocusGuard</a>
         <a href="#features">Features</a>
-        <a href="#setup">Setup Guide</a>
+        <a href="#preview">Screens</a>
+        <a href="#setup">Setup</a>
         <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener">Wiki</a>
-        <a href="https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/releases/latest" class="nav-cta">Download</a>
       </div>
     </div>
   </nav>
 
-  <header class="hero">
-    <div class="container">
-      <div class="pill"><span class="dot"></span> 100% ON-DEVICE · ZERO ADS · MIT OPEN SOURCE</div>
-      <h1>Reclaim Your Attention. <span>Block Shorts, Reels & Distractions.</span></h1>
-      <p>A zero-bloat native Kotlin Android blocker with 15-second mindful pauses, an on-device 130,000+ domain DNS firewall, and tamper-resistant Deep-Work study schedules.</p>
+  <div class="ambient-bg">
+    <header class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="pill"><span class="dot"></span> FREE FOREVER · ZERO ADS · 100% ON-DEVICE</div>
+          <h1>Guard Your Gaze, Your Time, and <span>Your Future.</span></h1>
+          <p class="hero-lead">
+            Algorithmic feeds are engineered to hijack attention and weaken willpower. FocusGuard is a zero-bloat native Android shield that blocks YouTube Shorts, Instagram Reels, distracting apps, and 130,000+ adult domains—entirely offline on your device.
+          </p>
 
-      <div class="cta-group">
-        <a id="direct-apk-btn" href="https://github.com/quasimkhan/FocusGuard/releases/latest" class="btn btn-primary">
-          Download Direct APK
-        </a>
-        <a href="https://indusapp.store/9o4g51w8" target="_blank" rel="noopener" class="btn btn-secondary">
-          Indus Appstore (PhonePe)
-        </a>
-        <a href="https://apkpure.com/p/com.focusguard.app" target="_blank" rel="noopener" class="btn btn-secondary">
-          APKPure
-        </a>
-        <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="btn btn-secondary">
-          Obtainium Auto-Update
-        </a>
+          <div class="cta-group">
+            <a id="direct-apk-btn" href="https://github.com/quasimkhan/FocusGuard/releases/latest" class="btn btn-primary">
+              Download Direct APK
+            </a>
+            <a href="https://indusapp.store/9o4g51w8" target="_blank" rel="noopener" class="btn btn-secondary">
+              Indus Appstore (PhonePe)
+            </a>
+            <a href="https://apkpure.com/p/com.focusguard.app" target="_blank" rel="noopener" class="btn btn-secondary">
+              APKPure
+            </a>
+            <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="btn btn-secondary">
+              Obtainium Auto-Update
+            </a>
+          </div>
+          <div id="release-status" class="release-meta">Fetching latest release build from GitHub...</div>
+
+          <div class="trust-strip">
+            <div class="trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              No Ads or Paywalls
+            </div>
+            <div class="trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Zero Data Collection
+            </div>
+            <div class="trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              No External VPN Servers
+            </div>
+            <div class="trust-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              MIT Open Source
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="phone-frame">
+            <img src="images/1.png" alt="FocusGuard Android Dashboard" />
+            <div class="floating-chip">
+              <img src="images/icon.png" alt="Shield Active" />
+              <div>
+                <strong>100% Local Enforcement</strong>
+                <span>Shorts, Reels & DNS Guard Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="release-status" class="release-meta">Fetching latest release build from GitHub...</div>
-    </div>
-  </header>
+    </header>
 
-  <section id="features">
     <div class="container">
-      <h2 class="section-title">Built for Deep, Uninterrupted Focus</h2>
-      <p class="section-sub">Every shield runs locally in your phone's memory—no cloud accounts, no tracking, no battery drain.</p>
+      <div class="wisdom-card">
+        <div class="wisdom-label">Reflection on Time & Self-Mastery</div>
+        <div class="wisdom-arabic">نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ الصِّحَّةُ وَالْفَرَاغُ</div>
+        <div class="wisdom-quote">“Two blessings many people lose out on: good health and free time.”</div>
+        <div class="wisdom-ref">Sahih al-Bukhari 6412 — Guarding your eyes and hours from mindless scrolling is an act of stewardship over the life entrusted to you.</div>
+      </div>
+    </div>
+  </div>
 
-      <div class="grid">
-        <div class="card">
-          <span class="card-tag">Surgical Filter</span>
-          <h3>Block Shorts & Reels Only</h3>
-          <p>Automatically exits YouTube Shorts and Instagram Reels while keeping full-length lectures, search, and DMs working normally.</p>
+  <!-- Why Shorts, Reels & Algorithm Traps Are Destroying Youth -->
+  <section id="why">
+    <div class="container">
+      <div class="section-eyebrow">The Hidden Cost of Infinite Feeds</div>
+      <h2 class="section-title">Why Shorts, Reels & Toxic Feeds Are Hollowing Out a Generation</h2>
+      <p class="section-sub">
+        Modern platforms do not profit when you learn, pray, build, or rest—they profit when you cannot look away. Short-form vertical video and explicit corners of the web exploit brain chemistry at the expense of a young person's focus and character.
+      </p>
+
+      <div class="crisis-grid">
+        <div class="crisis-card">
+          <div class="crisis-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3>Fragmented Attention Span</h3>
+          <p>Rapid 15-second dopamine hits train the brain to reject deep reading, exam preparation, Quranic reflection, and sustained problem-solving.</p>
         </div>
-        <div class="card">
-          <span class="card-tag">Mindful Friction</span>
-          <h3>3-Mode App Control</h3>
-          <p>Set any app to <strong>Open</strong>, <strong>15s Pause</strong> (a breathing prompt before a 5-minute pass), or <strong>Block</strong>.</p>
+
+        <div class="crisis-card">
+          <div class="crisis-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>Subconscious Impulse Loops</h3>
+          <p>Auto-playing Reels and Shorts bypass conscious choice. You open an app to check one message and emerge an hour later drained and regretful.</p>
         </div>
-        <div class="card">
-          <span class="card-tag">Local Loopback VPN</span>
-          <h3>130,000+ Domain Web Shield</h3>
-          <p>Blocks adult sites, rotating mirrors, and custom <code>*wildcard*</code> rules across Chrome, Brave, Firefox, and Incognito without external servers.</p>
+
+        <div class="crisis-card">
+          <div class="crisis-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Corrupted Gaze & Spiritual Numbness</h3>
+          <p>Unfiltered algorithms push immodesty, outrage, and explicit content directly onto young screens—eroding modesty (<em>Haya</em>), sleep, and peace of heart.</p>
         </div>
-        <div class="card">
-          <span class="card-tag">Study OS</span>
-          <h3>Pomodoro & Daily Auto-Lock</h3>
-          <p>Run 25m / 50m / 90m focus blocks or schedule recurring daily auto-lock windows with add-only app protection.</p>
+
+        <div class="crisis-card">
+          <div class="crisis-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </div>
+          <h3>Stolen Youth & Ambition</h3>
+          <p>Hours lost every evening compound into lost years. Youth is the prime season to master skills, seek beneficial knowledge, and build meaningful work.</p>
         </div>
-        <div class="card">
-          <span class="card-tag">Anti-Impulse</span>
-          <h3>Armor & Strict Lock</h3>
-          <p>Cooldown timers (15m to 7d) anchored to Android's monotonic uptime clock so changing device time cannot bypass active locks.</p>
+      </div>
+
+      <div class="mission-box">
+        <div>
+          <h3>The Purpose of FocusGuard</h3>
+          <p>
+            You shouldn't have to throw away your smartphone—or sacrifice useful lectures on YouTube and messages on Instagram—just to escape algorithmic addiction.
+          </p>
+          <p>
+            <strong>FocusGuard</strong> was built to restore human agency: surgically removing the addictive hooks (Shorts, Reels, adult sites, and impulsive app launches) while leaving your phone's productive tools intact.
+          </p>
         </div>
-        <div class="card">
-          <span class="card-tag">Zero Telemetry</span>
-          <h3>100% Private & Auditable</h3>
-          <p>Written in 100% native Kotlin & Jetpack Compose. Zero analytics SDKs, zero cloud sync, and fully open-source on GitHub.</p>
+        <div>
+          <img src="images/hotspot.png" alt="FocusGuard Surgical Protection Overview" />
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Zero Ads / Zero Data Guarantee -->
+  <section style="padding-top: 12px;">
+    <div class="container">
+      <div class="section-eyebrow">Uncompromising Privacy</div>
+      <h2 class="section-title">No Ads. No Subscriptions. No Data Leaving Your Phone.</h2>
+      <p class="section-sub">Your struggle with distraction is not a business model. FocusGuard has zero backend servers and zero tracking SDKs.</p>
+
+      <div class="zero-grid">
+        <div class="zero-card">
+          <div class="zero-num">0 Ads</div>
+          <h4>Clean & Distraction-Free</h4>
+          <p>Never shows banners, pop-ups, or sponsored upsells while you are trying to focus.</p>
+        </div>
+        <div class="zero-card">
+          <div class="zero-num">0 Bytes</div>
+          <h4>Personal Data Collected</h4>
+          <p>No accounts, no email sign-up, no analytics, and no usage logs uploaded anywhere.</p>
+        </div>
+        <div class="zero-card">
+          <div class="zero-num">100%</div>
+          <h4>Local On-Device DNS</h4>
+          <p>Web filtering runs inside local device memory—your browsing traffic never touches a third-party server.</p>
+        </div>
+        <div class="zero-card">
+          <div class="zero-num">Free</div>
+          <h4>Forever & Open Source</h4>
+          <p>Every feature—Strict Lock, 130k+ domain shield, and Study OS—is unlocked for everyone under MIT.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Features -->
+  <section id="features">
+    <div class="container">
+      <div class="section-eyebrow">Precision Engineering</div>
+      <h2 class="section-title">Built for Deep, Uninterrupted Focus</h2>
+      <p class="section-sub">Every shield runs natively in Kotlin & Jetpack Compose with near-zero battery impact.</p>
+
+      <div class="grid">
+        <div class="card">
+          <span class="card-tag">Surgical Filter</span>
+          <h3>Block Shorts & Reels Only</h3>
+          <p>Automatically exits YouTube Shorts and Instagram Reels the moment they open, while keeping long-form lectures, search, and DMs working normally.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Mindful Friction</span>
+          <h3>3-Mode App Control</h3>
+          <p>Assign any installed app to <strong>Open</strong>, <strong>15s Pause</strong> (a breathing prompt before a 5-minute pass), or <strong>Block</strong>.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Local Loopback VPN</span>
+          <h3>130,000+ Domain Web Shield</h3>
+          <p>Blocks adult sites, rotating mirror domains, and custom <code>*wildcard*</code> rules across Chrome, Brave, Firefox, and Incognito tabs.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Study OS</span>
+          <h3>Pomodoro & Daily Auto-Lock</h3>
+          <p>Run 25m / 50m / 90m focus blocks or schedule recurring daily auto-lock windows with add-only app protection while active.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Anti-Impulse Armor</span>
+          <h3>Strict Lock & Clock Guard</h3>
+          <p>Cooldown timers (15m to 7d) anchored to Android's monotonic uptime clock so changing phone time cannot bypass active locks.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Seamless Maintenance</span>
+          <h3>In-App Release Updater</h3>
+          <p>Checks GitHub Releases every 24 hours so you can install signed updates in place without losing your blocklists or schedules.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Screenshots Showcase -->
+  <section id="preview">
+    <div class="container">
+      <div class="section-eyebrow">Inside FocusGuard</div>
+      <h2 class="section-title">Calm, Dark-Mode Interface Designed for Clarity</h2>
+      <p class="section-sub">High-contrast controls that stay out of your way until you need them.</p>
+
+      <div class="gallery-grid">
+        <div class="shot-card">
+          <img src="images/1.png" alt="FocusGuard Shield Dashboard" loading="lazy" />
+          <h4>Command Dashboard</h4>
+          <p>One-tap master shield status, live lock countdowns, and instant system health visibility.</p>
+        </div>
+        <div class="shot-card">
+          <img src="images/2.png" alt="Apps and Shorts Control" loading="lazy" />
+          <h4>Apps & Shorts Control</h4>
+          <p>Toggle Shorts/Reels filtering and assign Open, 15s Pause, or Block rules per app.</p>
+        </div>
+        <div class="shot-card">
+          <img src="images/3.png" alt="Study OS and Strict Lock" loading="lazy" />
+          <h4>Study OS & Armor</h4>
+          <p>Deep-work Pomodoro sessions, Daily Auto-Lock schedules, and tamper-resistant cooldowns.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup Steps -->
   <section id="setup">
     <div class="container">
+      <div class="section-eyebrow">Quick Onboarding</div>
       <h2 class="section-title">3-Minute Android Setup</h2>
-      <p class="section-sub">Because FocusGuard uses system-level Accessibility and local VPN APIs, follow these steps after installing the APK.</p>
+      <p class="section-sub">Because FocusGuard uses system-level Accessibility and local VPN APIs, complete these steps once after installing.</p>
 
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div>
             <h4>Install FocusGuard</h4>
-            <p>Download the signed APK above (or install via Indus Appstore / APKPure) and approve <strong>Install unknown apps</strong> when prompted.</p>
+            <p>Download the signed APK above (or install via <strong>Indus Appstore</strong> / <strong>APKPure</strong>) and allow <strong>Install unknown apps</strong> when prompted.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div>
             <h4>Enable the Accessibility Engine (Android 13–16)</h4>
-            <p>Open FocusGuard → tap <strong>Open Accessibility settings</strong> → select <strong>FocusGuard</strong> and turn it ON.</p>
-            <div class="tip"><strong>Restricted Setting?</strong> Open <em>Phone Settings → Apps → FocusGuard → tap the 3-dot menu (⋮) → Allow restricted settings</em>, then return to Accessibility.</div>
+            <p>Open FocusGuard → tap <strong>Open Accessibility settings</strong> → select <strong>FocusGuard</strong> and switch it ON.</p>
+            <div class="tip"><strong>Restricted Setting?</strong> Open <em>Phone Settings → Apps → FocusGuard → tap the 3-dot menu (⋮) → Allow restricted settings</em>, then return to Accessibility and toggle FocusGuard ON.</div>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div>
-            <h4>Exempt from Battery Optimization</h4>
-            <p>Long-press the FocusGuard icon → <strong>App info → Battery → Unrestricted</strong>. On Xiaomi, POCO, Realme, Vivo, or Oppo, also enable <strong>Autostart</strong>.</p>
+            <h4>Prevent OEM Battery Killing</h4>
+            <p>Long-press the FocusGuard icon → <strong>App info → Battery → Unrestricted / No restrictions</strong>. On Xiaomi, POCO, Redmi, Realme, Vivo, or Oppo, also enable <strong>Autostart</strong>.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
           <div>
             <h4>Activate Web Shield & Study OS</h4>
-            <p>Switch <strong>Local DNS Adult & Web Shield</strong> ON in the Web tab (turn off <em>Use secure DNS</em> in Chrome settings for system-wide filtering).</p>
+            <p>Switch <strong>Block Adult Contents (Local DNS Shield)</strong> ON in the Web tab (turn off <em>Use secure DNS</em> in Chrome settings for full browser filtering).</p>
           </div>
         </div>
+      </div>
+
+      <div class="wisdom-card" style="margin-top: 32px; border-left-color: var(--emerald);">
+        <div class="wisdom-label" style="color: var(--emerald);">Guarding Sight & Sincerity</div>
+        <div class="wisdom-arabic">قُل لِّلْمُؤْمِنِينَ يَغُضُّوا مِنْ أَبْصَارِهِمْ وَيَحْفَظُوا فُرُوجَهُمْ ۚ ذَٰلِكَ أَزْكَىٰ لَهُمْ</div>
+        <div class="wisdom-quote">“Tell the believing men to lower their gaze and guard their modesty. That is purer for them.”</div>
+        <div class="wisdom-ref">Surah An-Nur (24:30) — Technology should serve your values, never compromise them.</div>
       </div>
     </div>
   </section>
 
   <footer>
     <div class="container footer-inner">
-      <div><strong>FocusGuard</strong> (<code>com.focusguard.app</code>) · MIT License · Developed by <strong>Quasim.™</strong></div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="images/icon.png" alt="FocusGuard" width="26" height="26" style="border-radius: 6px;" />
+        <span><strong>FocusGuard</strong> (<code>com.focusguard.app</code>) · MIT License · Developed by <strong>Quasim.™</strong></span>
+      </div>
       <div class="footer-links">
         <a href="https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener">GitHub Repo</a>
         <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener">Documentation Wiki</a>
@@ -351,7 +1023,7 @@
         }
       })
       .catch(() => {
-        document.getElementById("release-status").textContent = "Verified builds signed by Quasim.™";
+        document.getElementById("release-status").textContent = "Verified builds signed by Quasim.™ · Free forever";
       });
   </script>
 </body>
