@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="images/icon.png" alt="FocusGuard Logo" width="112" height="112" />
+<img src="images/icon.png" alt="FocusGuard Logo" width="112" height="112" /> **FocusGuard by [Quasim.](https://linkedin.com/in/quasimkhan)**
 
 <br/><br/>
 
