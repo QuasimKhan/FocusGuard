@@ -1,7 +1,7 @@
 # FocusGuard by Quasim.™
 
 [![Latest Release](https://img.shields.io/github/v/release/quasimkhan/FocusGuard?style=flat-square&color=38BDF8)](https://github.com/quasimkhan/FocusGuard/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/quasimkhan/FocusGuard/total?style=flat-square&color=10B981)](https://github.com/quasimkhan/FocusGuard/releases)
+[![Downloads](https://img.shields.io/github/downloads/quasimkhan/FocusGuard/total?style=flat-square&color=10B981)](https://github.com/quasimkhan/FocusGuard/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-slate.svg?style=flat-square)](LICENSE)
 
 A zero-bloat, 100% on-device Android distraction blocker, short-form video filter, local DNS adult firewall, and focus study lock with best-effort tamper friction.
