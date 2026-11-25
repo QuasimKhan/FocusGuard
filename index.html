@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusGuard by Quasim.™ — 100% On-Device Android Focus & Blocker</title>
+  <meta name="description" content="Zero-bloat, 100% on-device Android distraction blocker, YouTube Shorts & Instagram Reels filter, local DNS adult firewall, and Deep-Work Study OS." />
+  <style>
+    :root {
+      --bg: #0B1118;
+      --panel: #111B25;
+      --elevated: #192633;
+      --border: #2C3B49;
+      --cyan: #62BCEB;
+      --emerald: #79C6A5;
+      --amber: #FFC66D;
+      --text: #E9EFF5;
+      --muted: #9FB0C0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+    /* Navbar */
+    nav {
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 17, 24, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; }
+    .brand-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--cyan);
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .nav-links { display: flex; gap: 20px; font-size: 0.9rem; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero {
+      padding: 72px 0 56px;
+      text-align: center;
+      background: radial-gradient(circle at 50% 0%, rgba(98, 188, 235, 0.12), transparent 60%);
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(121, 198, 165, 0.12);
+      border: 1px solid rgba(121, 198, 165, 0.35);
+      color: var(--emerald);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      max-width: 780px;
+      margin: 0 auto 18px;
+    }
+    h1 span { color: var(--cyan); }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 640px;
+      margin: 0 auto 32px;
+    }
+
+    /* Download Grid */
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 22px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--cyan); color: #082433; }
+    .btn-secondary { background: var(--panel); border: 1px solid var(--border); color: var(--text); }
+    .btn-secondary:hover { border-color: var(--cyan); }
+    .release-meta { font-size: 0.82rem; color: var(--muted); }
+
+    /* Sections */
+    section { padding: 48px 0; }
+    .section-title { font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .section-sub { color: var(--muted); margin-bottom: 28px; font-size: 0.98rem; }
+
+    /* Feature Cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+    .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 0.92rem; }
+
+    /* Setup Steps */
+    .steps { display: grid; gap: 14px; }
+    .step {
+      display: flex;
+      gap: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      align-items: flex-start;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      color: var(--cyan);
+      font-weight: 800;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step h4 { font-size: 1rem; margin-bottom: 4px; }
+    .step p { color: var(--muted); font-size: 0.9rem; }
+    .tip {
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255, 198, 109, 0.1);
+      border: 1px solid rgba(255, 198, 109, 0.3);
+      color: #FDE68A;
+      font-size: 0.84rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 36px 0;
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
+    .footer-links a:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <div class="brand">
+        <span>FocusGuard</span>
+        <span class="brand-badge">by Quasim.™</span>
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#setup">Setup Guide</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener">Wiki</a>
+        <a href="https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="pill"><span class="dot"></span> 100% ON-DEVICE · ZERO ADS · MIT OPEN SOURCE</div>
+      <h1>Reclaim Your Attention. <span>Block Shorts, Reels & Distractions.</span></h1>
+      <p>A zero-bloat native Kotlin Android blocker with 15-second mindful pauses, an on-device 130,000+ domain DNS firewall, and tamper-resistant Deep-Work study schedules.</p>
+
+      <div class="cta-group">
+        <a id="direct-apk-btn" href="https://github.com/quasimkhan/FocusGuard/releases/latest" class="btn btn-primary">
+          Download Direct APK
+        </a>
+        <a href="https://indusapp.store/9o4g51w8" target="_blank" rel="noopener" class="btn btn-secondary">
+          Indus Appstore (PhonePe)
+        </a>
+        <a href="https://apkpure.com/p/com.focusguard.app" target="_blank" rel="noopener" class="btn btn-secondary">
+          APKPure
+        </a>
+        <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener" class="btn btn-secondary">
+          Obtainium Auto-Update
+        </a>
+      </div>
+      <div id="release-status" class="release-meta">Fetching latest release build from GitHub...</div>
+    </div>
+  </header>
+
+  <section id="features">
+    <div class="container">
+      <h2 class="section-title">Built for Deep, Uninterrupted Focus</h2>
+      <p class="section-sub">Every shield runs locally in your phone's memory—no cloud accounts, no tracking, no battery drain.</p>
+
+      <div class="grid">
+        <div class="card">
+          <span class="card-tag">Surgical Filter</span>
+          <h3>Block Shorts & Reels Only</h3>
+          <p>Automatically exits YouTube Shorts and Instagram Reels while keeping full-length lectures, search, and DMs working normally.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Mindful Friction</span>
+          <h3>3-Mode App Control</h3>
+          <p>Set any app to <strong>Open</strong>, <strong>15s Pause</strong> (a breathing prompt before a 5-minute pass), or <strong>Block</strong>.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Local Loopback VPN</span>
+          <h3>130,000+ Domain Web Shield</h3>
+          <p>Blocks adult sites, rotating mirrors, and custom <code>*wildcard*</code> rules across Chrome, Brave, Firefox, and Incognito without external servers.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Study OS</span>
+          <h3>Pomodoro & Daily Auto-Lock</h3>
+          <p>Run 25m / 50m / 90m focus blocks or schedule recurring daily auto-lock windows with add-only app protection.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Anti-Impulse</span>
+          <h3>Armor & Strict Lock</h3>
+          <p>Cooldown timers (15m to 7d) anchored to Android's monotonic uptime clock so changing device time cannot bypass active locks.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag">Zero Telemetry</span>
+          <h3>100% Private & Auditable</h3>
+          <p>Written in 100% native Kotlin & Jetpack Compose. Zero analytics SDKs, zero cloud sync, and fully open-source on GitHub.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="setup">
+    <div class="container">
+      <h2 class="section-title">3-Minute Android Setup</h2>
+      <p class="section-sub">Because FocusGuard uses system-level Accessibility and local VPN APIs, follow these steps after installing the APK.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h4>Install FocusGuard</h4>
+            <p>Download the signed APK above (or install via Indus Appstore / APKPure) and approve <strong>Install unknown apps</strong> when prompted.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h4>Enable the Accessibility Engine (Android 13–16)</h4>
+            <p>Open FocusGuard → tap <strong>Open Accessibility settings</strong> → select <strong>FocusGuard</strong> and turn it ON.</p>
+            <div class="tip"><strong>Restricted Setting?</strong> Open <em>Phone Settings → Apps → FocusGuard → tap the 3-dot menu (⋮) → Allow restricted settings</em>, then return to Accessibility.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h4>Exempt from Battery Optimization</h4>
+            <p>Long-press the FocusGuard icon → <strong>App info → Battery → Unrestricted</strong>. On Xiaomi, POCO, Realme, Vivo, or Oppo, also enable <strong>Autostart</strong>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <h4>Activate Web Shield & Study OS</h4>
+            <p>Switch <strong>Local DNS Adult & Web Shield</strong> ON in the Web tab (turn off <em>Use secure DNS</em> in Chrome settings for system-wide filtering).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-inner">
+      <div><strong>FocusGuard</strong> (<code>com.focusguard.app</code>) · MIT License · Developed by <strong>Quasim.™</strong></div>
+      <div class="footer-links">
+        <a href="https://github.com/quasimkhan/FocusGuard" target="_blank" rel="noopener">GitHub Repo</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/wiki" target="_blank" rel="noopener">Documentation Wiki</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/blob/main/PRIVACY.md" target="_blank" rel="noopener">Privacy Policy</a>
+        <a href="https://github.com/quasimkhan/FocusGuard/issues" target="_blank" rel="noopener">Report Bug</a>
+        <a href="mailto:quasimdotdev@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    fetch("https://api.github.com/repos/quasimkhan/FocusGuard/releases/latest")
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(data => {
+        const apk = (data.assets || []).find(a => a.name.endsWith(".apk"));
+        const btn = document.getElementById("direct-apk-btn");
+        const meta = document.getElementById("release-status");
+        if (apk) {
+          btn.href = apk.browser_download_url;
+          btn.textContent = `Download APK (${data.tag_name})`;
+          const mb = (apk.size / (1024 * 1024)).toFixed(1);
+          meta.textContent = `Latest verified release: ${data.tag_name} · ${mb} MB · Signed by Quasim.™`;
+        } else {
+          meta.textContent = `Latest release: ${data.tag_name}`;
+        }
+      })
+      .catch(() => {
+        document.getElementById("release-status").textContent = "Verified builds signed by Quasim.™";
+      });
+  </script>
+</body>
+</html>
