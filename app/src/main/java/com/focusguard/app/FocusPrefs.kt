@@ -40,6 +40,7 @@ object FocusPrefs {
     private const val KEY_SCREEN_USAGE_DATE = "screen_usage_date"
     private const val KEY_TODAY_USAGE_MS = "today_usage_ms"
     private const val KEY_LAST_NUDGE_ELAPSED_MS = "last_nudge_elapsed_ms"
+    private const val KEY_AUTO_START_ACK = "auto_start_acknowledged"
 
     const val LOCK_UNLOCKED = 0
     const val LOCK_ENGAGED = 1
@@ -104,8 +105,9 @@ object FocusPrefs {
         // Daily Auto-Lock is an independent policy layer. It can continue blocking a selected
         // app during its active window without preventing edits to that app's global mode.
         if ((isStrictLockActive(context) || isPomodoroLockCurrentlyActive(context)) &&
-            targetMode < currentMode
-        ) return
+                        targetMode < currentMode
+        )
+                return
 
         val blocked = getBlockedPackages(context).toMutableSet()
         val paused = getPausedPackages(context).toMutableSet()
@@ -196,8 +198,8 @@ object FocusPrefs {
         val current = getScheduledPackages(context)
         val finalPackages =
                 if (isStudyWindowCurrentlyActive(context) ||
-                    isStrictLockActive(context) ||
-                    isPomodoroLockCurrentlyActive(context)
+                                isStrictLockActive(context) ||
+                                isPomodoroLockCurrentlyActive(context)
                 ) {
                     // Keep selected apps in place while the schedule or another protection lock
                     // is active.
@@ -456,4 +458,13 @@ object FocusPrefs {
 
     fun getConfiguredCooldownMinutes(context: Context): Int =
             (prefs(context).getLong(KEY_COOLDOWN_DURATION_MS, 60 * 60_000L) / 60_000L).toInt()
+
+    // --- OEM Auto-Start Setup Acknowledgment ---
+
+    fun isAutoStartAcknowledged(context: Context): Boolean =
+            prefs(context).getBoolean(KEY_AUTO_START_ACK, false)
+
+    fun setAutoStartAcknowledged(context: Context, acknowledged: Boolean) {
+        prefs(context).edit().putBoolean(KEY_AUTO_START_ACK, acknowledged).apply()
+    }
 }

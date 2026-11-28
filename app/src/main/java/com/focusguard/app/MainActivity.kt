@@ -179,6 +179,8 @@ private val FocusGuardTypography =
 class MainActivity : ComponentActivity() {
         private var serviceEnabledState = mutableStateOf(false)
         private var deviceAdminEnabledState = mutableStateOf(false)
+        private var batteryUnrestrictedState = mutableStateOf(true)
+        private var autoStartAckState = mutableStateOf(false)
         private var lastBlockedPkgState = mutableStateOf<String?>(null)
         private var frictionPkgState = mutableStateOf<String?>(null)
 
@@ -203,6 +205,28 @@ class MainActivity : ComponentActivity() {
                                                 isServiceEnabled = serviceEnabledState.value,
                                                 isDeviceAdminEnabled =
                                                         deviceAdminEnabledState.value,
+                                                isBatteryUnrestricted =
+                                                        batteryUnrestrictedState.value,
+                                                showAutoStartBanner =
+                                                        SystemGuardIntents.supportsOemAutoStart(
+                                                                this@MainActivity
+                                                        ),
+                                                onEnableUnrestrictedBattery = {
+                                                        SystemGuardIntents
+                                                                .openUnrestrictedBatterySettings(
+                                                                        this@MainActivity
+                                                                )
+                                                },
+                                                onEnableAutoStart = {
+                                                        FocusPrefs.setAutoStartAcknowledged(
+                                                                this@MainActivity,
+                                                                true
+                                                        )
+                                                        autoStartAckState.value = true
+                                                        SystemGuardIntents.openAutoStartSettings(
+                                                                this@MainActivity
+                                                        )
+                                                },
                                                 blockedBannerPkg = lastBlockedPkgState.value,
                                                 frictionPkg = frictionPkgState.value,
                                                 onDismissBanner = {
@@ -234,6 +258,8 @@ class MainActivity : ComponentActivity() {
                 super.onResume()
                 serviceEnabledState.value = FocusAccessibilityService.isConnected
                 deviceAdminEnabledState.value = isDeviceAdminActive(this)
+                batteryUnrestrictedState.value = SystemGuardIntents.isBatteryUnrestricted(this)
+                autoStartAckState.value = FocusPrefs.isAutoStartAcknowledged(this)
                 if (FocusPrefs.isVpnEnabled(this) && VpnService.prepare(this) == null) {
                         startForegroundService(Intent(this, DnsVpnService::class.java))
                 }
@@ -255,7 +281,11 @@ fun FocusDashboard(
         blockedBannerPkg: String?,
         frictionPkg: String?,
         onDismissBanner: () -> Unit,
-        onDismissFriction: () -> Unit
+        onDismissFriction: () -> Unit,
+        isBatteryUnrestricted: Boolean,
+        showAutoStartBanner: Boolean,
+        onEnableUnrestrictedBattery: () -> Unit,
+        onEnableAutoStart: () -> Unit,
 ) {
         val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
@@ -955,7 +985,7 @@ fun FocusDashboard(
                                                                 if (it && !blockShorts) {
                                                                         requestConfirmation(
                                                                                 "Block Shorts and Reels?",
-                                                                                "FocusGuard will exit YouTube Shorts and Instagram Reels while keeping other app content available.",
+                                                                                "FocusGuard will exit YouTube Shorts, Instagram Reels, and Facebook Reels while keeping other app content available.",
                                                                                 "Enable filter",
                                                                                 apply
                                                                         )
@@ -987,6 +1017,12 @@ fun FocusDashboard(
                                                 ShieldLockTab(
                                                         isServiceEnabled = isServiceEnabled,
                                                         isDeviceAdminEnabled = isDeviceAdminEnabled,
+                                                        isBatteryUnrestricted =
+                                                                isBatteryUnrestricted,
+                                                        showAutoStartBanner = showAutoStartBanner,
+                                                        onEnableUnrestrictedBattery =
+                                                                onEnableUnrestrictedBattery,
+                                                        onEnableAutoStart = onEnableAutoStart,
                                                         vpnActive = vpnActive,
                                                         lockState = lockState,
                                                         remainingMs = cooldownRemainingMs,
@@ -1404,7 +1440,7 @@ fun AppsAndShortsTab(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                                 Column(modifier = Modifier.weight(1f)) {
                                         Text(
-                                                "Block YouTube Shorts & IG Reels",
+                                                "Block Shorts & Reels (YT, IG, FB)",
                                                 fontWeight = FontWeight.SemiBold,
                                                 fontSize = 14.sp
                                         )
@@ -2853,6 +2889,10 @@ fun TimeAdjustRow(
 fun ShieldLockTab(
         isServiceEnabled: Boolean,
         isDeviceAdminEnabled: Boolean,
+        isBatteryUnrestricted: Boolean,
+        showAutoStartBanner: Boolean,
+        onEnableUnrestrictedBattery: () -> Unit,
+        onEnableAutoStart: () -> Unit,
         vpnActive: Boolean,
         lockState: Int,
         remainingMs: Long,
@@ -2885,7 +2925,8 @@ fun ShieldLockTab(
                                         "- **Android SDK:** ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})\n" +
                                         "- **Accessibility Service:** ${if (isServiceEnabled) "ACTIVE" else "OFF"}\n" +
                                         "- **Local DNS Shield:** ${if (vpnActive) "ACTIVE" else "OFF"}\n" +
-                                        "- **Device Admin:** ${if (isDeviceAdminEnabled) "ACTIVE" else "OFF"}\n"
+                                        "- **Device Admin:** ${if (isDeviceAdminEnabled) "ACTIVE" else "OFF"}\n" +
+                                        "- **Battery Unrestricted:** ${if (isBatteryUnrestricted) "YES" else "RESTRICTED"}\n"
                         )
                 uriHandler.openUri(
                         "https://github.com/quasimkhan/FocusGuard/issues/new?title=$title&body=$body"
@@ -2918,6 +2959,24 @@ fun ShieldLockTab(
                         StatusLine("Accessibility & Settings Watchdog", isServiceEnabled)
                         StatusLine("Local DNS & Mirror Firewall", vpnActive)
                         StatusLine("Device Admin deactivation warning", isDeviceAdminEnabled)
+                        StatusLine("Battery optimization: No restrictions", isBatteryUnrestricted)
+                        if (showAutoStartBanner) {
+                                val autoStartOpened = FocusPrefs.isAutoStartAcknowledged(context)
+                                Spacer(modifier = Modifier.height(10.dp))
+                                if (autoStartOpened) {
+                                        OutlinedButton(
+                                                onClick = onEnableAutoStart,
+                                                shape = RoundedCornerShape(10.dp),
+                                                modifier = Modifier.fillMaxWidth()
+                                        ) { Text("Verify OEM Auto-Start in Settings") }
+                                } else {
+                                        Button(
+                                                onClick = onEnableAutoStart,
+                                                shape = RoundedCornerShape(10.dp),
+                                                modifier = Modifier.fillMaxWidth()
+                                        ) { Text("Enable OEM Auto-Start") }
+                                }
+                        }
                         Text(
                                 "A regular Device Admin cannot guarantee uninstall prevention. While a focus lock is active, the Accessibility Service can dismiss a clearly identified FocusGuard uninstall confirmation; some OEM dialogs may not expose enough information.",
                                 style = MaterialTheme.typography.bodySmall,
@@ -2955,6 +3014,15 @@ fun ShieldLockTab(
                                         shape = RoundedCornerShape(10.dp),
                                         modifier = Modifier.fillMaxWidth()
                                 ) { Text("Enable Device Admin Warning") }
+                        }
+
+                        if (!isBatteryUnrestricted) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Button(
+                                        onClick = onEnableUnrestrictedBattery,
+                                        shape = RoundedCornerShape(10.dp),
+                                        modifier = Modifier.fillMaxWidth()
+                                ) { Text("Allow No Restrictions (Battery)") }
                         }
                 }
 
@@ -3168,8 +3236,6 @@ fun ShieldLockTab(
                                                 label = "YouTube Channel",
                                                 modifier = Modifier.weight(1f)
                                         ) {
-                                                // Replace with ECN's exact YouTube channel
-                                                // handle/URL if needed
                                                 uriHandler.openUri(
                                                         "https://www.youtube.com/@ECNaseerpur"
                                                 )
